@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Vortex</string>
+    <string name="USERS">users</string>
+    <string name="TOKEN">token</string>
+    <string name="PRESENCE">presence</string>
+    <string name="PHONE_NUMBER">phone_number</string>
+    <string name="NAME">name</string>
+    <string name="welcome_to_vortex">Welcome to Vortex</string>
+    <string name="read_our_privacy_policy_tap_agree_and_continue_to_accept_the_terms_of_services">Read our Privacy Policy. Tap Agree and continue to accept the Terms of Services</string>
+    <string name="agree_and_continue">Agree and Continue</string>
+    <string name="from">from</string>
+    <string name="s_a_m_s_u_n_g">S A M S U N G</string>
+    <string name="CROPPED">cropped</string>
+    <string name="IMAGE">image</string>
+    <string name="PROFILE_IMAGES">profile_images</string>
+    <string name="UPDATE_PROFILE_IMAGE_TITLE">Updating Profile Image</string>
+    <string name="UPDATE_PROFILE_IMAGE_DESCRIPTION">Please wait, your image is updating...</string>
+    <string name="CONTINUE">Continue</string>
+    <string name="VERIFICATION_CODE_TITLE">Verification code</string>
+    <string name="VERIFICATION_CODE_DESCRIPTION">Please wait, while we are verifying your code</string>
+    <string name="PHONE_VERIFICATION_TITLE">Phone Verification</string>
+    <string name="PHONE_VERIFICATION_DESCRIPTION">Please wait, while we are authenticating your phone...</string>
+    <string name="UID">uid</string>
+    <string name="CHATS">Chats</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="MESSAGES">messages</string>
+    <string name="STATUS">status</string>
+</resources>

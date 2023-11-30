@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "323037685138",
+    "project_id": "vortex-7ba6e",
+    "storage_bucket": "vortex-7ba6e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323037685138:android:adf8a2d71ca2fe9e1ecd4b",
+        "android_client_info": {
+          "package_name": "com.samsung.vortex"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAA6mYGiY77bIQHRQoKDVdVKxNv9B9dr3A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
