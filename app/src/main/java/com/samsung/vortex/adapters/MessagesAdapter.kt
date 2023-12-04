@@ -12,6 +12,7 @@ import com.samsung.vortex.databinding.ItemMessageBinding
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.Utils.Companion.getDateTimeString
+import com.samsung.vortex.utils.bottomsheethandler.MessageBottomSheetHandler
 
 class MessagesAdapter(var context: Context, private var messageList: ArrayList<Message>, var senderId: String, var receiverId: String)
     : RecyclerView.Adapter<MessagesAdapter.MessageViewHolder>(){
@@ -61,6 +62,12 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
         //Setting message and time
         holder.binding.message.text = message.message
         holder.binding.messageTime.text = getDateTimeString(message.time)
+
+        //Long click on message
+        holder.binding.myLinearLayout.setOnLongClickListener {
+            MessageBottomSheetHandler.start(context)
+            true
+        }
     }
 
     fun getItemPosition(message_id: String?): Int {
