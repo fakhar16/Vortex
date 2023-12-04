@@ -63,4 +63,9 @@
     <string name="SERVER_KEY">key=AAAASzaL5ZI:APA91bGyrryRDT3lBnZahZKiHVcgnbhXNAF_KTKtK4eBvg2DH3P3Tumo31RQ5H_PhqK0gYMx_kBSZZAqwY1enLnwyWaS9tjX5TFauxj8fxqlsmXJKhJSncOtEVo2fyOAstPgeGdU-CNZ</string>
     <string name="CURRENT_USER_ID">current_user_id</string>
     <string name="USER_MESSAGE_TEXT">user_message_text</string>
+    <string name="STARRED_MESSAGES">StarredMessages</string>
+    <string name="STARRED">starred</string>
+    <string name="UNSTAR">Unstar</string>
+    <string name="STAR">star</string>
+    <string name="STAR_MESSAGE_WITH_RECEIVER">StarMessageWithReceiver</string>
 </resources>

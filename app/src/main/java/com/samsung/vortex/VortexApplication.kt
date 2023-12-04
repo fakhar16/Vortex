@@ -11,6 +11,7 @@ class VortexApplication : Application() {
         lateinit var userDatabaseReference: DatabaseReference
         lateinit var presenceDatabaseReference: DatabaseReference
         lateinit var messageDatabaseReference: DatabaseReference
+        lateinit var starMessagesDatabaseReference: DatabaseReference
 
         lateinit var userProfilesImagesReference: StorageReference
 
@@ -29,6 +30,7 @@ class VortexApplication : Application() {
         userDatabaseReference = firebaseDatabase.getReference(getString(R.string.USERS))
         messageDatabaseReference = firebaseDatabase.getReference(getString(R.string.MESSAGES))
         presenceDatabaseReference = firebaseDatabase.getReference(getString(R.string.PRESENCE))
+        starMessagesDatabaseReference = firebaseDatabase.getReference(getString(R.string.STARRED_MESSAGES))
     }
 
     private fun initializeStorageReferences() {

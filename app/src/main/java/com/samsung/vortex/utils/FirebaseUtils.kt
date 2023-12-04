@@ -9,6 +9,7 @@ import com.google.firebase.database.ValueEventListener
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
 import com.samsung.vortex.VortexApplication.Companion.messageDatabaseReference
+import com.samsung.vortex.VortexApplication.Companion.starMessagesDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.userDatabaseReference
 import com.samsung.vortex.fcm.FCMNotificationSender
 import com.samsung.vortex.model.Message
@@ -81,20 +82,15 @@ class FirebaseUtils {
         fun updateLastMessage(message: Message) {
             val lastMsgObj: MutableMap<String, Any> = java.util.HashMap()
             lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_TIME)] = message.time
-            if (message.type == VortexApplication.application.applicationContext.getString(R.string.IMAGE))
-                lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_DETAILS)] = "Photo"
-            else if (message.type == VortexApplication.application.applicationContext.getString(R.string.VIDEO))
-                lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_DETAILS)] = "Video"
-            else if (message.type == VortexApplication.application.applicationContext.getString(R.string.PDF_FILES))
-                lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_DETAILS)] = "File"
-            else if (message.type == VortexApplication.application.applicationContext.getString(R.string.URL))
-                lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_DETAILS)] = "Link"
-            else if (message.type == VortexApplication.application.applicationContext.getString(R.string.CONTACT))
-                lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_DETAILS)] = "Contact"
-            else if (message.type == VortexApplication.application.applicationContext.getString(R.string.AUDIO_RECORDING))
-                lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_DETAILS)] = "audio"
-            else
-                lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_DETAILS)] = message.message
+            when (message.type) {
+                VortexApplication.application.applicationContext.getString(R.string.IMAGE) -> lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_DETAILS)] = "Photo"
+                VortexApplication.application.applicationContext.getString(R.string.VIDEO) -> lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_DETAILS)] = "Video"
+                VortexApplication.application.applicationContext.getString(R.string.PDF_FILES) -> lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_DETAILS)] = "File"
+                VortexApplication.application.applicationContext.getString(R.string.URL) -> lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_DETAILS)] = "Link"
+                VortexApplication.application.applicationContext.getString(R.string.CONTACT) -> lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_DETAILS)] = "Contact"
+                VortexApplication.application.applicationContext.getString(R.string.AUDIO_RECORDING) -> lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_DETAILS)] = "audio"
+                else -> lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_DETAILS)] = message.message
+            }
 
             messageDatabaseReference
                 .child(message.from)
@@ -133,6 +129,59 @@ class FirebaseUtils {
             messageDatabaseReference
                 .child(sender)
                 .child(VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_WITH_) + receiver)
+                .removeValue()
+        }
+
+        fun starMessage(message: Message) {
+            val starredUser: String = message.starred + ":" + currentUser!!.uid
+            message.starred = VortexApplication.application.applicationContext.getString(R.string.STARRED)
+            
+            starMessagesDatabaseReference
+                .child(currentUser!!.uid)
+                .child(message.messageId)
+                .setValue(message)
+
+            messageDatabaseReference
+                .child(message.from)
+                .child(message.to)
+                .child(message.messageId)
+                .child(VortexApplication.application.applicationContext.getString(R.string.STARRED))
+                .setValue(starredUser)
+
+            messageDatabaseReference
+                .child(message.to)
+                .child(message.from)
+                .child(message.messageId)
+                .child(VortexApplication.application.applicationContext.getString(R.string.STARRED))
+                .setValue(starredUser)
+        }
+
+        fun unStarMessage(message: Message) {
+            val starredUser: String = message.starred.replace(":" + currentUser!!.uid, "")
+            starMessagesDatabaseReference
+                .child(currentUser!!.uid)
+                .child(message.messageId)
+                .removeValue()
+
+            messageDatabaseReference
+                .child(message.from)
+                .child(message.to)
+                .child(message.messageId)
+                .child(VortexApplication.application.applicationContext.getString(R.string.STARRED))
+                .setValue(starredUser)
+
+            messageDatabaseReference
+                .child(message.to)
+                .child(message.from)
+                .child(message.messageId)
+                .child(VortexApplication.application.applicationContext.getString(R.string.STARRED))
+                .setValue(starredUser)
+        }
+
+        fun deleteStarredMessage(message_id: String) {
+            starMessagesDatabaseReference
+                .child(currentUser!!.uid)
+                .child(message_id)
                 .removeValue()
         }
 

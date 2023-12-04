@@ -2,6 +2,7 @@ package com.samsung.vortex.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
@@ -11,6 +12,7 @@ import com.samsung.vortex.R
 import com.samsung.vortex.databinding.ItemMessageBinding
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.utils.FirebaseUtils
+import com.samsung.vortex.utils.Utils.Companion.currentUser
 import com.samsung.vortex.utils.Utils.Companion.getDateTimeString
 import com.samsung.vortex.utils.bottomsheethandler.MessageBottomSheetHandler
 
@@ -63,9 +65,16 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
         holder.binding.message.text = message.message
         holder.binding.messageTime.text = getDateTimeString(message.time)
 
+        //Setting star visibility
+        if (message.starred.contains(currentUser!!.uid)) {
+            holder.binding.star.visibility = View.VISIBLE
+        } else {
+            holder.binding.star.visibility = View.GONE
+        }
+
         //Long click on message
         holder.binding.myLinearLayout.setOnLongClickListener {
-            MessageBottomSheetHandler.start(context, message, messageList, getItemViewType(messageList.indexOf(message)))
+            MessageBottomSheetHandler.start(context, message, messageList, getItemViewType(messageList.indexOf(message)), holder.binding.star.visibility)
             true
         }
     }

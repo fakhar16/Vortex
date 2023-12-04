@@ -58,8 +58,8 @@ class DeleteMessageBottomSheetHandler {
             if (userMessageList.size == 1) FirebaseUtils.removeLastMessages(message.from, message.to)
 
             //if deleted message is starred
-//            if (message.starred.contains(":" + currentUser!!.uid) || message.starred == "starred")
-//                FirebaseUtils.deleteStarredMessage(message.getMessageId())
+            if (message.starred.contains(":" + currentUser!!.uid) || message.starred == "starred")
+                FirebaseUtils.deleteStarredMessage(message.messageId)
         }
     }
 }
