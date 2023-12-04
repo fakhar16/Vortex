@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/bg"
+    tools:context=".view.activities.ChatActivity">
+
+    <!--    appbar-->
+    <include
+        android:id="@+id/chatToolBar"
+        layout="@layout/app_bar_layout" />
+    <!--search message layout-->
+    <LinearLayout
+        android:id="@+id/searchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_edit_text"
+            app:iconifiedByDefault="false"
+            app:queryBackground="@android:color/transparent"
+            app:queryHint="Search..."
+            app:searchIcon="@drawable/search"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/CANCEL"
+            android:textColor="@color/color_blue"
+            android:textSize="16sp" />
+    </LinearLayout>
+    <!--    Messages recycler view-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/userMessageList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/chatToolBar"
+        android:layout_above="@id/bottom_bar"
+        android:layout_marginBottom="10dp"/>
+
+    <RelativeLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        >
+
+        <RelativeLayout
+            android:id="@+id/bottomChatBar"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true">
+
+            <RelativeLayout
+                android:id="@+id/chatbar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@id/button_linear_layout">
+
+                <!--        Message box-->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:cardCornerRadius="30dp"
+                    app:cardElevation="0dp">
+
+                    <com.samsung.vortex.utils.custom_xml.GoEditText
+                        android:id="@+id/messageInputText"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@android:color/transparent"
+                        android:ems="10"
+                        android:hint="@string/type_message_here"
+                        android:inputType="textPersonName"
+                        android:padding="8dp"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginEnd="30dp"
+                        android:textSize="14sp" />
+                </androidx.cardview.widget.CardView>
+
+                <ImageView
+                    android:id="@+id/smilies"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/baseline_tag_faces_24"
+                    app:tint="#019484" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
+                    android:orientation="horizontal">
+                    <!--        Attach menu button-->
+                    <ImageView
+                        android:id="@+id/attach_menu"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:srcCompat="@drawable/baseline_attach_file_24"
+                        app:tint="#019484" />
+
+                    <ImageView
+                        android:id="@+id/camera"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="20dp"
+                        android:visibility="visible"
+                        app:srcCompat="@drawable/ic_camera"
+                        app:tint="#019484" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/button_linear_layout"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <!--    send message button-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/record_bg"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="#E47A7A"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="10dp"
+            />
+        <ImageView
+            android:id="@+id/sendMessageBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/circle_primary_color"
+            android:layout_marginEnd="5dp"
+            android:padding="11dp"
+            android:visibility="gone"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/baseline_send_24"
+            app:tint="@android:color/white" />
+    </RelativeLayout>
+
+    <!--        record button-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <com.tougee.recorderview.AudioRecordView
+            android:id="@+id/record_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:blink_color="@android:color/holo_red_light"
+            app:cancel_icon_color="@android:color/holo_red_light"
+            app:cancel_text="@string/custom_cancel_text"
+            app:circle_color="@color/color_blink"
+            app:mic_active_icon="@drawable/baseline_mic_24"
+            app:mic_hint_bg="@android:color/holo_blue_dark"
+            app:mic_hint_color="@android:color/holo_red_light"
+            app:mic_hint_enable="false"
+            app:mic_hint_text="@string/custom_hint_text"
+            app:mic_icon="@drawable/baseline_mic_none_24"
+            app:slide_cancel_text="@string/custom_slide_cancel_text"
+            app:vibration_enable="false" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_smily"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true">
+        <androidx.emoji2.emojipicker.EmojiPickerView
+            android:id="@+id/emojiPickerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:emojiGridColumns="9"
+            />
+    </RelativeLayout>
+
+    <!--    expanded image view-->
+    <include
+        android:id="@+id/expanded_image"
+        layout="@layout/layout_expanded_image_view"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <!--    expanded video view-->
+<!--    <include-->
+<!--        android:id="@+id/expanded_video"-->
+<!--        layout="@layout/layout_expanded_video_view"-->
+<!--        tools:layout_editor_absoluteX="0dp"-->
+<!--        tools:layout_editor_absoluteY="0dp" />-->
+
+    <!--    Captured image view-->
+    <include
+        android:id="@+id/captured_image"
+        layout="@layout/layout_captured_image_view"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <!--    Captured video view-->
+<!--    <include-->
+<!--        android:id="@+id/captured_video"-->
+<!--        layout="@layout/layout_captured_video_view"-->
+<!--        tools:layout_editor_absoluteX="155dp"-->
+<!--        tools:layout_editor_absoluteY="-67dp" />-->
+
+    <!--    progress bar-->
+    <include
+        android:id="@+id/progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        layout="@layout/progressbar"
+        android:visibility="gone"
+        />
+</RelativeLayout>

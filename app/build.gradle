@@ -61,7 +61,27 @@ dependencies {
 
     //Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'androidx.databinding:databinding-runtime:7.1.2'
+
+    //data binding
+    implementation 'androidx.databinding:databinding-runtime:8.1.4'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    //mvvm
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
+
+    //emoji picker
+    implementation 'androidx.emoji2:emoji2-emojipicker:1.4.0'
+
+    //audio recorder view
+    implementation files('libs/audiorecorderview-1.0.4.aar')
+
+    //media player
+    implementation 'androidx.media3:media3-ui:1.2.0'
+    implementation 'androidx.core:core-ktx:1.12.0'
+
+    //volley for sending notification request
+    implementation 'com.android.volley:volley:1.2.1'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

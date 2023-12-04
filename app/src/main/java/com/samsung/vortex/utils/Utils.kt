@@ -1,24 +1,30 @@
 package com.samsung.vortex.utils
 
 import android.app.Activity
-import android.util.Log
+import android.content.Context
+import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import com.google.firebase.storage.FirebaseStorage
 import com.samsung.vortex.VortexApplication
 import com.samsung.vortex.model.User
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import java.io.File
-import kotlin.coroutines.suspendCoroutine
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class Utils {
     companion object {
         var currentUser: User? = null
         const val TAG = "Console"
+        const val TYPE_MESSAGE = "type_message"
+        var MESSAGE_CHANNEL_ID = "MESSAGE"
+        var INCOMING_MESSAGE_NOTIFICATION_ID = 17
 
         fun showLoadingBar(activity: Activity, view: View) {
             view.visibility = View.VISIBLE
@@ -43,6 +49,36 @@ class Utils {
                 }
             }
             return file
+        }
+
+        fun getDateTimeString(time: Long): String? {
+            val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
+            val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US)
+            return if (isSameDay(time)) timeFormat.format(Date(time)) else {
+                dateFormat.format(Date(time))
+            }
+        }
+
+        private fun isSameDay(date1: Long): Boolean {
+            val calendar1 = Calendar.getInstance()
+            calendar1.time = Date(date1)
+            val calendar2 = Calendar.getInstance()
+            calendar2.time = Date(Timestamp(System.currentTimeMillis()).time)
+            return calendar1[Calendar.YEAR] == calendar2[Calendar.YEAR] && calendar1[Calendar.MONTH] == calendar2[Calendar.MONTH] && calendar1[Calendar.DAY_OF_MONTH] == calendar2[Calendar.DAY_OF_MONTH]
+        }
+
+        fun dipToPixels(context: Context, dipValue: Float): Float {
+            val metrics = context.resources.displayMetrics
+            return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics)
+        }
+
+        fun hideKeyboard(activity: Activity) {
+            val imm = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            var view = activity.currentFocus
+            if (view == null) {
+                view = View(activity)
+            }
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 }
