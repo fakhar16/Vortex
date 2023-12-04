@@ -65,7 +65,7 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
 
         //Long click on message
         holder.binding.myLinearLayout.setOnLongClickListener {
-            MessageBottomSheetHandler.start(context)
+            MessageBottomSheetHandler.start(context, message)
             true
         }
     }

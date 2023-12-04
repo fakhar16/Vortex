@@ -1,12 +1,15 @@
 package com.samsung.vortex.utils
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import com.google.firebase.storage.FirebaseStorage
+import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
 import com.samsung.vortex.model.User
 import kotlinx.coroutines.runBlocking
@@ -79,6 +82,12 @@ class Utils {
                 view = View(activity)
             }
             imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+
+        fun copyMessage(message: String?) {
+            val clipboardManager = VortexApplication.application.applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipData = ClipData.newPlainText(VortexApplication.application.applicationContext.getString(R.string.USER_MESSAGE_TEXT), message)
+            clipboardManager.setPrimaryClip(clipData)
         }
     }
 }
