@@ -16,6 +16,7 @@ import com.samsung.vortex.databinding.UsersDisplayLayoutBinding
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.Utils
+import com.samsung.vortex.utils.Utils.Companion.currentUser
 import com.samsung.vortex.view.activities.ChatActivity
 import com.squareup.picasso.Picasso
 
@@ -39,7 +40,7 @@ class ChatAdapter(var context: Context, private var chats : ArrayList<User>)
         Picasso.get().load(Utils.getImageOffline(user.image, user.uid)).placeholder(R.drawable.profile_image).into(holder.binding.usersProfileImage)
 
         messageDatabaseReference
-            .child(Utils.currentUser!!.uid)
+            .child(currentUser!!.uid)
             .child(context.getString(R.string.LAST_MESSAGE_WITH_) + user.uid)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -74,7 +75,7 @@ class ChatAdapter(var context: Context, private var chats : ArrayList<User>)
     private fun updateUnreadMessageListForUser(user: User, holder: ChatAdapter.ChatViewHolder) {
         var unreadMessageCount = 0
         messageDatabaseReference
-            .child(Utils.currentUser!!.uid)
+            .child(currentUser!!.uid)
             .child(user.uid)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {

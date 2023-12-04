@@ -7,7 +7,10 @@ data class Message(
     val from: String = "",
     val to: String = "",
     val time: Long = 0,
-    val feeling: Int = 0,
-    val starred: String = "",
-    val isUnread: Boolean = true) {
+    var feeling: Int = 0,
+    var starred: String = "",
+    var isUnread: Boolean = true) {
+    override fun toString(): String {
+        return "Message(messageId='$messageId', message='$message', type='$type', from='$from', to='$to', time=$time, feeling=$feeling, starred='$starred', isUnread=$isUnread)"
+    }
 }
