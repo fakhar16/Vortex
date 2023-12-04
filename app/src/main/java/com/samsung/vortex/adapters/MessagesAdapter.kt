@@ -10,9 +10,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.samsung.vortex.R
 import com.samsung.vortex.databinding.ItemMessageBinding
 import com.samsung.vortex.model.Message
+import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.Utils.Companion.getDateTimeString
 
-class MessagesAdapter(var context: Context, var messageList: ArrayList<Message>, var senderId: String, var receiverId: String)
+class MessagesAdapter(var context: Context, private var messageList: ArrayList<Message>, var senderId: String, receiverId: String)
     : RecyclerView.Adapter<MessagesAdapter.MessageViewHolder>(){
 
     inner class MessageViewHolder(var binding: ItemMessageBinding) : RecyclerView.ViewHolder(binding.root)
@@ -20,6 +21,10 @@ class MessagesAdapter(var context: Context, var messageList: ArrayList<Message>,
     companion object {
         const val ITEM_SENT = 1
         const val ITEM_RECEIVE = 2
+    }
+
+    init {
+        FirebaseUtils.updateMessageUnreadStatus(receiverId)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {

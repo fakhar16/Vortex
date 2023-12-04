@@ -9,5 +9,5 @@ data class Message(
     val time: Long = 0,
     val feeling: Int = 0,
     val starred: String = "",
-    val isUnread: Boolean = false) {
+    val isUnread: Boolean = true) {
 }

@@ -72,7 +72,7 @@ class ChatAdapter(var context: Context, private var chats : ArrayList<User>)
     }
 
     private fun updateUnreadMessageListForUser(user: User, holder: ChatAdapter.ChatViewHolder) {
-        val unreadMessageCount = intArrayOf(0)
+        var unreadMessageCount = 0
         messageDatabaseReference
             .child(Utils.currentUser!!.uid)
             .child(user.uid)
@@ -82,12 +82,12 @@ class ChatAdapter(var context: Context, private var chats : ArrayList<User>)
                         for (child in snapshot.children) {
                             val message: Message = child.getValue(Message::class.java)!!
                             if (message.isUnread) {
-                                unreadMessageCount[0]++
+                                unreadMessageCount++
                             }
                         }
-                        if (unreadMessageCount[0] != 0) {
+                        if (unreadMessageCount != 0) {
                             holder.binding.unreadMessageCount.visibility = View.VISIBLE
-                            holder.binding.unreadMessageCount.text = unreadMessageCount[0].toString()
+                            holder.binding.unreadMessageCount.text = unreadMessageCount.toString()
                         } else {
                             holder.binding.unreadMessageCount.visibility = View.GONE
                         }

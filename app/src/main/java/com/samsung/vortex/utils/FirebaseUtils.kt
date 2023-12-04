@@ -15,6 +15,7 @@ import com.samsung.vortex.model.Message
 import com.samsung.vortex.model.Notification
 import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.Utils.Companion.TYPE_MESSAGE
+import com.samsung.vortex.utils.Utils.Companion.currentUser
 import java.util.Date
 
 class FirebaseUtils {
@@ -45,7 +46,7 @@ class FirebaseUtils {
                 FirebaseDatabase.getInstance().reference
                     .updateChildren(messageBodyDetails)
                 updateLastMessage(objMessage)
-                FirebaseUtils.sendNotification(message, messageReceiverId, messageSenderId, TYPE_MESSAGE)
+                sendNotification(message, messageReceiverId, messageSenderId, TYPE_MESSAGE)
             }
         }
 
@@ -103,6 +104,29 @@ class FirebaseUtils {
                 .child(message.to)
                 .child(VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_WITH_) + message.from)
                 .updateChildren(lastMsgObj)
+        }
+        fun updateMessageUnreadStatus(receiverId: String?) {
+            messageDatabaseReference
+                .child(currentUser!!.uid)
+                .child(receiverId!!)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            for (child in snapshot.children) {
+                                val msg = child.getValue(Message::class.java)
+                                val map: MutableMap<String, Any> = java.util.HashMap()
+                                map["unread"] = false
+                                messageDatabaseReference
+                                    .child(currentUser!!.uid)
+                                    .child(receiverId)
+                                    .child(msg!!.messageId)
+                                    .updateChildren(map)
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {}
+                })
         }
     }
 }
