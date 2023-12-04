@@ -12,7 +12,7 @@ import com.samsung.vortex.utils.Utils.Companion.copyMessage
 
 class MessageBottomSheetHandler {
     companion object {
-        fun start(context: Context, message: Message) {
+        fun start(context: Context, message: Message, messages: ArrayList<Message>, VIEW_TYPE: Int) {
             val dialog = BottomSheetDialog(context)
             val view = View.inflate(context, R.layout.message_bottom_sheet_layout, null)
 
@@ -41,6 +41,12 @@ class MessageBottomSheetHandler {
                         copyMessage(message.message)
                     }
                 }
+                dialog.dismiss()
+            }
+
+            //delete button
+            dialog.findViewById<LinearLayout>(R.id.delete)!!.setOnClickListener {
+                DeleteMessageBottomSheetHandler.start(context, message, messages, VIEW_TYPE)
                 dialog.dismiss()
             }
 

@@ -78,7 +78,7 @@ class FirebaseUtils {
                 })
         }
 
-        private fun updateLastMessage(message: Message) {
+        fun updateLastMessage(message: Message) {
             val lastMsgObj: MutableMap<String, Any> = java.util.HashMap()
             lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_TIME)] = message.time
             if (message.type == VortexApplication.application.applicationContext.getString(R.string.IMAGE))
@@ -127,6 +127,130 @@ class FirebaseUtils {
 
                     override fun onCancelled(error: DatabaseError) {}
                 })
+        }
+
+        fun removeLastMessages(sender: String, receiver: String) {
+            messageDatabaseReference
+                .child(sender)
+                .child(VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_WITH_) + receiver)
+                .removeValue()
+        }
+
+        fun deleteMessage(message: Message) {
+            val from: String = currentUser!!.uid
+            val to: String = if (message.from == from)
+                message.to
+            else
+                message.from
+
+            messageDatabaseReference
+                .child(from)
+                .child(to)
+                .child(message.messageId)
+                .removeValue()
+
+            when (message.type) {
+                VortexApplication.application.applicationContext.getString(R.string.IMAGE) -> {
+        //                imageUrlDatabaseReference
+        //                    .child(message.messageId)
+        //                    .child(currentUser!!.uid)
+        //                    .removeValue()
+                }
+                VortexApplication.application.applicationContext.getString(R.string.VIDEO) -> {
+        //                videoUrlDatabaseReference
+        //                    .child(message.messageId)
+        //                    .child(currentUser!!.uid)
+        //                    .removeValue()
+                }
+                VortexApplication.application.applicationContext.getString(R.string.PDF_FILES) -> {
+        //                docsUrlDatabaseReference
+        //                    .child(message.messageId)
+        //                    .child(currentUser!!.uid)
+        //                    .removeValue()
+                }
+            }
+        }
+
+        fun deleteMessageForEveryone(message: Message) {
+            messageDatabaseReference
+                .child(message.from)
+                .child(message.to)
+                .child(message.messageId)
+                .removeValue()
+
+            messageDatabaseReference
+                .child(message.to)
+                .child(message.from)
+                .child(message.messageId)
+                .removeValue()
+
+            when (message.type) {
+                VortexApplication.application.applicationContext.getString(R.string.IMAGE) -> {
+        //                imageUrlDatabaseReference
+        //                    .child(message.messageId)
+        //                    .child(message.from)
+        //                    .removeValue()
+        //
+        //                imageUrlDatabaseReference
+        //                    .child(message.messageId)
+        //                    .child(message.to)
+        //                    .removeValue()
+        //
+        //                imageUrlDatabaseReference.child(message.messageId)
+        //                    .addValueEventListener(object : ValueEventListener {
+        //                        override fun onDataChange(snapshot: DataSnapshot) {
+        //                            if (!snapshot.exists()) {
+        //                                imageStorageReference.getStorage()
+        //                                    .getReferenceFromUrl(message.message).delete()
+        //                            }
+        //                        }
+        //
+        //                        override fun onCancelled(error: DatabaseError) {}
+        //                    })
+                }
+                VortexApplication.application.applicationContext.getString(R.string.VIDEO) -> {
+        //                videoUrlDatabaseReference
+        //                    .child(message.messageId)
+        //                    .child(message.from)
+        //                    .removeValue()
+        //                videoUrlDatabaseReference
+        //                    .child(message.messageId)
+        //                    .child(message.to)
+        //                    .removeValue()
+        //                videoUrlDatabaseReference.child(message.messageId)
+        //                    .addValueEventListener(object : ValueEventListener {
+        //                        override fun onDataChange(snapshot: DataSnapshot) {
+        //                            if (!snapshot.exists()) {
+        //                                videoStorageReference.getStorage()
+        //                                    .getReferenceFromUrl(message.message).delete()
+        //                            }
+        //                        }
+        //
+        //                        override fun onCancelled(error: DatabaseError) {}
+        //                    })
+                }
+                VortexApplication.application.applicationContext.getString(R.string.PDF_FILES) -> {
+        //                docsUrlDatabaseReference
+        //                    .child(message.messageId)
+        //                    .child(message.from)
+        //                    .removeValue()
+        //                docsUrlDatabaseReference
+        //                    .child(message.messageId)
+        //                    .child(message.to)
+        //                    .removeValue()
+        //                docsUrlDatabaseReference.child(message.messageId)
+        //                    .addValueEventListener(object : ValueEventListener {
+        //                        override fun onDataChange(snapshot: DataSnapshot) {
+        //                            if (!snapshot.exists()) {
+        //                                docsStorageReference.getStorage()
+        //                                    .getReferenceFromUrl(message.message).delete()
+        //                            }
+        //                        }
+        //
+        //                        override fun onCancelled(error: DatabaseError) {}
+        //                    })
+                }
+            }
         }
     }
 }
