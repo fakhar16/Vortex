@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.net.Uri
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
@@ -97,6 +98,14 @@ class Utils {
         fun copyMessage(message: String?) {
             val clipboardManager = VortexApplication.application.applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText(VortexApplication.application.applicationContext.getString(R.string.USER_MESSAGE_TEXT), message)
+            clipboardManager.setPrimaryClip(clipData)
+        }
+
+        fun copyImage(uri: Uri?, message_id: String?) {
+            val clipboardManager = VortexApplication.application.applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipData = ClipData.newRawUri(VortexApplication.application.applicationContext.getString(R.string.USER_MESSAGE_IMAGE), uri)
+            clipData.addItem(ClipData.Item(message_id))
+            clipData.addItem(ClipData.Item(VortexApplication.application.applicationContext.getString(R.string.IMAGE)))
             clipboardManager.setPrimaryClip(clipData)
         }
     }

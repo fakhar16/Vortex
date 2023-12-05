@@ -107,6 +107,37 @@ class FirebaseUtils {
             }.addOnFailureListener { callback.onMessageSentFailed() }
         }
 
+        fun forwardImage(context: Context, message: Message, receiver: String, caption: String) {
+            val callback = context as MessageListenerCallback
+            val objMessage: Message = if (caption.isEmpty()) Message(message.messageId, message.message, message.type, currentUser!!.uid, receiver, Date().time, -1, "", true)
+            else Message(message.messageId, message.message, message.type, currentUser!!.uid, receiver, Date().time, -1, "", true, caption)
+
+            val messageSenderRef = context.getString(R.string.MESSAGES) + "/" + objMessage.from + "/" + objMessage.to
+            val messageReceiverRef = context.getString(R.string.MESSAGES) + "/" + objMessage.to + "/" + objMessage.from
+
+            val messageBodyDetails: MutableMap<String, Any> = java.util.HashMap()
+            messageBodyDetails[messageSenderRef + "/" + message.messageId] = objMessage
+            messageBodyDetails[messageReceiverRef + "/" + message.messageId] = objMessage
+
+            FirebaseDatabase.getInstance().reference
+                .updateChildren(messageBodyDetails)
+                .addOnCompleteListener { task: Task<Void?> ->
+                    if (task.isSuccessful) {
+                        callback.onMessageSent()
+                    }
+                }
+            val imageUrlUserDetails: MutableMap<String, Any> = java.util.HashMap()
+            imageUrlUserDetails[currentUser!!.uid] = true
+            imageUrlUserDetails[receiver] = true
+
+            imageUrlDatabaseReference
+                .child(message.messageId)
+                .updateChildren(imageUrlUserDetails)
+
+            updateLastMessage(objMessage)
+            sendNotification("Sent an image", objMessage.to, objMessage.from, TYPE_MESSAGE)
+        }
+
         private fun sendNotification(message: String, receiverId: String, senderId: String, type: String) {
             userDatabaseReference
                 .child(receiverId)

@@ -2,6 +2,7 @@ package com.samsung.vortex.utils.bottomsheethandler
 
 import android.content.Context
 import android.graphics.Color
+import android.net.Uri
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -11,6 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.samsung.vortex.R
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.utils.FirebaseUtils
+import com.samsung.vortex.utils.Utils
 import com.samsung.vortex.utils.Utils.Companion.copyMessage
 
 class MessageBottomSheetHandler {
@@ -27,7 +29,7 @@ class MessageBottomSheetHandler {
             dialog.findViewById<LinearLayout>(R.id.copy)!!.setOnClickListener {
                 when (message.type) {
                     context.getString(R.string.IMAGE) -> {
-            //                    Utils.copyImage(Uri.parse(message.getMessage()), message.getMessageId())
+                        Utils.copyImage(Uri.parse(message.message), message.messageId)
                     }
                     context.getString(R.string.VIDEO) -> {
             //                    Utils.copyVideo(Uri.parse(message.getMessage()), message.getMessageId())

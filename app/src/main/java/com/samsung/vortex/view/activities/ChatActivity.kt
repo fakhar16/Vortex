@@ -1,6 +1,7 @@
 package com.samsung.vortex.view.activities
 
 import android.annotation.SuppressLint
+import android.content.ClipboardManager
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -11,6 +12,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.URLUtil
@@ -29,16 +31,19 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.samsung.vortex.R
+import com.samsung.vortex.VortexApplication
 import com.samsung.vortex.VortexApplication.Companion.presenceDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.userDatabaseReference
 import com.samsung.vortex.adapters.MessagesAdapter
 import com.samsung.vortex.databinding.ActivityChatBinding
 import com.samsung.vortex.databinding.CustomChatBarBinding
+import com.samsung.vortex.interfaces.GoEditTextListener
 import com.samsung.vortex.interfaces.MessageListenerCallback
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.Utils
+import com.samsung.vortex.utils.Utils.Companion.TAG
 import com.samsung.vortex.utils.Utils.Companion.currentUser
 import com.samsung.vortex.utils.Utils.Companion.hideKeyboard
 import com.samsung.vortex.utils.Utils.Companion.showLoadingBar
@@ -83,7 +88,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
         handleButtonClicks()
         checkIfSearchMessageTriggered()
         initProgressBar()
-//        handleMessageEditTextListener()
+        handleMessageEditTextListener()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -269,7 +274,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
     }
 
     private fun showSmileyLayout() {
-        Utils.hideKeyboard(this)
+        hideKeyboard(this)
         binding.layoutSmily.visibility = View.VISIBLE
         val params = RelativeLayout.LayoutParams(
             RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -375,15 +380,52 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
             showLoadingBar(this@ChatActivity, binding.progressbar.root)
 
             if (isImageFromClipboard) {
-                val obj_message = Message(messageId, fileUri.toString(), getString(R.string.IMAGE), currentUser!!.uid, receiver.uid, Date().time, -1, "", true)
-//                FirebaseUtils.forwardImage(
-//                    this@ChatActivity,
-//                    obj_message,
-//                    receiver.getUid(),
-//                    caption
-//                )
+                val objMessage = Message(messageId, fileUri.toString(), getString(R.string.IMAGE), currentUser!!.uid, receiver.uid, Date().time, -1, "", true)
+                FirebaseUtils.forwardImage(this@ChatActivity, objMessage, receiver.uid, caption)
             } else {
                 FirebaseUtils.sendImage(this@ChatActivity, currentUser!!.uid, messageReceiverId, fileUri, caption)
+            }
+        }
+    }
+
+    private val listener: GoEditTextListener = object : GoEditTextListener{
+        override fun onUpdate() {
+            val clipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val primaryClipData = clipboardManager.primaryClip
+
+            val item = primaryClipData!!.getItemAt(0)
+            if (primaryClipData.itemCount > 1) {
+                val messageIdItem = primaryClipData.getItemAt(1)
+                val messageTypeItem = primaryClipData.getItemAt(2)
+
+                if (primaryClipData.itemCount > 3) {
+                    val fileNameItem = primaryClipData.getItemAt(3)
+                    val fileSizeItem = primaryClipData.getItemAt(4)
+                }
+
+                val uri = item.uri
+
+                binding.messageInputText.setText("")
+                hideKeyboard(this@ChatActivity)
+
+                when(messageTypeItem.text.toString()) {
+                    VortexApplication.application.applicationContext.getString(R.string.IMAGE) -> {
+                        Log.i(TAG, "onUpdate: $uri ${messageIdItem.text.toString()}")
+                        prepareImageMessageForSending(uri, messageIdItem.text.toString(), true)
+                        binding.capturedImage.cancel.setOnClickListener {
+                            hideKeyboard(this@ChatActivity)
+                            binding.capturedImage.cardView.visibility = View.GONE
+                        }
+                    }
+
+                    VortexApplication.application.applicationContext.getString(R.string.VIDEO) -> {
+
+                    }
+
+                    VortexApplication.application.applicationContext.getString(R.string.PDF_FILES) -> {
+
+                    }
+                }
             }
         }
     }
@@ -422,6 +464,10 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
 
     fun showImagePreview(thumbView: View?, url: File) {
         WhatsappLikeProfilePicPreview.zoomImageFromThumb(thumbView!!, binding.expandedImage.cardView, binding.expandedImage.image, binding.chatToolBar.root.rootView, url)
+    }
+
+    private fun handleMessageEditTextListener() {
+        binding.messageInputText.addListener(listener)
     }
 
     override fun onMessageSent() {

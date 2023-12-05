@@ -74,4 +74,5 @@
     <string name="FILE_TYPE">file_type</string>
     <string name="IMAGE_FILES">Image Files</string>
     <string name="IMAGE_URL_USED_BY_USERS">ImageUrlUsedByUsers</string>
+    <string name="USER_MESSAGE_IMAGE">user_message_image</string>
 </resources>
