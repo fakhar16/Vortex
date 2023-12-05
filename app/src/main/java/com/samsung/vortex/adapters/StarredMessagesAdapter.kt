@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +18,7 @@ import com.samsung.vortex.model.Message
 import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.Utils
 import com.samsung.vortex.utils.Utils.Companion.currentUser
+import com.samsung.vortex.utils.bottomsheethandler.MessageBottomSheetHandler
 import com.samsung.vortex.view.activities.ChatActivity
 import com.squareup.picasso.Picasso
 
@@ -64,17 +66,17 @@ class StarredMessagesAdapter(var context: Context, var messageList: ArrayList<Me
             context.startActivity(intent)
         }
 
-//        var clickedMessage: View = holder.binding.myLinearLayout
-//        if (message.type == context.getString(R.string.IMAGE)) {
-//            clickedMessage = holder.binding.image
-//        } else if (message.type == context.getString(R.string.VIDEO)) {
-//            clickedMessage = holder.binding.videoPlayPreview
-//        }
-//
-//        clickedMessage.setOnLongClickListener {
-//            MessageBottomSheetHandler.start(context, message, messageList, 0, holder.binding.star.visibility)
-//            true
-//        }
+        var clickedMessage: View = holder.binding.myLinearLayout
+        if (message.type == context.getString(R.string.IMAGE)) {
+            clickedMessage = holder.binding.image
+        } else if (message.type == context.getString(R.string.VIDEO)) {
+            clickedMessage = holder.binding.videoPlayPreview
+        }
+
+        clickedMessage.setOnLongClickListener {
+            MessageBottomSheetHandler.start(context, message, messageList, 0, holder.binding.star.visibility)
+            true
+        }
     }
 
     private fun bindMessageDetails(
