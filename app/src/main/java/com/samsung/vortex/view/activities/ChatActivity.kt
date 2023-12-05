@@ -1,6 +1,7 @@
 package com.samsung.vortex.view.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -212,11 +213,17 @@ class ChatActivity : AppCompatActivity() {
             val file = Utils.getImageOffline(receiver.image, receiver.uid)
             WhatsappLikeProfilePicPreview.zoomImageFromThumb(customChatBarBinding.userImage, binding.expandedImage.cardView, binding.expandedImage.image, binding.chatToolBar.root.rootView, file)
         }
-//        customChatBarBinding.userInfo.setOnClickListener { view -> sendUserToProfileActivity() }
+        customChatBarBinding.userInfo.setOnClickListener { sendUserToProfileActivity() }
         binding.smilies.setOnClickListener { smileyButtonClicked() }
         binding.emojiPickerView.setOnEmojiPickedListener { emojiViewItem ->
             binding.messageInputText.append(emojiViewItem.emoji)
         }
+    }
+
+    private fun sendUserToProfileActivity() {
+        val intent = Intent(this, ProfileActivity::class.java)
+        intent.putExtra(getString(R.string.RECEIVER_ID), receiver.uid)
+        startActivity(intent)
     }
 
     private fun sendMessage() {

@@ -13,6 +13,7 @@ import com.samsung.vortex.adapters.StarredMessagesAdapter
 import com.samsung.vortex.databinding.ActivityStarMessageBinding
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.viewmodel.StarredMessageViewModel
+import com.samsung.vortex.viewmodel.StarMessageViewModelFactory
 import java.util.Locale
 
 class StarMessageActivity : AppCompatActivity() {
@@ -41,21 +42,21 @@ class StarMessageActivity : AppCompatActivity() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(this)[StarredMessageViewModel::class.java]
-        adapter =
-            if (intent.getBooleanExtra(getString(R.string.STAR_MESSAGE_WITH_RECEIVER), false)) {
-                viewModel.getStarredMessageWithReceiver()!!.observe(this) {
-                    adapter.notifyDataSetChanged()
-                    updateStarredMessageLayout()
-                }
-                StarredMessagesAdapter(this, viewModel.getStarredMessageWithReceiver()!!.value!!)
-            } else {
-                viewModel.getStarredMessage()!!.observe(this) {
-                    adapter.notifyDataSetChanged()
-                    updateStarredMessageLayout()
-                }
-                StarredMessagesAdapter(this, viewModel.getStarredMessage()!!.value!!)
+        if (intent.getBooleanExtra(getString(R.string.STAR_MESSAGE_WITH_RECEIVER), false)) {
+            viewModel = ViewModelProvider(this, StarMessageViewModelFactory(true))[StarredMessageViewModel::class.java]
+            viewModel.getStarredMessageWithReceiver()!!.observe(this) {
+                adapter.notifyDataSetChanged()
+                updateStarredMessageLayout()
             }
+            adapter = StarredMessagesAdapter(this, viewModel.getStarredMessageWithReceiver()!!.value!!)
+        } else {
+            viewModel = ViewModelProvider(this)[StarredMessageViewModel::class.java]
+            viewModel.getStarredMessage()!!.observe(this) {
+                adapter.notifyDataSetChanged()
+                updateStarredMessageLayout()
+            }
+            adapter = StarredMessagesAdapter(this, viewModel.getStarredMessage()!!.value!!)
+        }
     }
 
     private fun updateStarredMessageLayout() {

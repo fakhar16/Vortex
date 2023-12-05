@@ -35,6 +35,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Vortex">
         <activity
+            android:name=".view.activities.ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.activities.ChatActivity"
             android:exported="false" />
         <activity
@@ -76,7 +79,6 @@
         </service>
 
         <receiver android:name=".view.broadcast.ReplyBroadcast" />
-
     </application>
 
 </manifest>
