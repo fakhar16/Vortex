@@ -9,12 +9,16 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.samsung.vortex.R
+import com.samsung.vortex.VortexApplication
 import com.samsung.vortex.databinding.ItemMessageBinding
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.utils.FirebaseUtils
+import com.samsung.vortex.utils.Utils
 import com.samsung.vortex.utils.Utils.Companion.currentUser
 import com.samsung.vortex.utils.Utils.Companion.getDateTimeString
 import com.samsung.vortex.utils.bottomsheethandler.MessageBottomSheetHandler
+import com.samsung.vortex.view.activities.ChatActivity
+import com.squareup.picasso.Picasso
 
 class MessagesAdapter(var context: Context, private var messageList: ArrayList<Message>, var senderId: String, var receiverId: String)
     : RecyclerView.Adapter<MessagesAdapter.MessageViewHolder>(){
@@ -76,6 +80,23 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
         holder.binding.myLinearLayout.setOnLongClickListener {
             MessageBottomSheetHandler.start(context, message, messageList, getItemViewType(messageList.indexOf(message)), holder.binding.star.visibility)
             true
+        }
+        
+        when (message.type) {
+            //Setting image if message type is image
+            VortexApplication.application.applicationContext.getString(R.string.IMAGE) -> {
+                if (message.caption.isEmpty())
+                    holder.binding.message.visibility = View.GONE
+                else
+                    holder.binding.message.text = message.caption
+
+                holder.binding.image.visibility = View.VISIBLE
+                Picasso.get().load(Utils.getImageOffline(message.message, message.messageId)).placeholder(R.drawable.profile_image).into(holder.binding.image)
+
+                holder.binding.image.setOnClickListener {
+                    (context as ChatActivity).showImagePreview(holder.binding.image, Utils.getImageOffline(message.message, message.messageId))
+                }
+            }
         }
     }
 

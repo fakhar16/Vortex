@@ -1,17 +1,26 @@
 package com.samsung.vortex.utils
 
+import android.content.Context
+import android.net.Uri
 import android.text.TextUtils
+import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.StorageTask
+import com.google.firebase.storage.UploadTask
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
+import com.samsung.vortex.VortexApplication.Companion.imageStorageReference
+import com.samsung.vortex.VortexApplication.Companion.imageUrlDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.messageDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.starMessagesDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.userDatabaseReference
 import com.samsung.vortex.fcm.FCMNotificationSender
+import com.samsung.vortex.interfaces.MessageListenerCallback
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.model.Notification
 import com.samsung.vortex.model.User
@@ -49,6 +58,53 @@ class FirebaseUtils {
                 updateLastMessage(objMessage)
                 sendNotification(message, messageReceiverId, messageSenderId, TYPE_MESSAGE)
             }
+        }
+
+        fun sendImage(context: Context, messageSenderId: String, messageReceiverId: String, fileUri: Uri, caption: String) {
+            val callback: MessageListenerCallback = context as MessageListenerCallback
+            val messageSenderRef = context.getString(R.string.MESSAGES) + "/" + messageSenderId + "/" + messageReceiverId
+            val messageReceiverRef = context.getString(R.string.MESSAGES) + "/" + messageReceiverId + "/" + messageSenderId
+            val userMessageKeyRef = messageDatabaseReference
+                .child(messageSenderId)
+                .child(messageReceiverId)
+                .push()
+
+            val messagePushId = userMessageKeyRef.key
+            val filePath: StorageReference = imageStorageReference.child("$messagePushId.jpg")
+            val uploadTask: StorageTask<UploadTask.TaskSnapshot?> = filePath.putFile(fileUri)
+
+            uploadTask.continueWithTask { task: Task<UploadTask.TaskSnapshot?> ->
+                if (!task.isSuccessful) {
+                    throw task.exception!!
+                }
+                filePath.downloadUrl
+            }.addOnCompleteListener { task: Task<Uri> ->
+                if (task.isSuccessful) {
+                    callback.onMessageSent()
+                    val downloadUrl = task.result
+                    val myUrl = downloadUrl.toString()
+                    val objMessage: Message = if (caption.isEmpty()) {
+                        Message(messagePushId!!, myUrl, context.getString(R.string.IMAGE), messageSenderId, messageReceiverId, Date().time, -1, "", true)
+                    } else {
+                        Message(messagePushId!!, myUrl, context.getString(R.string.IMAGE), messageSenderId, messageReceiverId, Date().time, -1, "", true, caption)
+                    }
+
+                    val messageBodyDetails: MutableMap<String, Any> = HashMap()
+                    messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
+                    messageBodyDetails["$messageReceiverRef/$messagePushId"] = objMessage
+                    FirebaseDatabase.getInstance().reference
+                        .updateChildren(messageBodyDetails)
+
+                    val imageUrlUserDetails: MutableMap<String, Any> = HashMap()
+                    imageUrlUserDetails[messageSenderId] = true
+                    imageUrlUserDetails[messageReceiverId] = true
+                    imageUrlDatabaseReference
+                        .child(messagePushId)
+                        .updateChildren(imageUrlUserDetails)
+                    updateLastMessage(objMessage)
+                    sendNotification("Sent an image", messageReceiverId, messageSenderId, TYPE_MESSAGE)
+                }
+            }.addOnFailureListener { callback.onMessageSentFailed() }
         }
 
         private fun sendNotification(message: String, receiverId: String, senderId: String, type: String) {

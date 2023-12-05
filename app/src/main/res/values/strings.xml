@@ -68,4 +68,10 @@
     <string name="UNSTAR">Unstar</string>
     <string name="STAR">star</string>
     <string name="STAR_MESSAGE_WITH_RECEIVER">StarMessageWithReceiver</string>
+    <string name="IS_FROM_STORIES">isFromStories</string>
+    <string name="IMAGE_URI">image_uri</string>
+    <string name="VIDEO_URI">video_uri</string>
+    <string name="FILE_TYPE">file_type</string>
+    <string name="IMAGE_FILES">Image Files</string>
+    <string name="IMAGE_URL_USED_BY_USERS">ImageUrlUsedByUsers</string>
 </resources>

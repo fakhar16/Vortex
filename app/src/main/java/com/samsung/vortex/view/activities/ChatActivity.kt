@@ -2,6 +2,10 @@ package com.samsung.vortex.view.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.graphics.Matrix
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,6 +17,8 @@ import android.webkit.URLUtil
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
@@ -28,15 +34,21 @@ import com.samsung.vortex.VortexApplication.Companion.userDatabaseReference
 import com.samsung.vortex.adapters.MessagesAdapter
 import com.samsung.vortex.databinding.ActivityChatBinding
 import com.samsung.vortex.databinding.CustomChatBarBinding
+import com.samsung.vortex.interfaces.MessageListenerCallback
+import com.samsung.vortex.model.Message
 import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.Utils
 import com.samsung.vortex.utils.Utils.Companion.currentUser
+import com.samsung.vortex.utils.Utils.Companion.hideKeyboard
+import com.samsung.vortex.utils.Utils.Companion.showLoadingBar
 import com.samsung.vortex.utils.WhatsappLikeProfilePicPreview
 import com.samsung.vortex.viewmodel.MessageViewModel
 import com.squareup.picasso.Picasso
+import java.io.File
+import java.util.Date
 
-class ChatActivity : AppCompatActivity() {
+class ChatActivity : AppCompatActivity(), MessageListenerCallback {
     private lateinit var binding: ActivityChatBinding
     private lateinit var customChatBarBinding: CustomChatBarBinding
     private lateinit var messageReceiverId: String
@@ -199,7 +211,7 @@ class ChatActivity : AppCompatActivity() {
 
     private fun handleButtonClicks() {
         binding.sendMessageBtn.setOnClickListener { sendMessage() }
-//        binding.camera.setOnClickListener { view -> cameraButtonClicked() }
+        binding.camera.setOnClickListener { cameraButtonClicked() }
 //        binding.attachMenu.setOnClickListener { view -> showAttachmentMenu() }
 //        customChatBarBinding.voiceCall.setOnClickListener { view ->
 //            Toast.makeText(
@@ -218,6 +230,11 @@ class ChatActivity : AppCompatActivity() {
         binding.emojiPickerView.setOnEmojiPickedListener { emojiViewItem ->
             binding.messageInputText.append(emojiViewItem.emoji)
         }
+    }
+
+    private fun cameraButtonClicked() {
+        val intent = Intent(this@ChatActivity, CameraxActivity::class.java)
+        mediaCaptureResultLauncher.launch(intent)
     }
 
     private fun sendUserToProfileActivity() {
@@ -342,5 +359,76 @@ class ChatActivity : AppCompatActivity() {
         presenceDatabaseReference
             .child(FirebaseAuth.getInstance().uid!!)
             .setValue("Offline")
+    }
+
+    private fun prepareImageMessageForSending(fileUri: Uri, messageId: String, isImageFromClipboard: Boolean) {
+        binding.capturedImage.cardView.visibility = View.VISIBLE
+        Picasso.get().load(fileUri).into(binding.capturedImage.image)
+        binding.capturedImage.receiverName.text = receiver.name
+
+        binding.capturedImage.sendMessage.setOnClickListener {
+            val caption = binding.capturedImage.caption.text.toString()
+            binding.capturedImage.caption.setText("")
+            hideKeyboard(this)
+            binding.capturedImage.cardView.visibility = View.GONE
+
+            showLoadingBar(this@ChatActivity, binding.progressbar.root)
+
+            if (isImageFromClipboard) {
+                val obj_message = Message(messageId, fileUri.toString(), getString(R.string.IMAGE), currentUser!!.uid, receiver.uid, Date().time, -1, "", true)
+//                FirebaseUtils.forwardImage(
+//                    this@ChatActivity,
+//                    obj_message,
+//                    receiver.getUid(),
+//                    caption
+//                )
+            } else {
+                FirebaseUtils.sendImage(this@ChatActivity, currentUser!!.uid, messageReceiverId, fileUri, caption)
+            }
+        }
+    }
+
+    private val mediaCaptureResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK && result.data != null) {
+            val data = result.data
+            val fileType = data!!.getStringExtra(getString(R.string.FILE_TYPE))
+            if (fileType == getString(R.string.IMAGE)) {
+                val fileUri = Uri.parse(data.getStringExtra(getString(R.string.IMAGE_URI)))
+                val bitmap: Bitmap
+                val source = ImageDecoder.createSource(contentResolver, fileUri)
+                bitmap = ImageDecoder.decodeBitmap(source)
+                val matrix = Matrix()
+                matrix.preRotate(0f)
+                val finalBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                val os = contentResolver.openOutputStream(fileUri)
+                finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, os!!)
+
+                prepareImageMessageForSending(fileUri, "", false)
+                binding.capturedImage.cancel.setOnClickListener {
+                    hideKeyboard(this@ChatActivity)
+                    binding.capturedImage.cardView.visibility = View.GONE
+                }
+            } else if (fileType == getString(R.string.VIDEO)) {
+                val fileUri = Uri.parse(data.getStringExtra(getString(R.string.VIDEO_URI)))
+//                prepareVideoMessageForSending(fileUri, "", false)
+//                binding.capturedVideo.cancel.setOnClickListener { view ->
+//                    hideKeyboard(this@ChatActivity)
+//                    binding.capturedImage.cardView.visibility = View.GONE
+//                }
+            }
+        }
+    }
+
+    fun showImagePreview(thumbView: View?, url: File) {
+        WhatsappLikeProfilePicPreview.zoomImageFromThumb(thumbView!!, binding.expandedImage.cardView, binding.expandedImage.image, binding.chatToolBar.root.rootView, url)
+    }
+
+    override fun onMessageSent() {
+        Utils.dismissLoadingBar(this, binding.progressbar.root)
+    }
+
+    override fun onMessageSentFailed() {
+        Utils.dismissLoadingBar(this, binding.progressbar.root)
     }
 }

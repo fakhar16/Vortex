@@ -3,6 +3,7 @@ package com.samsung.vortex.view.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -41,6 +42,19 @@ class ProfileActivity : AppCompatActivity() {
         loadUserInfo()
         initToolBar()
         handleItemsClick()
+        backButtonCallBack()
+    }
+
+    private fun backButtonCallBack() {
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (binding.expandedImage.cardView.visibility == View.VISIBLE) {
+                    WhatsappLikeProfilePicPreview.dismissPhotoPreview()
+                } else {
+                    finish()
+                }
+            }
+        })
     }
 
     private fun loadUserInfo() {

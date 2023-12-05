@@ -3,6 +3,7 @@ package com.samsung.vortex.view.activities
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
@@ -12,8 +13,9 @@ import com.samsung.vortex.R
 import com.samsung.vortex.adapters.StarredMessagesAdapter
 import com.samsung.vortex.databinding.ActivityStarMessageBinding
 import com.samsung.vortex.model.Message
-import com.samsung.vortex.viewmodel.StarredMessageViewModel
+import com.samsung.vortex.utils.WhatsappLikeProfilePicPreview
 import com.samsung.vortex.viewmodel.StarMessageViewModelFactory
+import com.samsung.vortex.viewmodel.StarredMessageViewModel
 import java.util.Locale
 
 class StarMessageActivity : AppCompatActivity() {
@@ -31,6 +33,7 @@ class StarMessageActivity : AppCompatActivity() {
         setupViewModel()
         setupRecyclerView()
         handleItemsClick()
+        backButtonCallBack()
     }
 
     private fun initToolBar() {
@@ -109,5 +112,26 @@ class StarMessageActivity : AppCompatActivity() {
         } else {
             adapter.filterList(ArrayList())
         }
+    }
+
+    private fun backButtonCallBack() {
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (binding.expandedImage.cardView.visibility == View.VISIBLE) {
+                    WhatsappLikeProfilePicPreview.dismissPhotoPreview()
+                    binding.appBarLayout.visibility = View.VISIBLE
+                }
+//        else if (binding.expandedVideo.cardView.getVisibility() === View.VISIBLE) {
+//            Objects.requireNonNull(binding.expandedVideo.video.getPlayer()).release()
+//            binding.starMessagesList.isClickable = true
+//            WhatsappLikeProfilePicPreview.Companion.dismissVideoPreview()
+//            binding.appBarLayout.visibility = View.VISIBLE
+//        }
+                else {
+                    finish()
+                }
+            }
+        })
+
     }
 }

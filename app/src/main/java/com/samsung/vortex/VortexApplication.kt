@@ -12,8 +12,10 @@ class VortexApplication : Application() {
         lateinit var presenceDatabaseReference: DatabaseReference
         lateinit var messageDatabaseReference: DatabaseReference
         lateinit var starMessagesDatabaseReference: DatabaseReference
+        lateinit var imageUrlDatabaseReference: DatabaseReference
 
         lateinit var userProfilesImagesReference: StorageReference
+        lateinit var imageStorageReference: StorageReference
 
         lateinit var application: Application
     }
@@ -31,9 +33,11 @@ class VortexApplication : Application() {
         messageDatabaseReference = firebaseDatabase.getReference(getString(R.string.MESSAGES))
         presenceDatabaseReference = firebaseDatabase.getReference(getString(R.string.PRESENCE))
         starMessagesDatabaseReference = firebaseDatabase.getReference(getString(R.string.STARRED_MESSAGES))
+        imageUrlDatabaseReference = firebaseDatabase.getReference(getString(R.string.IMAGE_URL_USED_BY_USERS))
     }
 
     private fun initializeStorageReferences() {
         userProfilesImagesReference = FirebaseStorage.getInstance().reference.child(getString(R.string.PROFILE_IMAGES))
+        imageStorageReference = FirebaseStorage.getInstance().reference.child(application.applicationContext.getString(R.string.IMAGE_FILES))
     }
 }
