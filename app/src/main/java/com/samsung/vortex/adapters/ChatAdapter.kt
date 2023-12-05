@@ -22,7 +22,6 @@ import com.squareup.picasso.Picasso
 
 class ChatAdapter(var context: Context, private var chats : ArrayList<User>)
     : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
-
     inner class ChatViewHolder(var binding: UsersDisplayLayoutBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {

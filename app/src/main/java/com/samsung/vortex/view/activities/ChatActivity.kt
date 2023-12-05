@@ -9,10 +9,12 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.URLUtil
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
@@ -20,7 +22,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.samsung.vortex.R
-import com.samsung.vortex.VortexApplication
 import com.samsung.vortex.VortexApplication.Companion.presenceDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.userDatabaseReference
 import com.samsung.vortex.adapters.MessagesAdapter
@@ -103,13 +104,15 @@ class ChatActivity : AppCompatActivity() {
                 val position: Int = adapter.getItemPosition(intent.getStringExtra(getString(R.string.MESSAGE_ID)))
                 intent.removeExtra(getString(R.string.MESSAGE_ID))
                 binding.userMessageList.smoothScrollToPosition(position)
-//                binding.userMessageList.postDelayed({
-//                    binding.userMessageList.findViewHolderForAdapterPosition(position)
-//                        ?.itemView?.findViewById(R.id.my_linear_layout).setBackgroundTintList(ContextCompat.getColorStateList(this@ChatActivity, R.color.colorPrimary))
-//                    Handler(Looper.getMainLooper()).postDelayed({
-//                        Objects.requireNonNull(binding.userMessageList.findViewHolderForAdapterPosition(position)).itemView?.findViewById(R.id.my_linear_layout).setBackgroundTintList(null)
-//                    }, 500)
-//                }, 200)
+
+                binding.userMessageList.postDelayed({
+                    binding.userMessageList.findViewHolderForAdapterPosition(position)!!
+                        .itemView.findViewById<LinearLayout>(R.id.my_linear_layout).backgroundTintList = ContextCompat.getColorStateList(this@ChatActivity, R.color.colorPrimary)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.userMessageList.findViewHolderForAdapterPosition(position)!!
+                            .itemView.findViewById<LinearLayout>(R.id.my_linear_layout).backgroundTintList = null
+                    }, 500)
+                }, 200)
             } else {
                 binding.userMessageList.smoothScrollToPosition(adapter.itemCount - 1)
             }

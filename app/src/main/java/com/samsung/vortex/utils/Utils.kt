@@ -62,6 +62,16 @@ class Utils {
             }
         }
 
+        fun getDateString(time: Long): String? {
+            val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US)
+            return dateFormat.format(Date(time))
+        }
+
+        fun getTimeString(time: Long): String? {
+            val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
+            return timeFormat.format(Date(time))
+        }
+
         private fun isSameDay(date1: Long): Boolean {
             val calendar1 = Calendar.getInstance()
             calendar1.time = Date(date1)
