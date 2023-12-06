@@ -1,5 +1,6 @@
 package com.samsung.vortex.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -122,5 +123,11 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
             if (message.messageId == message_id) return messageList.indexOf(message)
         }
         return -1
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun filterList(filterList: ArrayList<Message>) {
+        messageList = filterList
+        notifyDataSetChanged()
     }
 }

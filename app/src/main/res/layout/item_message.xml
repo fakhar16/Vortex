@@ -63,7 +63,6 @@
                     app:tint="@color/purple_200" />
             </RelativeLayout>
         </LinearLayout>
-
 <!--        video icon-->
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -87,7 +86,6 @@
                 android:visibility="gone" />
 
         </RelativeLayout>
-
 <!--        filename-->
         <TextView
             android:id="@+id/file_name"
@@ -211,7 +209,6 @@
 
         </LinearLayout>
     </LinearLayout>
-
 <!--    feeling icon-->
     <ImageView
         android:id="@+id/feeling"
@@ -223,5 +220,4 @@
         android:layout_alignBottom="@id/my_linear_layout"
         android:visibility="gone"
         />
-
 </RelativeLayout>

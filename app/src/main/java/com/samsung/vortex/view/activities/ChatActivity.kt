@@ -54,6 +54,7 @@ import com.samsung.vortex.viewmodel.MessageViewModel
 import com.squareup.picasso.Picasso
 import java.io.File
 import java.util.Date
+import java.util.Locale
 
 class ChatActivity : AppCompatActivity(), MessageListenerCallback {
     private lateinit var binding: ActivityChatBinding
@@ -151,7 +152,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-//                filter(newText)
+                filter(newText)
                 return true
             }
         })
@@ -338,19 +339,19 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
             })
     }
 
-//    private fun filter(text: String) {
-//        val filteredList: ArrayList<Message> = ArrayList()
-//        for (item in viewModel.getMessage()?.value!!) {
-//            if (text.lowercase(Locale.getDefault()) in item.message.lowercase(Locale.ROOT)) {
-//                filteredList.add(item)
-//            }
-//        }
-//        if (filteredList.isNotEmpty()) {
-//            messagesAdapter.filterList(filteredList)
-//        } else {
-//            messagesAdapter.filterList(ArrayList())
-//        }
-//    }
+    private fun filter(text: String) {
+        val filteredList: ArrayList<Message> = ArrayList()
+        for (item in viewModel.getMessage()?.value!!) {
+            if (text.lowercase(Locale.getDefault()) in item.message.lowercase(Locale.ROOT)) {
+                filteredList.add(item)
+            }
+        }
+        if (filteredList.isNotEmpty()) {
+            adapter.filterList(filteredList)
+        } else {
+            adapter.filterList(ArrayList())
+        }
+    }
 
     override fun onResume() {
         super.onResume()
