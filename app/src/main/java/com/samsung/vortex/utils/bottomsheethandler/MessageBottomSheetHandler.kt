@@ -73,6 +73,12 @@ class MessageBottomSheetHandler {
                 }
             }
 
+            //Forward button
+            dialog.findViewById<LinearLayout>(R.id.forward)!!.setOnClickListener {
+                ForwardMessageBottomSheetHandler.start(context, message)
+                dialog.dismiss()
+            }
+
             //cancel button
             dialog.findViewById<Button>(R.id.cancel)!!.setOnClickListener {
                 dialog.dismiss()
