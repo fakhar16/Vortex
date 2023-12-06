@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -20,9 +21,10 @@ import com.samsung.vortex.utils.Utils
 import com.samsung.vortex.utils.Utils.Companion.currentUser
 import com.samsung.vortex.utils.bottomsheethandler.MessageBottomSheetHandler
 import com.samsung.vortex.view.activities.ChatActivity
+import com.samsung.vortex.view.activities.StarMessageActivity
 import com.squareup.picasso.Picasso
 
-class StarredMessagesAdapter(var context: Context, var messageList: ArrayList<Message>)
+class StarredMessagesAdapter(var context: Context, private var messageList: ArrayList<Message>)
     :
     RecyclerView.Adapter<StarredMessagesAdapter.StarredMessagesViewHolder>() {
     inner class StarredMessagesViewHolder(var binding: ItemStarMessageBinding) : RecyclerView.ViewHolder(binding.root)
@@ -39,7 +41,7 @@ class StarredMessagesAdapter(var context: Context, var messageList: ArrayList<Me
     override fun onBindViewHolder(holder: StarredMessagesViewHolder, position: Int) {
         val message: Message = messageList[position]
 
-        var user: User? = null
+        var user: User?
 
         if (message.from == currentUser!!.uid) {
             user = currentUser as User
@@ -92,34 +94,31 @@ class StarredMessagesAdapter(var context: Context, var messageList: ArrayList<Me
         holder.binding.myLinearLayout.background =
             if (user.uid == currentUser!!.uid) ContextCompat.getDrawable(context, R.drawable.sender_messages_layout)
             else ContextCompat.getDrawable(context, R.drawable.receiver_messages_layout)
-        
-        if (message.type == context.getString(R.string.TEXT)) {
-            holder.binding.message.text = message.message
+
+        when (message.type) {
+            context.getString(R.string.TEXT) -> {
+                holder.binding.message.text = message.message
+            }
+            context.getString(R.string.IMAGE) -> {
+                holder.binding.message.visibility = View.GONE
+                holder.binding.image.visibility = View.VISIBLE
+                Picasso.get().load(Utils.getImageOffline(message.message, message.messageId)).placeholder(R.drawable.profile_image).into(holder.binding.image)
+                holder.binding.image.setOnClickListener {
+                    (context as StarMessageActivity).showImagePreview(holder.binding.image, Utils.getImageOffline(message.message, message.messageId))
+                }
+            }
+            context.getString(R.string.VIDEO) -> {
+                holder.binding.message.visibility = View.GONE
+                holder.binding.image.visibility = View.VISIBLE
+                holder.binding.videoPlayPreview.visibility = View.VISIBLE
+                Glide.with(context).load(message.message).centerCrop()
+                    .placeholder(R.drawable.baseline_play_circle_outline_24).into(holder.binding.image)
+                holder.binding.videoPlayPreview.setOnClickListener {
+                    (context as StarMessageActivity).showVideoPreview(holder.binding.image, message.message)
+                }
+            }
         }
-//        else if (message.type.equals(context.getString(R.string.IMAGE))) {
-//            holder.binding.message.visibility = View.GONE
-//            holder.binding.image.visibility = View.VISIBLE
-//            Picasso.get().load(message.message).placeholder(R.drawable.profile_image)
-//                .into(holder.binding.image)
-//            holder.binding.image.setOnClickListener { view ->
-//                (context as StarMessageActivity).showImagePreview(
-//                    holder.binding.image,
-//                    message.message
-//                )
-//            }
-//        } else if (message.type.equals(context.getString(R.string.VIDEO))) {
-//            holder.binding.message.visibility = View.GONE
-//            holder.binding.image.visibility = View.VISIBLE
-//            holder.binding.videoPlayPreview.visibility = View.VISIBLE
-//            Glide.with(context).load(message.message).centerCrop()
-//                .placeholder(R.drawable.baseline_play_circle_outline_24).into(holder.binding.image)
-//            holder.binding.videoPlayPreview.setOnClickListener { view ->
-//                (context as StarMessageActivity).showVideoPreview(
-//                    holder.binding.image,
-//                    message.message
-//                )
-//            }
-//        } else if (message.type.equals(context.getString(R.string.PDF_FILES))) {
+//        else if (message.type.equals(context.getString(R.string.PDF_FILES))) {
 //            holder.binding.message.visibility = View.GONE
 //            holder.binding.image.visibility = View.VISIBLE
 //            holder.binding.image.setImageResource(R.drawable.baseline_file_present_24)

@@ -14,13 +14,8 @@ import com.samsung.vortex.utils.Utils
 import com.samsung.vortex.utils.bottomsheethandler.ForwardMessageBottomSheetHandler
 import com.squareup.picasso.Picasso
 
-class ContactAdapter(private val context: Context, userList: ArrayList<User>) :
+class ContactAdapter(private val context: Context, private var userList: ArrayList<User>) :
     RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() {
-    private var userList: ArrayList<User>
-
-    init {
-        this.userList = userList
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
         val inflater = LayoutInflater.from(parent.context)

@@ -7,6 +7,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.samsung.vortex.R
@@ -16,6 +18,7 @@ import com.samsung.vortex.model.Message
 import com.samsung.vortex.utils.WhatsappLikeProfilePicPreview
 import com.samsung.vortex.viewmodel.StarMessageViewModelFactory
 import com.samsung.vortex.viewmodel.StarredMessageViewModel
+import java.io.File
 import java.util.Locale
 
 class StarMessageActivity : AppCompatActivity() {
@@ -120,18 +123,33 @@ class StarMessageActivity : AppCompatActivity() {
                 if (binding.expandedImage.cardView.visibility == View.VISIBLE) {
                     WhatsappLikeProfilePicPreview.dismissPhotoPreview()
                     binding.appBarLayout.visibility = View.VISIBLE
-                }
-//        else if (binding.expandedVideo.cardView.getVisibility() === View.VISIBLE) {
-//            Objects.requireNonNull(binding.expandedVideo.video.getPlayer()).release()
-//            binding.starMessagesList.isClickable = true
-//            WhatsappLikeProfilePicPreview.Companion.dismissVideoPreview()
-//            binding.appBarLayout.visibility = View.VISIBLE
-//        }
-                else {
+                } else if (binding.expandedVideo.cardView.visibility == View.VISIBLE) {
+                    binding.expandedVideo.video.player!!.release()
+                    binding.starMessagesList.isClickable = true
+                    WhatsappLikeProfilePicPreview.dismissVideoPreview()
+                    binding.appBarLayout.visibility = View.VISIBLE
+                } else {
                     finish()
                 }
             }
         })
+    }
 
+    fun showImagePreview(thumbView: View, url: File) {
+        WhatsappLikeProfilePicPreview.zoomImageFromThumb(thumbView, binding.expandedImage.cardView, binding.expandedImage.image, binding.container, url)
+        binding.appBarLayout.visibility = View.GONE
+    }
+
+    @SuppressLint("UnsafeOptInUsageError")
+    fun showVideoPreview(thumbView: View, url: String) {
+        WhatsappLikeProfilePicPreview.zoomVideoFromThumb(thumbView, binding.expandedVideo.cardView, binding.mainPageToolbar.root.rootView)
+        val player = ExoPlayer.Builder(this).build()
+        binding.expandedVideo.video.player = player
+        binding.expandedVideo.video.setShowNextButton(false)
+        binding.expandedVideo.video.setShowPreviousButton(false)
+        val mediaItem = MediaItem.fromUri(url)
+        player.setMediaItem(mediaItem)
+        player.prepare()
+        player.play()
     }
 }

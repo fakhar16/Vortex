@@ -21,7 +21,7 @@ import com.samsung.vortex.utils.bottomsheethandler.MessageBottomSheetHandler
 import com.samsung.vortex.view.activities.ChatActivity
 import com.squareup.picasso.Picasso
 
-class MessagesAdapter(var context: Context, private var messageList: ArrayList<Message>, var senderId: String, var receiverId: String)
+class MessagesAdapter(var context: Context, private var messageList: ArrayList<Message>, var senderId: String, private var receiverId: String)
     : RecyclerView.Adapter<MessagesAdapter.MessageViewHolder>(){
 
     inner class MessageViewHolder(var binding: ItemMessageBinding) : RecyclerView.ViewHolder(binding.root)

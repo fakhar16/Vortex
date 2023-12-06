@@ -96,12 +96,7 @@ class ForwardMessageBottomSheetHandler {
             val contactList = dialog!!.findViewById<RecyclerView>(R.id.contactList)!!
             contactList.layoutManager = LinearLayoutManager(context)
             adapter = ContactAdapter(context, ContactsRepositoryImpl.getInstance().getContacts().value!!)
-            contactList.addItemDecoration(
-                DividerItemDecoration(
-                    contactList.context,
-                    DividerItemDecoration.VERTICAL
-                )
-            )
+            contactList.addItemDecoration(DividerItemDecoration(contactList.context, DividerItemDecoration.VERTICAL))
             contactList.adapter = adapter
         }
 
