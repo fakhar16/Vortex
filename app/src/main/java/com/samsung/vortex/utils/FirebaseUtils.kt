@@ -62,6 +62,27 @@ class FirebaseUtils {
             }
         }
 
+        fun sendURLMessage(message: String?, messageSenderId: String, messageReceiverId: String) {
+            if (!TextUtils.isEmpty(message)) {
+                val messageSenderRef: String = VortexApplication.application.applicationContext.getString(R.string.MESSAGES) + "/" + messageSenderId + "/" + messageReceiverId
+                val messageReceiverRef: String = VortexApplication.application.applicationContext
+                    .getString(R.string.MESSAGES) + "/" + messageReceiverId + "/" + messageSenderId
+                val userMessageKeyRef = messageDatabaseReference
+                    .child(messageSenderId)
+                    .child(messageReceiverId)
+                    .push()
+                val messagePushId = userMessageKeyRef.key
+                val objMessage = Message(messagePushId!!, message!!, VortexApplication.application.applicationContext.getString(R.string.URL), messageSenderId, messageReceiverId, Date().time, -1, "", true)
+                val messageBodyDetails: MutableMap<String, Any> = java.util.HashMap()
+                messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
+                messageBodyDetails["$messageReceiverRef/$messagePushId"] = objMessage
+                FirebaseDatabase.getInstance().reference
+                    .updateChildren(messageBodyDetails)
+                updateLastMessage(objMessage)
+                sendNotification(message, messageReceiverId, messageSenderId, TYPE_MESSAGE)
+            }
+        }
+
         fun sendImage(context: Context, messageSenderId: String, messageReceiverId: String, fileUri: Uri, caption: String) {
             val callback: MessageListenerCallback = context as MessageListenerCallback
             val messageSenderRef = context.getString(R.string.MESSAGES) + "/" + messageSenderId + "/" + messageReceiverId

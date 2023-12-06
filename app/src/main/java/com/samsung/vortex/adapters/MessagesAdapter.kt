@@ -2,6 +2,9 @@ package com.samsung.vortex.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -114,6 +117,13 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
                 holder.binding.image.setOnClickListener {
                     (context as ChatActivity).showVideoPreview(holder.binding.image, message.message)
                 }
+            }
+
+            VortexApplication.application.getString(R.string.URL) -> {
+                val linkedText = String.format("<a href=\"%s\">%s</a> ", message.message, message.message)
+                holder.binding.message.text = Html.fromHtml(linkedText)
+                holder.binding.message.movementMethod = LinkMovementMethod.getInstance()
+                holder.binding.message.setLinkTextColor(Color.BLUE)
             }
         }
     }

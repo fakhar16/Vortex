@@ -252,7 +252,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
     private fun sendMessage() {
         val message = binding.messageInputText.text.toString()
         if (URLUtil.isValidUrl(message)) {
-//            FirebaseUtils.sendURLMessage(message, currentUser!!.uid, receiver.uid)
+            FirebaseUtils.sendURLMessage(message, currentUser!!.uid, receiver.uid)
         } else {
             FirebaseUtils.sendMessage(message, currentUser!!.uid, receiver.uid)
         }
