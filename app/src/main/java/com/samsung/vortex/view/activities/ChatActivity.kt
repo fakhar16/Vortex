@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ClipboardManager
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.graphics.Matrix
 import android.net.Uri
@@ -29,6 +30,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -47,6 +49,7 @@ import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.Utils
 import com.samsung.vortex.utils.Utils.Companion.currentUser
+import com.samsung.vortex.utils.Utils.Companion.getFileType
 import com.samsung.vortex.utils.Utils.Companion.hideKeyboard
 import com.samsung.vortex.utils.Utils.Companion.showLoadingBar
 import com.samsung.vortex.utils.WhatsappLikeProfilePicPreview
@@ -64,6 +67,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
     private lateinit var viewModel: MessageViewModel
 
     private lateinit var adapter: MessagesAdapter
+    private lateinit var bottomSheetDialog: BottomSheetDialog
 
     companion object {
         lateinit var receiver: User
@@ -87,7 +91,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
         initToolBar()
         setupViewModel()
         setupRecyclerView()
-//        setupAttachmentBottomSheetMenu()
+        setupAttachmentBottomSheetMenu()
         handleButtonClicks()
         checkIfSearchMessageTriggered()
         initProgressBar()
@@ -218,7 +222,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
     private fun handleButtonClicks() {
         binding.sendMessageBtn.setOnClickListener { sendMessage() }
         binding.camera.setOnClickListener { cameraButtonClicked() }
-//        binding.attachMenu.setOnClickListener { view -> showAttachmentMenu() }
+        binding.attachMenu.setOnClickListener { showAttachmentMenu() }
 //        customChatBarBinding.voiceCall.setOnClickListener { view ->
 //            Toast.makeText(
 //                this,
@@ -238,9 +242,49 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
         }
     }
 
+    private fun setupAttachmentBottomSheetMenu() {
+        val contentView =
+            View.inflate(this@ChatActivity, R.layout.attachment_bottom_sheet_layout, null)
+        bottomSheetDialog = BottomSheetDialog(this@ChatActivity)
+        bottomSheetDialog.setContentView(contentView)
+        (contentView.parent as View).setBackgroundColor(Color.TRANSPARENT)
+    }
+
+    private fun showAttachmentMenu() {
+        bottomSheetDialog.show()
+
+        bottomSheetDialog.findViewById<LinearLayout>(R.id.camera_btn)!!.setOnClickListener {
+            cameraButtonClicked()
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.findViewById<LinearLayout>(R.id.photo_video_attachment_btn)!!.setOnClickListener {
+            attachmentButtonClicked()
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.findViewById<LinearLayout>(R.id.document_btn)!!.setOnClickListener {
+//            attachDocButtonClicked()
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.findViewById<LinearLayout>(R.id.contact_btn)!!.setOnClickListener {
+//            contactButtonClicked()
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.findViewById<LinearLayout>(R.id.audio_btn)!!.setOnClickListener {
+//            contactButtonClicked()
+            bottomSheetDialog.dismiss()
+        }
+    }
+
     private fun cameraButtonClicked() {
         val intent = Intent(this@ChatActivity, CameraxActivity::class.java)
         mediaCaptureResultLauncher.launch(intent)
+    }
+
+    private fun attachmentButtonClicked() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/* video/*"
+        imagePickActivityResultLauncher.launch(intent)
     }
 
     private fun sendUserToProfileActivity() {
@@ -494,6 +538,21 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
             }
         }
     }
+
+    private val imagePickActivityResultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == RESULT_OK && result.data != null) {
+                val data: Intent = result.data!!
+                val fileUri = data.data
+                if (getFileType(fileUri).equals("jpg")) {
+                    prepareImageMessageForSending(fileUri!!, "", false)
+                } else if (getFileType(fileUri).equals("mp4")) {
+                    prepareVideoMessageForSending(fileUri!!, "", false)
+                }
+            }
+        }
 
     fun showImagePreview(thumbView: View, url: File) {
         WhatsappLikeProfilePicPreview.zoomImageFromThumb(thumbView, binding.expandedImage.cardView, binding.expandedImage.image, binding.chatToolBar.root.rootView, url)

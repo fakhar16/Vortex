@@ -3,12 +3,14 @@ package com.samsung.vortex.utils
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.webkit.MimeTypeMap
 import com.google.firebase.storage.FirebaseStorage
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
@@ -93,6 +95,12 @@ class Utils {
                 view = View(activity)
             }
             imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+
+        fun getFileType(uri: Uri?): String? {
+            val r: ContentResolver = VortexApplication.application.applicationContext.contentResolver
+            val mimeTypeMap = MimeTypeMap.getSingleton()
+            return mimeTypeMap.getExtensionFromMimeType(r.getType(uri!!))
         }
 
         fun copyMessage(message: String?) {
