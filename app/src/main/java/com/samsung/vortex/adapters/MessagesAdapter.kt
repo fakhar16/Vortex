@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -121,7 +122,7 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
 
             VortexApplication.application.getString(R.string.URL) -> {
                 val linkedText = String.format("<a href=\"%s\">%s</a> ", message.message, message.message)
-                holder.binding.message.text = Html.fromHtml(linkedText)
+                holder.binding.message.text = Html.fromHtml(linkedText, HtmlCompat.FROM_HTML_MODE_LEGACY)
                 holder.binding.message.movementMethod = LinkMovementMethod.getInstance()
                 holder.binding.message.setLinkTextColor(Color.BLUE)
             }

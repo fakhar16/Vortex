@@ -3,16 +3,21 @@ package com.samsung.vortex.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.samsung.vortex.R
+import com.samsung.vortex.VortexApplication
 import com.samsung.vortex.VortexApplication.Companion.userDatabaseReference
 import com.samsung.vortex.databinding.ItemStarMessageBinding
 import com.samsung.vortex.model.Message
@@ -116,6 +121,13 @@ class StarredMessagesAdapter(var context: Context, private var messageList: Arra
                 holder.binding.videoPlayPreview.setOnClickListener {
                     (context as StarMessageActivity).showVideoPreview(holder.binding.image, message.message)
                 }
+            }
+
+            VortexApplication.application.getString(R.string.URL) -> {
+                val linkedText = String.format("<a href=\"%s\">%s</a> ", message.message, message.message)
+                holder.binding.message.text = Html.fromHtml(linkedText, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                holder.binding.message.movementMethod = LinkMovementMethod.getInstance()
+                holder.binding.message.setLinkTextColor(Color.BLUE)
             }
         }
 //        else if (message.type.equals(context.getString(R.string.PDF_FILES))) {
