@@ -77,4 +77,5 @@
     <string name="USER_MESSAGE_IMAGE">user_message_image</string>
     <string name="VIDEO_FILES">Video Files</string>
     <string name="VIDEO_URL_USED_BY_USERS">video_url_used_by_users</string>
+    <string name="USER_MESSAGE_VIDEO">user_message_video</string>
 </resources>

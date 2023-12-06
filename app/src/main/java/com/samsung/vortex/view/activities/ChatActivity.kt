@@ -12,7 +12,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.URLUtil
@@ -47,7 +46,6 @@ import com.samsung.vortex.model.Message
 import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.Utils
-import com.samsung.vortex.utils.Utils.Companion.TAG
 import com.samsung.vortex.utils.Utils.Companion.currentUser
 import com.samsung.vortex.utils.Utils.Companion.hideKeyboard
 import com.samsung.vortex.utils.Utils.Companion.showLoadingBar
@@ -441,7 +439,6 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
 
                 when(messageTypeItem.text.toString()) {
                     VortexApplication.application.applicationContext.getString(R.string.IMAGE) -> {
-                        Log.i(TAG, "onUpdate: $uri ${messageIdItem.text.toString()}")
                         prepareImageMessageForSending(uri, messageIdItem.text.toString(), true)
                         binding.capturedImage.cancel.setOnClickListener {
                             hideKeyboard(this@ChatActivity)
@@ -450,7 +447,11 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
                     }
 
                     VortexApplication.application.applicationContext.getString(R.string.VIDEO) -> {
-
+                        prepareVideoMessageForSending(uri, messageIdItem.text.toString(), true)
+                        binding.capturedVideo.cancel.setOnClickListener {
+                            hideKeyboard(this@ChatActivity)
+                            binding.capturedVideo.cardView.visibility = View.GONE
+                        }
                     }
 
                     VortexApplication.application.applicationContext.getString(R.string.PDF_FILES) -> {
@@ -487,7 +488,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
                 prepareVideoMessageForSending(fileUri, "", false)
                 binding.capturedVideo.cancel.setOnClickListener {
                     hideKeyboard(this@ChatActivity)
-                    binding.capturedImage.cardView.visibility = View.GONE
+                    binding.capturedVideo.cardView.visibility = View.GONE
                 }
             }
         }

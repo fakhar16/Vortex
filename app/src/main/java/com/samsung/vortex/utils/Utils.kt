@@ -101,11 +101,19 @@ class Utils {
             clipboardManager.setPrimaryClip(clipData)
         }
 
-        fun copyImage(uri: Uri?, message_id: String?) {
+        fun copyImage(uri: Uri, message_id: String) {
             val clipboardManager = VortexApplication.application.applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newRawUri(VortexApplication.application.applicationContext.getString(R.string.USER_MESSAGE_IMAGE), uri)
             clipData.addItem(ClipData.Item(message_id))
             clipData.addItem(ClipData.Item(VortexApplication.application.applicationContext.getString(R.string.IMAGE)))
+            clipboardManager.setPrimaryClip(clipData)
+        }
+
+        fun copyVideo(uri: Uri?, message_id: String?) {
+            val clipboardManager = VortexApplication.application.applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipData = ClipData.newRawUri(VortexApplication.application.applicationContext.getString(R.string.USER_MESSAGE_VIDEO), uri)
+            clipData.addItem(ClipData.Item(message_id))
+            clipData.addItem(ClipData.Item(VortexApplication.application.applicationContext.getString(R.string.VIDEO)))
             clipboardManager.setPrimaryClip(clipData)
         }
     }

@@ -32,7 +32,7 @@ class MessageBottomSheetHandler {
                         Utils.copyImage(Uri.parse(message.message), message.messageId)
                     }
                     context.getString(R.string.VIDEO) -> {
-            //                    Utils.copyVideo(Uri.parse(message.getMessage()), message.getMessageId())
+                        Utils.copyVideo(Uri.parse(message.message), message.messageId)
                     }
                     context.getString(R.string.PDF_FILES) -> {
             //                    Utils.copyDoc(
