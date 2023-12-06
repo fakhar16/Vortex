@@ -215,11 +215,11 @@
         tools:layout_editor_absoluteY="0dp" />
 
     <!--    expanded video view-->
-<!--    <include-->
-<!--        android:id="@+id/expanded_video"-->
-<!--        layout="@layout/layout_expanded_video_view"-->
-<!--        tools:layout_editor_absoluteX="0dp"-->
-<!--        tools:layout_editor_absoluteY="0dp" />-->
+    <include
+        android:id="@+id/expanded_video"
+        layout="@layout/layout_expanded_video_view"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
 
     <!--    Captured image view-->
     <include

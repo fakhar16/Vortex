@@ -203,15 +203,13 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
             override fun handleOnBackPressed() {
                 if (binding.expandedImage.cardView.visibility == View.VISIBLE) {
                     WhatsappLikeProfilePicPreview.dismissPhotoPreview()
-                }
-//                else if (binding.expandedVideo.cardView.getVisibility() == View.VISIBLE) {
-//                    Objects.requireNonNull(binding.expandedVideo.video.getPlayer()).release()
-//                    binding.userMessageList.isClickable = true
-//                    WhatsappLikeProfilePicPreview.dismissVideoPreview()
-//                } else if (binding.layoutSmily.visibility == View.VISIBLE) {
-//                    hideSmileyLayout()
-//                }
-                    else {
+                } else if (binding.expandedVideo.cardView.visibility == View.VISIBLE) {
+                    binding.expandedVideo.video.player!!.release()
+                    binding.userMessageList.isClickable = true
+                    WhatsappLikeProfilePicPreview.dismissVideoPreview()
+                } else if (binding.layoutSmily.visibility == View.VISIBLE) {
+                    hideSmileyLayout()
+                } else {
                     finish()
                 }
             }
@@ -495,8 +493,21 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
         }
     }
 
-    fun showImagePreview(thumbView: View?, url: File) {
-        WhatsappLikeProfilePicPreview.zoomImageFromThumb(thumbView!!, binding.expandedImage.cardView, binding.expandedImage.image, binding.chatToolBar.root.rootView, url)
+    fun showImagePreview(thumbView: View, url: File) {
+        WhatsappLikeProfilePicPreview.zoomImageFromThumb(thumbView, binding.expandedImage.cardView, binding.expandedImage.image, binding.chatToolBar.root.rootView, url)
+    }
+
+    @SuppressLint("UnsafeOptInUsageError")
+    fun showVideoPreview(thumbView: View, url: String) {
+        WhatsappLikeProfilePicPreview.zoomVideoFromThumb(thumbView, binding.expandedVideo.cardView, binding.chatToolBar.root.rootView)
+        val player = ExoPlayer.Builder(this).build()
+        binding.expandedVideo.video.player = player
+        binding.expandedVideo.video.setShowNextButton(false)
+        binding.expandedVideo.video.setShowPreviousButton(false)
+        val mediaItem = MediaItem.fromUri(url)
+        player.setMediaItem(mediaItem)
+        player.prepare()
+        player.play()
     }
 
     private fun handleMessageEditTextListener() {

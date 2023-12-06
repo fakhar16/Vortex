@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
@@ -95,6 +96,22 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
 
                 holder.binding.image.setOnClickListener {
                     (context as ChatActivity).showImagePreview(holder.binding.image, Utils.getImageOffline(message.message, message.messageId))
+                }
+            }
+            
+            VortexApplication.application.getString(R.string.VIDEO) -> {
+                if (message.caption.isEmpty())
+                    holder.binding.message.visibility = View.GONE
+                else
+                    holder.binding.message.text = message.caption
+
+                holder.binding.image.visibility = View.VISIBLE
+                holder.binding.videoPlayPreview.visibility = View.VISIBLE
+                Glide.with(context).load(message.message).centerCrop()
+                    .placeholder(R.drawable.baseline_play_circle_outline_24)
+                    .into(holder.binding.image)
+                holder.binding.image.setOnClickListener {
+                    (context as ChatActivity).showVideoPreview(holder.binding.image, message.message)
                 }
             }
         }
