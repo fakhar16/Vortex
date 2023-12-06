@@ -14,6 +14,8 @@ import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
+import com.samsung.vortex.VortexApplication.Companion.docsStorageReference
+import com.samsung.vortex.VortexApplication.Companion.docsUrlDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.imageStorageReference
 import com.samsung.vortex.VortexApplication.Companion.imageUrlDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.messageDatabaseReference
@@ -222,6 +224,82 @@ class FirebaseUtils {
                 .updateChildren(videoUrlUserDetails)
             updateLastMessage(objMessage)
             sendNotification("Sent a video", objMessage.to, objMessage.from, TYPE_MESSAGE)
+        }
+
+        fun sendDoc(context: Context, messageSenderId: String, messageReceiverId: String, fileUri: Uri, filename: String, fileSize: String, caption: String) {
+            val callback = context as MessageListenerCallback
+            val messageSenderRef =
+                context.getString(R.string.MESSAGES) + "/" + messageSenderId + "/" + messageReceiverId
+            val messageReceiverRef =
+                context.getString(R.string.MESSAGES) + "/" + messageReceiverId + "/" + messageSenderId
+            val userMessageKeyRef = messageDatabaseReference
+                .child(messageSenderId)
+                .child(messageReceiverId)
+                .push()
+            val messagePushId = userMessageKeyRef.key
+            val filePath: StorageReference = docsStorageReference.child("$messagePushId.pdf")
+            val uploadTask: StorageTask<UploadTask.TaskSnapshot?> = filePath.putFile(fileUri)
+            uploadTask.continueWithTask { task: Task<UploadTask.TaskSnapshot?> ->
+                if (!task.isSuccessful) {
+                    throw task.exception!!
+                }
+                filePath.downloadUrl
+            }.addOnCompleteListener { task: Task<Uri> ->
+                if (task.isSuccessful) {
+                    callback.onMessageSent()
+                    val downloadUrl = task.result
+                    val myUrl = downloadUrl.toString()
+                    val objMessage: Message = if (caption.isEmpty()) Message(messagePushId!!, myUrl, context.getString(R.string.PDF_FILES), messageSenderId, messageReceiverId, Date().time, -1, "", true, fileName = filename, fileSize = fileSize) 
+                    else Message(messagePushId!!, myUrl, context.getString(R.string.PDF_FILES), messageSenderId, messageReceiverId, Date().time, -1, "", caption = caption, fileName = filename, fileSize = fileSize)
+                    val messageBodyDetails: MutableMap<String, Any> = HashMap()
+                    messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
+                    messageBodyDetails["$messageReceiverRef/$messagePushId"] = objMessage
+                    FirebaseDatabase.getInstance().reference
+                        .updateChildren(messageBodyDetails)
+                    val docUrlUserDetails: MutableMap<String, Any> = HashMap()
+                    docUrlUserDetails[messageSenderId] = true
+                    docUrlUserDetails[messageReceiverId] = true
+                    docsUrlDatabaseReference
+                        .child(messagePushId)
+                        .updateChildren(docUrlUserDetails)
+                    updateLastMessage(objMessage)
+                    sendNotification("Sent a file", messageReceiverId, messageSenderId, TYPE_MESSAGE)
+                }
+            }.addOnFailureListener { callback.onMessageSentFailed() }
+        }
+
+        fun forwardDoc(context: Context, message: Message, receiver: String, caption: String) {
+            val callback = context as MessageListenerCallback
+            val objMessage: Message = if (caption.isEmpty()) 
+                Message(message.messageId, message.message, message.type, currentUser!!.uid, receiver, Date().time, -1, "", true, fileName = message.fileName, fileSize = message.fileSize)
+            else 
+                Message(message.messageId, message.message, message.type, currentUser!!.uid, receiver, Date().time, -1, "", true, caption = caption, fileName = message.fileName, fileSize = message.fileSize)
+            
+            val messageSenderRef = context.getString(R.string.MESSAGES) + "/" + objMessage.from + "/" + objMessage.to
+            val messageReceiverRef = context.getString(R.string.MESSAGES) + "/" + objMessage.to + "/" + objMessage.from
+            val messageBodyDetails: MutableMap<String, Any> = HashMap()
+            messageBodyDetails[messageSenderRef + "/" + message.messageId] = objMessage
+            messageBodyDetails[messageReceiverRef + "/" + message.messageId] = objMessage
+            FirebaseDatabase.getInstance().reference
+                .updateChildren(messageBodyDetails)
+                .addOnCompleteListener { task: Task<Void?> ->
+                    if (task.isSuccessful) {
+                        callback.onMessageSent()
+                    }
+                }
+            val docUrlUserDetails: MutableMap<String, Any> = HashMap()
+            docUrlUserDetails[currentUser!!.uid] = true
+            docUrlUserDetails[receiver] = true
+            docsUrlDatabaseReference
+                .child(message.messageId)
+                .updateChildren(docUrlUserDetails)
+            updateLastMessage(objMessage)
+            sendNotification(
+                "Sent a file",
+                objMessage.to,
+                objMessage.from,
+                TYPE_MESSAGE
+            )
         }
 
         private fun sendNotification(message: String, receiverId: String, senderId: String, type: String) {

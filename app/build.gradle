@@ -76,6 +76,9 @@ dependencies {
     //audio recorder view
     implementation files('libs/audiorecorderview-1.0.4.aar')
 
+    //pdf viewer
+    implementation files('libs/Pdf-Viewer-v1.1.2.aar')
+
     //media player
     implementation 'androidx.media3:media3-ui:1.2.0'
     implementation 'androidx.core:core-ktx:1.12.0'

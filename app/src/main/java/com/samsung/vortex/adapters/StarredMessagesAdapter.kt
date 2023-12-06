@@ -86,11 +86,7 @@ class StarredMessagesAdapter(var context: Context, private var messageList: Arra
         }
     }
 
-    private fun bindMessageDetails(
-        holder: StarredMessagesViewHolder,
-        message: Message,
-        user: User
-    ) {
+    private fun bindMessageDetails(holder: StarredMessagesViewHolder, message: Message, user: User) {
         holder.binding.messageTime.text = Utils.getTimeString(message.time)
         holder.binding.messageDate.text = Utils.getDateString(message.time)
         Picasso.get().load(Utils.getImageOffline(user.image, user.uid)).placeholder(R.drawable.profile_image).into(holder.binding.userImage)

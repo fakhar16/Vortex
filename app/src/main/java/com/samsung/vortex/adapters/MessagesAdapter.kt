@@ -14,6 +14,7 @@ import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.rajat.pdfviewer.PdfViewerActivity
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
 import com.samsung.vortex.databinding.ItemMessageBinding
@@ -117,6 +118,29 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
                     .into(holder.binding.image)
                 holder.binding.image.setOnClickListener {
                     (context as ChatActivity).showVideoPreview(holder.binding.image, message.message)
+                }
+            }
+            
+            context.getString(R.string.PDF_FILES) -> {
+                //Setting file if message type is
+                if (message.caption.isEmpty())
+                    holder.binding.message.visibility = View.GONE
+                else holder.binding.message.text = message.caption
+
+                holder.binding.fileName.visibility = View.VISIBLE
+                holder.binding.fileName.text = message.fileName
+                holder.binding.image.visibility = View.VISIBLE
+                holder.binding.image.setImageResource(R.drawable.baseline_picture_as_pdf_24)
+                holder.binding.image.setOnClickListener {
+                    context.startActivity(
+                        PdfViewerActivity.Companion.launchPdfFromUrl(
+                            context,
+                            message.message,
+                            message.fileName,
+                            "",
+                            true
+                        )
+                    )
                 }
             }
 

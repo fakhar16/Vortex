@@ -49,7 +49,9 @@ import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.Utils
 import com.samsung.vortex.utils.Utils.Companion.currentUser
+import com.samsung.vortex.utils.Utils.Companion.getFileSize
 import com.samsung.vortex.utils.Utils.Companion.getFileType
+import com.samsung.vortex.utils.Utils.Companion.getFilename
 import com.samsung.vortex.utils.Utils.Companion.hideKeyboard
 import com.samsung.vortex.utils.Utils.Companion.showLoadingBar
 import com.samsung.vortex.utils.WhatsappLikeProfilePicPreview
@@ -262,7 +264,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
             bottomSheetDialog.dismiss()
         }
         bottomSheetDialog.findViewById<LinearLayout>(R.id.document_btn)!!.setOnClickListener {
-//            attachDocButtonClicked()
+            attachDocButtonClicked()
             bottomSheetDialog.dismiss()
         }
         bottomSheetDialog.findViewById<LinearLayout>(R.id.contact_btn)!!.setOnClickListener {
@@ -285,6 +287,12 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/* video/*"
         imagePickActivityResultLauncher.launch(intent)
+    }
+
+    private fun attachDocButtonClicked() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "application/pdf"
+        docPickActivityResultLauncher.launch(intent)
     }
 
     private fun sendUserToProfileActivity() {
@@ -462,6 +470,25 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
         }
     }
 
+    private fun prepareDocMessageForSending(fileUri: Uri, messageId: String, isDocFromClipboard: Boolean, fileName: String, fileSize: String) {
+        binding.capturedImage.cardView.visibility = View.VISIBLE
+        binding.capturedImage.image.setImageResource(R.drawable.baseline_picture_as_pdf_24)
+        binding.capturedImage.receiverName.text = receiver.name
+        binding.capturedImage.sendMessage.setOnClickListener {
+            val caption = binding.capturedImage.caption.text.toString()
+            binding.capturedImage.caption.setText("")
+            hideKeyboard(this)
+            binding.capturedImage.cardView.visibility = View.GONE
+            showLoadingBar(this@ChatActivity, binding.progressbar.root)
+            val objMessage = Message(messageId, fileUri.toString(), getString(R.string.PDF_FILES), currentUser!!.uid, receiver.uid, Date().time, -1, "", true, fileName = fileName, fileSize = fileSize)
+            if (isDocFromClipboard) {
+                FirebaseUtils.forwardDoc(this@ChatActivity, objMessage, receiver.uid, caption)
+            } else {
+                FirebaseUtils.sendDoc(this@ChatActivity, currentUser!!.uid, messageReceiverId, fileUri, fileName, fileSize, caption)
+            }
+        }
+    }
+
     private val listener: GoEditTextListener = object : GoEditTextListener{
         override fun onUpdate() {
             val clipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
@@ -539,10 +566,8 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
         }
     }
 
-    private val imagePickActivityResultLauncher: ActivityResultLauncher<Intent> =
-        registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
+    private val imagePickActivityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            result ->
             if (result.resultCode == RESULT_OK && result.data != null) {
                 val data: Intent = result.data!!
                 val fileUri = data.data
@@ -551,6 +576,15 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
                 } else if (getFileType(fileUri).equals("mp4")) {
                     prepareVideoMessageForSending(fileUri!!, "", false)
                 }
+            }
+        }
+
+    private val docPickActivityResultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK && result.data != null) {
+                val data: Intent = result.data!!
+                val fileUri = data.data
+                prepareDocMessageForSending(fileUri!!, "", false, getFilename(this, fileUri)!!, getFileSize(fileUri)!!)
             }
         }
 

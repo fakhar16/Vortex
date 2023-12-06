@@ -1,11 +1,14 @@
 package com.samsung.vortex.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ContentResolver
 import android.content.Context
+import android.content.res.AssetFileDescriptor
 import android.net.Uri
+import android.provider.OpenableColumns
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
@@ -19,7 +22,9 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.sql.Timestamp
+import java.text.CharacterIterator
 import java.text.SimpleDateFormat
+import java.text.StringCharacterIterator
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -101,6 +106,51 @@ class Utils {
             val r: ContentResolver = VortexApplication.application.applicationContext.contentResolver
             val mimeTypeMap = MimeTypeMap.getSingleton()
             return mimeTypeMap.getExtensionFromMimeType(r.getType(uri!!))
+        }
+
+        @SuppressLint("Range")
+        fun getFilename(context: Context, uri: Uri): String? {
+            var res: String? = null
+            if (uri.scheme == "content") {
+                val cursor = context.contentResolver.query(uri, null, null, null, null)
+                try {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        res = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                    }
+                } finally {
+                    assert(cursor != null)
+                    cursor!!.close()
+                }
+                if (res == null) {
+                    res = uri.path
+                    val cutIndex = res!!.lastIndexOf('/')
+                    if (cutIndex != -1) {
+                        res = res.substring(cutIndex + 1)
+                    }
+                }
+            }
+            return res
+        }
+
+        @SuppressLint("Recycle")
+        fun getFileSize(fileUri: Uri): String? {
+            val fileDescriptor: AssetFileDescriptor = VortexApplication.application.applicationContext.contentResolver.openAssetFileDescriptor(fileUri, "r")!!
+            val fileSize = fileDescriptor.length
+            return humanReadableByteCountSI(fileSize)
+        }
+
+        @SuppressLint("DefaultLocale")
+        private fun humanReadableByteCountSI(bytes: Long): String {
+            var bytes = bytes
+            if (-1000 < bytes && bytes < 1000) {
+                return "$bytes B"
+            }
+            val ci: CharacterIterator = StringCharacterIterator("kMGTPE")
+            while (bytes <= -999950 || bytes >= 999950) {
+                bytes /= 1000
+                ci.next()
+            }
+            return String.format("%.1f %cB", bytes / 1000.0, ci.current())
         }
 
         fun copyMessage(message: String?) {
