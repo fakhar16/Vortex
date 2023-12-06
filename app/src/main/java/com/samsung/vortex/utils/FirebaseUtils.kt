@@ -19,6 +19,8 @@ import com.samsung.vortex.VortexApplication.Companion.imageUrlDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.messageDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.starMessagesDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.userDatabaseReference
+import com.samsung.vortex.VortexApplication.Companion.videoStorageReference
+import com.samsung.vortex.VortexApplication.Companion.videoUrlDatabaseReference
 import com.samsung.vortex.fcm.FCMNotificationSender
 import com.samsung.vortex.interfaces.MessageListenerCallback
 import com.samsung.vortex.model.Message
@@ -136,6 +138,69 @@ class FirebaseUtils {
 
             updateLastMessage(objMessage)
             sendNotification("Sent an image", objMessage.to, objMessage.from, TYPE_MESSAGE)
+        }
+
+        fun sendVideo(context: Context, messageSenderId: String, messageReceiverId: String, fileUri: Uri, caption: String) {
+            val callback = context as MessageListenerCallback
+            val messageSenderRef = context.getString(R.string.MESSAGES) + "/" + messageSenderId + "/" + messageReceiverId
+            val messageReceiverRef = context.getString(R.string.MESSAGES) + "/" + messageReceiverId + "/" + messageSenderId
+            val userMessageKeyRef = messageDatabaseReference
+                .child(messageSenderId)
+                .child(messageReceiverId)
+                .push()
+            
+            val messagePushId = userMessageKeyRef.key
+            val filePath: StorageReference = videoStorageReference.child("$messagePushId.mp4")
+            filePath.putFile(fileUri)
+                .addOnSuccessListener { taskSnapshot: UploadTask.TaskSnapshot ->
+                    val uriTask = taskSnapshot.storage.downloadUrl
+                    while (!uriTask.isSuccessful);
+                    callback.onMessageSent()
+                    val downloadUri = uriTask.result.toString()
+                    val objMessage: Message = if (caption.isEmpty()) Message(messagePushId!!, downloadUri, context.getString(R.string.VIDEO), messageSenderId, messageReceiverId, Date().time, -1, "", true) 
+                    else Message(messagePushId!!, downloadUri, context.getString(R.string.VIDEO), messageSenderId, messageReceiverId, Date().time, -1, "", true, caption)
+                    val messageBodyDetails: MutableMap<String, Any> = HashMap()
+                    messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
+                    messageBodyDetails["$messageReceiverRef/$messagePushId"] = objMessage
+                    FirebaseDatabase.getInstance().reference
+                        .updateChildren(messageBodyDetails)
+                    val videoUrlUserDetails: MutableMap<String, Any> = HashMap()
+                    videoUrlUserDetails[messageSenderId] = true
+                    videoUrlUserDetails[messageReceiverId] = true
+                    videoUrlDatabaseReference
+                        .child(messagePushId)
+                        .updateChildren(videoUrlUserDetails)
+                    updateLastMessage(objMessage)
+                    sendNotification("Sent a video", messageReceiverId, messageSenderId, TYPE_MESSAGE)
+                }
+                .addOnFailureListener { callback.onMessageSentFailed() }
+        }
+
+        fun forwardVideo(context: Context, message: Message, receiver: String, caption: String) {
+            val callback = context as MessageListenerCallback
+            val objMessage: Message = if (caption.isEmpty()) Message(message.messageId, message.message, message.type, currentUser!!.uid, receiver, Date().time, -1, "", true) 
+            else Message(message.messageId, message.message, message.type, currentUser!!.uid, receiver, Date().time, -1, "", true, caption)
+            
+            val messageSenderRef = context.getString(R.string.MESSAGES) + "/" + objMessage.from + "/" + objMessage.to
+            val messageReceiverRef = context.getString(R.string.MESSAGES) + "/" + objMessage.to + "/" + objMessage.from
+            val messageBodyDetails: MutableMap<String, Any> = java.util.HashMap()
+            messageBodyDetails[messageSenderRef + "/" + message.messageId] = objMessage
+            messageBodyDetails[messageReceiverRef + "/" + message.messageId] = objMessage
+            FirebaseDatabase.getInstance().reference
+                .updateChildren(messageBodyDetails)
+                .addOnCompleteListener { task: Task<Void?> ->
+                    if (task.isSuccessful) {
+                        callback.onMessageSent()
+                    }
+                }
+            val videoUrlUserDetails: MutableMap<String, Any> = HashMap()
+            videoUrlUserDetails[currentUser!!.uid] = true
+            videoUrlUserDetails[receiver] = true
+            videoUrlDatabaseReference
+                .child(message.messageId)
+                .updateChildren(videoUrlUserDetails)
+            updateLastMessage(objMessage)
+            sendNotification("Sent a video", objMessage.to, objMessage.from, TYPE_MESSAGE)
         }
 
         private fun sendNotification(message: String, receiverId: String, senderId: String, type: String) {

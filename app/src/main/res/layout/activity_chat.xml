@@ -229,11 +229,11 @@
         tools:layout_editor_absoluteY="0dp" />
 
     <!--    Captured video view-->
-<!--    <include-->
-<!--        android:id="@+id/captured_video"-->
-<!--        layout="@layout/layout_captured_video_view"-->
-<!--        tools:layout_editor_absoluteX="155dp"-->
-<!--        tools:layout_editor_absoluteY="-67dp" />-->
+    <include
+        android:id="@+id/captured_video"
+        layout="@layout/layout_captured_video_view"
+        tools:layout_editor_absoluteX="155dp"
+        tools:layout_editor_absoluteY="-67dp" />
 
     <!--    progress bar-->
     <include

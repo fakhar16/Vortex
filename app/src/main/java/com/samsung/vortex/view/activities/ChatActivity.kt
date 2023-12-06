@@ -21,10 +21,14 @@ import android.widget.RelativeLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -388,6 +392,35 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
         }
     }
 
+    @OptIn(UnstableApi::class) private fun prepareVideoMessageForSending(fileUri: Uri, messageId: String, isVideoFromClipboard: Boolean) {
+        binding.capturedVideo.cardView.visibility = View.VISIBLE
+        binding.capturedVideo.receiverName.text = receiver.name
+
+        val player = ExoPlayer.Builder(this).build()
+        binding.capturedVideo.video.setShowNextButton(false)
+        binding.capturedVideo.video.setShowPreviousButton(false)
+        binding.capturedVideo.video.player = player
+
+        val mediaItem = MediaItem.fromUri(fileUri)
+        player.setMediaItem(mediaItem)
+        player.prepare()
+
+        binding.capturedVideo.sendMessage.setOnClickListener {
+            val caption = binding.capturedVideo.caption.text.toString()
+            binding.capturedVideo.caption.setText("")
+            hideKeyboard(this)
+            binding.capturedVideo.cardView.visibility = View.GONE
+            showLoadingBar(this@ChatActivity, binding.progressbar.root)
+
+            if (isVideoFromClipboard) {
+                val objMessage = Message(messageId, fileUri.toString(), getString(R.string.VIDEO), currentUser!!.uid, receiver.uid, Date().time, -1, "", true)
+                FirebaseUtils.forwardVideo(this@ChatActivity, objMessage, receiver.uid, caption)
+            } else {
+                FirebaseUtils.sendVideo(this, currentUser!!.uid, messageReceiverId, fileUri, caption)
+            }
+        }
+    }
+
     private val listener: GoEditTextListener = object : GoEditTextListener{
         override fun onUpdate() {
             val clipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
@@ -453,11 +486,11 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
                 }
             } else if (fileType == getString(R.string.VIDEO)) {
                 val fileUri = Uri.parse(data.getStringExtra(getString(R.string.VIDEO_URI)))
-//                prepareVideoMessageForSending(fileUri, "", false)
-//                binding.capturedVideo.cancel.setOnClickListener { view ->
-//                    hideKeyboard(this@ChatActivity)
-//                    binding.capturedImage.cardView.visibility = View.GONE
-//                }
+                prepareVideoMessageForSending(fileUri, "", false)
+                binding.capturedVideo.cancel.setOnClickListener {
+                    hideKeyboard(this@ChatActivity)
+                    binding.capturedImage.cardView.visibility = View.GONE
+                }
             }
         }
     }
