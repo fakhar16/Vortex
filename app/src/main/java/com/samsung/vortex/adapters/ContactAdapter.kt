@@ -11,7 +11,7 @@ import com.samsung.vortex.R
 import com.samsung.vortex.databinding.UsersDisplayLayoutBinding
 import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.Utils
-import com.samsung.vortex.utils.bottomsheethandler.ForwardMessageBottomSheetHandler
+import com.samsung.vortex.bottomsheethandler.ForwardMessageBottomSheetHandler
 import com.squareup.picasso.Picasso
 
 class ContactAdapter(private val context: Context, private var userList: ArrayList<User>) :

@@ -40,6 +40,7 @@ import com.samsung.vortex.VortexApplication
 import com.samsung.vortex.VortexApplication.Companion.presenceDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.userDatabaseReference
 import com.samsung.vortex.adapters.MessagesAdapter
+import com.samsung.vortex.bottomsheethandler.ShareContactBottomSheetHandler
 import com.samsung.vortex.databinding.ActivityChatBinding
 import com.samsung.vortex.databinding.CustomChatBarBinding
 import com.samsung.vortex.interfaces.GoEditTextListener
@@ -268,7 +269,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
             bottomSheetDialog.dismiss()
         }
         bottomSheetDialog.findViewById<LinearLayout>(R.id.contact_btn)!!.setOnClickListener {
-//            contactButtonClicked()
+            contactButtonClicked()
             bottomSheetDialog.dismiss()
         }
 
@@ -276,6 +277,10 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
 //            contactButtonClicked()
             bottomSheetDialog.dismiss()
         }
+    }
+
+    private fun contactButtonClicked() {
+        ShareContactBottomSheetHandler.start(this, messageReceiverId)
     }
 
     private fun cameraButtonClicked() {

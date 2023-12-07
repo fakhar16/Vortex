@@ -1,4 +1,4 @@
-package com.samsung.vortex.utils.bottomsheethandler
+package com.samsung.vortex.bottomsheethandler
 
 import android.annotation.SuppressLint
 import android.app.Activity

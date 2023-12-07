@@ -2,6 +2,7 @@ package com.samsung.vortex.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.text.Html
 import android.text.method.LinkMovementMethod
@@ -14,17 +15,21 @@ import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.rajat.pdfviewer.PdfViewerActivity
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
+import com.samsung.vortex.bottomsheethandler.MessageBottomSheetHandler
 import com.samsung.vortex.databinding.ItemMessageBinding
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.Utils
 import com.samsung.vortex.utils.Utils.Companion.currentUser
 import com.samsung.vortex.utils.Utils.Companion.getDateTimeString
-import com.samsung.vortex.utils.bottomsheethandler.MessageBottomSheetHandler
 import com.samsung.vortex.view.activities.ChatActivity
+import com.samsung.vortex.view.activities.SendContactActivity
 import com.squareup.picasso.Picasso
 
 class MessagesAdapter(var context: Context, private var messageList: ArrayList<Message>, var senderId: String, private var receiverId: String)
@@ -149,6 +154,34 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
                 holder.binding.message.text = Html.fromHtml(linkedText, HtmlCompat.FROM_HTML_MODE_LEGACY)
                 holder.binding.message.movementMethod = LinkMovementMethod.getInstance()
                 holder.binding.message.setLinkTextColor(Color.BLUE)
+            }
+
+            context.getString(R.string.CONTACT) -> {
+                holder.binding.message.visibility = View.GONE
+                holder.binding.contactLayout.visibility = View.VISIBLE
+                holder.binding.viewContact.visibility = View.VISIBLE
+                VortexApplication.contactsDatabaseReference.child(message.message)
+                    .addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val list: MutableList<String?> = ArrayList()
+                            if (snapshot.exists()) {
+                                for (child in snapshot.children) {
+                                    list.add(child.getValue(String::class.java))
+                                }
+                                holder.binding.contactName.text = list[1]
+                                Picasso.get().load(list[0]).into(holder.binding.contactImage)
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {}
+                    })
+
+                holder.binding.viewContact.setOnClickListener {
+                    val intent = Intent(context, SendContactActivity::class.java)
+                    intent.putExtra("contactId", message.message)
+                    intent.putExtra("IsViewContact", true)
+                    context.startActivity(intent)
+                }
             }
         }
     }

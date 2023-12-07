@@ -14,6 +14,7 @@ import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
+import com.samsung.vortex.VortexApplication.Companion.contactsDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.docsStorageReference
 import com.samsung.vortex.VortexApplication.Companion.docsUrlDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.imageStorageReference
@@ -27,6 +28,7 @@ import com.samsung.vortex.fcm.FCMNotificationSender
 import com.samsung.vortex.interfaces.MessageListenerCallback
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.model.Notification
+import com.samsung.vortex.model.PhoneContact
 import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.Utils.Companion.TYPE_MESSAGE
 import com.samsung.vortex.utils.Utils.Companion.currentUser
@@ -62,6 +64,28 @@ class FirebaseUtils {
                 updateLastMessage(objMessage)
                 sendNotification(message, messageReceiverId, messageSenderId, TYPE_MESSAGE)
             }
+        }
+
+        fun sendContact(contact: PhoneContact, messageSenderId: String, messageReceiverId: String) {
+            val messageSenderRef: String = VortexApplication.application.getString(R.string.MESSAGES) + "/" + messageSenderId + "/" + messageReceiverId
+            val messageReceiverRef: String = VortexApplication.application.getString(R.string.MESSAGES) + "/" + messageReceiverId + "/" + messageSenderId
+            val userMessageKeyRef = messageDatabaseReference
+                .child(messageSenderId)
+                .child(messageReceiverId)
+                .push()
+            val contactPushId: String = contactsDatabaseReference.push().key!!
+            val messagePushId = userMessageKeyRef.key
+            val objMessage = Message(messagePushId!!, contactPushId, VortexApplication.application.getString(R.string.CONTACT), messageSenderId, messageReceiverId, Date().time, -1, "", true)
+            val messageBodyDetails: MutableMap<String, Any> = HashMap()
+            messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
+            messageBodyDetails["$messageReceiverRef/$messagePushId"] = objMessage
+            FirebaseDatabase.getInstance().reference
+                .child(VortexApplication.application.getString(R.string.CONTACTS))
+                .child(contactPushId)
+                .setValue(contact)
+            FirebaseDatabase.getInstance().reference.updateChildren(messageBodyDetails)
+            updateLastMessage(objMessage)
+            sendNotification("Sent a contact", messageReceiverId, messageSenderId, TYPE_MESSAGE)
         }
 
         fun sendURLMessage(message: String?, messageSenderId: String, messageReceiverId: String) {

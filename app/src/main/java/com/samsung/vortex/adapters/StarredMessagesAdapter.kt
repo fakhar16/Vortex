@@ -25,8 +25,9 @@ import com.samsung.vortex.model.Message
 import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.Utils
 import com.samsung.vortex.utils.Utils.Companion.currentUser
-import com.samsung.vortex.utils.bottomsheethandler.MessageBottomSheetHandler
+import com.samsung.vortex.bottomsheethandler.MessageBottomSheetHandler
 import com.samsung.vortex.view.activities.ChatActivity
+import com.samsung.vortex.view.activities.SendContactActivity
 import com.samsung.vortex.view.activities.StarMessageActivity
 import com.squareup.picasso.Picasso
 
@@ -137,6 +138,33 @@ class StarredMessagesAdapter(var context: Context, private var messageList: Arra
                     context.startActivity(PdfViewerActivity.Companion.launchPdfFromUrl(context, message.message, message.fileName, "", true))
                 }
             }
+
+            context.getString(R.string.CONTACT) -> {
+                holder.binding.message.visibility = View.GONE
+            holder.binding.contactLayout.visibility = View.VISIBLE
+            holder.binding.viewContact.visibility = View.VISIBLE
+            VortexApplication.contactsDatabaseReference.child(message.message)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val list: MutableList<String?> = java.util.ArrayList()
+                        if (snapshot.exists()) {
+                            for (child in snapshot.children) {
+                                list.add(child.getValue(String::class.java))
+                            }
+                            holder.binding.contactName.text = list[1]
+                            Picasso.get().load(list[0]).into(holder.binding.contactImage)
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {}
+                })
+            holder.binding.viewContact.setOnClickListener {
+                val intent = Intent(context, SendContactActivity::class.java)
+                intent.putExtra("contactId", message.message)
+                intent.putExtra("IsViewContact", true)
+                context.startActivity(intent)
+            }
+            }
         }
 //else if (message.type.equals(context.getString(R.string.AUDIO_RECORDING))) {
 //            val file_path: String =
@@ -164,31 +192,6 @@ class StarredMessagesAdapter(var context: Context, private var messageList: Arra
 //                    holder.binding.audioFileDuration.setText(Utils.getDuration(file))
 //                    holder.binding.audioSeekBar.progress = 0
 //                }
-//            }
-//        } else if (message.type.equals(context.getString(R.string.CONTACT))) {
-//            holder.binding.message.visibility = View.GONE
-//            holder.binding.contactLayout.visibility = View.VISIBLE
-//            holder.binding.viewContact.visibility = View.VISIBLE
-//            ApplicationClass.contactsDatabaseReference.child(message.message)
-//                .addValueEventListener(object : ValueEventListener {
-//                    override fun onDataChange(snapshot: DataSnapshot) {
-//                        val list: MutableList<String?> = java.util.ArrayList()
-//                        if (snapshot.exists()) {
-//                            for (child in snapshot.children) {
-//                                list.add(child.getValue(String::class.java))
-//                            }
-//                            holder.binding.contactName.text = list[1]
-//                            Picasso.get().load(list[0]).into(holder.binding.contactImage)
-//                        }
-//                    }
-//
-//                    override fun onCancelled(error: DatabaseError) {}
-//                })
-//            holder.binding.viewContact.setOnClickListener {
-//                val intent = Intent(context, SendContactActivity::class.java)
-//                intent.putExtra("contactId", message.message)
-//                intent.putExtra("IsViewContact", true)
-//                context.startActivity(intent)
 //            }
 //        }
     }
