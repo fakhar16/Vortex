@@ -80,4 +80,6 @@
     <string name="USER_MESSAGE_VIDEO">user_message_video</string>
     <string name="doc_url_used_by_users">doc_url_used_by_users</string>
     <string name="USER_MESSAGE_FILE">user_message_file</string>
+    <string name="shared_images">shared_images</string>
+    <string name="play_icon">play_icon\n</string>
 </resources>

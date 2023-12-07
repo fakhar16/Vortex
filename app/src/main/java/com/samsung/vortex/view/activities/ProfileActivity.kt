@@ -128,6 +128,12 @@ class ProfileActivity : AppCompatActivity() {
         binding.starLayout.setOnClickListener { sendUserToStarActivity() }
         binding.search.setOnClickListener { sendUserToChatActivity() }
 //        binding.videoCall.setOnClickListener { createVideoCall() }
-//        binding.mediaLayout.setOnClickListener { sendUserToMediaLinksDocsActivity() }
+        binding.mediaLayout.setOnClickListener { sendUserToMediaLinksDocsActivity() }
+    }
+
+    private fun sendUserToMediaLinksDocsActivity() {
+        val intent = Intent(this, MediaLinksDocsActivity::class.java)
+        intent.putExtra(getString(R.string.RECEIVER_ID), receiverId)
+        startActivity(intent)
     }
 }

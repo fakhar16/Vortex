@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.samsung.vortex.R
+import com.samsung.vortex.VortexApplication
 import com.samsung.vortex.VortexApplication.Companion.messageDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.starMessagesDatabaseReference
 import com.samsung.vortex.model.Message
@@ -30,6 +32,15 @@ class MessageRepositoryImpl : IMessageRepository{
     private var mStarredMessagesWithReceiver = ArrayList<Message>()
     var starMessagesWithReceiver = MutableLiveData<ArrayList<Message>>()
 
+    private var mDocMessagesWithReceiver = ArrayList<Message>()
+    var docMessagesWithReceiver = MutableLiveData<ArrayList<Message>>()
+
+    private var mMediaMessagesWithReceiver = ArrayList<Message>()
+    var mediaMessagesWithReceiver = MutableLiveData<ArrayList<Message>>()
+
+    private var mLinksMessagesWithReceiver = ArrayList<Message>()
+    var linksMessagesWithReceiver = MutableLiveData<ArrayList<Message>>()
+
     override fun getMessages(sender: String, receiver: String): MutableLiveData<ArrayList<Message>> {
         mMessages = ArrayList()
         loadMessages(sender, receiver)
@@ -52,15 +63,24 @@ class MessageRepositoryImpl : IMessageRepository{
     }
 
     override fun getMediaMessagesMatchingReceiver(receiver: String): MutableLiveData<ArrayList<Message>> {
-        TODO("Not yet implemented")
+        mMediaMessagesWithReceiver = java.util.ArrayList<Message>()
+        loadMediaMessagesWithReceiver(receiver)
+        mediaMessagesWithReceiver.value = mMediaMessagesWithReceiver
+        return mediaMessagesWithReceiver
     }
 
     override fun getDocMessagesMatchingReceiver(receiver: String): MutableLiveData<ArrayList<Message>> {
-        TODO("Not yet implemented")
+        mDocMessagesWithReceiver = ArrayList()
+        loadDocMessagesWithReceiver(receiver)
+        docMessagesWithReceiver.value = mDocMessagesWithReceiver
+        return docMessagesWithReceiver
     }
 
     override fun getLinksMessagesMatchingReceiver(receiver: String): MutableLiveData<ArrayList<Message>> {
-        TODO("Not yet implemented")
+        mLinksMessagesWithReceiver = java.util.ArrayList<Message>()
+        loadLinksMessagesWithReceiver(receiver)
+        linksMessagesWithReceiver.value = mLinksMessagesWithReceiver
+        return linksMessagesWithReceiver
     }
 
     private fun loadMessages(messageSenderId: String, messageReceiverId: String) {
@@ -123,6 +143,75 @@ class MessageRepositoryImpl : IMessageRepository{
                         }
                     }
                     starMessagesWithReceiver.postValue(mStarredMessagesWithReceiver)
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
+    }
+
+    private fun loadMediaMessagesWithReceiver(receiver: String) {
+        messageDatabaseReference
+            .child(currentUser!!.uid)
+            .child(receiver)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    mMediaMessagesWithReceiver.clear()
+                    if (snapshot.exists()) {
+                        for (child in snapshot.children) {
+                            val message = child.getValue(Message::class.java)!!
+                            if (message.type == VortexApplication.application.applicationContext
+                                .getString(R.string.IMAGE) || message.type == VortexApplication.application.applicationContext
+                                    .getString(R.string.VIDEO)
+                            ) mMediaMessagesWithReceiver.add(
+                                message
+                            )
+                        }
+                    }
+                    mediaMessagesWithReceiver.postValue(mMediaMessagesWithReceiver)
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
+    }
+
+    private fun loadLinksMessagesWithReceiver(receiver: String?) {
+        messageDatabaseReference
+            .child(currentUser!!.uid)
+            .child(receiver!!)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    mLinksMessagesWithReceiver.clear()
+                    if (snapshot.exists()) {
+                        for (child in snapshot.children) {
+                            val message = child.getValue(Message::class.java)!!
+                            if (message.type == VortexApplication.application.applicationContext.getString(R.string.URL)
+                            ) mLinksMessagesWithReceiver.add(
+                                message
+                            )
+                        }
+                    }
+                    linksMessagesWithReceiver.postValue(mLinksMessagesWithReceiver)
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
+    }
+
+    private fun loadDocMessagesWithReceiver(receiver: String) {
+        messageDatabaseReference
+            .child(currentUser!!.uid)
+            .child(receiver)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    mDocMessagesWithReceiver.clear()
+                    if (snapshot.exists()) {
+                        for (child in snapshot.children) {
+                            val message = child.getValue(Message::class.java)!!
+                            if (message.type == VortexApplication.application.getString(R.string.PDF_FILES)) 
+                                mDocMessagesWithReceiver.add(message)
+                        }
+                    }
+                    docMessagesWithReceiver.postValue(mDocMessagesWithReceiver)
                 }
 
                 override fun onCancelled(error: DatabaseError) {}
