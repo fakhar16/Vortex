@@ -35,9 +35,9 @@ class ProfileActivity : AppCompatActivity() {
 
         receiverId = intent.getStringExtra(getString(R.string.RECEIVER_ID))!!
         starMessages = MessageRepositoryImpl.getInstance().getStarredMessagesMatchingReceiver().value!!
-//        mediaMessages = MessageRepositoryImpl.getInstance().getMediaMessagesMatchingReceiver(receiverId).value!!
-//        docMessages = MessageRepositoryImpl.getInstance().getDocMessagesMatchingReceiver(receiverId).value!!
-//        linksMessages = MessageRepositoryImpl.getInstance().getLinksMessagesMatchingReceiver(receiverId).value!!
+        mediaMessages = MessageRepositoryImpl.getInstance().getMediaMessagesMatchingReceiver(receiverId).value!!
+        docMessages = MessageRepositoryImpl.getInstance().getDocMessagesMatchingReceiver(receiverId).value!!
+        linksMessages = MessageRepositoryImpl.getInstance().getLinksMessagesMatchingReceiver(receiverId).value!!
 
         loadUserInfo()
         initToolBar()
@@ -78,7 +78,7 @@ class ProfileActivity : AppCompatActivity() {
         Picasso.get().load(Utils.getImageOffline(receiver.image, receiver.uid)).placeholder(R.drawable.profile_image).into(binding.userImage)
 
         updateStarredMessageCount()
-//        updateMediaMessageCount()
+        updateMediaMessageCount()
     }
 
     private fun updateStarredMessageCount() {
