@@ -280,7 +280,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
         }
 
         bottomSheetDialog.findViewById<LinearLayout>(R.id.audio_btn)!!.setOnClickListener {
-//            contactButtonClicked()
+            audioButtonClicked()
             bottomSheetDialog.dismiss()
         }
     }
@@ -297,7 +297,13 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
     private fun attachmentButtonClicked() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/* video/*"
-        imagePickActivityResultLauncher.launch(intent)
+        mediaPickActivityResultLauncher.launch(intent)
+    }
+
+    private fun audioButtonClicked() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "audio/*"
+        mediaPickActivityResultLauncher.launch(intent)
     }
 
     private fun attachDocButtonClicked() {
@@ -574,7 +580,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
         }
     }
 
-    private val imagePickActivityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+    private val mediaPickActivityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             result ->
             if (result.resultCode == RESULT_OK && result.data != null) {
                 val data: Intent = result.data!!
@@ -583,6 +589,8 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
                     prepareImageMessageForSending(fileUri!!, "", false)
                 } else if (getFileType(fileUri).equals("mp4")) {
                     prepareVideoMessageForSending(fileUri!!, "", false)
+                } else if (getFileType(fileUri).equals("mp3")) {
+                    sendAudioRecording(this, currentUser!!.uid, messageReceiverId, fileUri!!, FirebaseDatabase.getInstance().reference.push().key!!, isSong = true)
                 }
             }
         }

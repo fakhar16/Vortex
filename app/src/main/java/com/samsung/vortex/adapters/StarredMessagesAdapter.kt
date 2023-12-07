@@ -169,6 +169,9 @@ class StarredMessagesAdapter(var context: Context, private var messageList: Arra
             }
 
             context.getString(R.string.AUDIO_RECORDING) -> {
+                if (message.isSong) {
+                    holder.binding.audioSenderImage.setImageResource(R.drawable.audio)
+                }
                 val filePath: String = VortexApplication.application.applicationContext.filesDir.path + "/" + message.messageId + ".3gp"
                 val file = File(filePath)
                 holder.binding.audioFileDuration.text = Utils.getDuration(file)

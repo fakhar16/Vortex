@@ -68,7 +68,7 @@ class FirebaseUtils {
             }
         }
 
-        fun sendAudioRecording(context: Context, messageSenderId: String, messageReceiverId: String, fileUri: Uri, messagePushId: String) {
+        fun sendAudioRecording(context: Context, messageSenderId: String, messageReceiverId: String, fileUri: Uri, messagePushId: String, isSong: Boolean = false) {
             val callback = context as MessageListenerCallback
             val messageSenderRef = context.getString(R.string.MESSAGES) + "/" + messageSenderId + "/" + messageReceiverId
             val messageReceiverRef = context.getString(R.string.MESSAGES) + "/" + messageReceiverId + "/" + messageSenderId
@@ -84,7 +84,7 @@ class FirebaseUtils {
                     callback.onMessageSent()
                     val downloadUrl = task.result
                     val myUrl = downloadUrl.toString()
-                    val objMessage = Message(messagePushId, myUrl, context.getString(R.string.AUDIO_RECORDING), messageSenderId, messageReceiverId, Date().time, -1, "", true)
+                    val objMessage = Message(messagePushId, myUrl, context.getString(R.string.AUDIO_RECORDING), messageSenderId, messageReceiverId, Date().time, -1, "", true, isSong = isSong)
                     val messageBodyDetails: MutableMap<String, Any> = HashMap()
                     messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
                     messageBodyDetails["$messageReceiverRef/$messagePushId"] = objMessage
@@ -97,7 +97,10 @@ class FirebaseUtils {
                         .child(messagePushId)
                         .updateChildren(audioRecordingUrlUserDetails)
                     updateLastMessage(objMessage)
-                    sendNotification("Sent an audio message", messageReceiverId, messageSenderId, TYPE_MESSAGE)
+                    if (isSong)
+                        sendNotification("Sent a music file", messageReceiverId, messageSenderId, TYPE_MESSAGE)
+                    else
+                        sendNotification("Sent an audio message", messageReceiverId, messageSenderId, TYPE_MESSAGE)
                 }
             }.addOnFailureListener { e: Exception? -> callback.onMessageSentFailed() }
         }

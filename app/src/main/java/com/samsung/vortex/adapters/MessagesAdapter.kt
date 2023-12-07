@@ -78,6 +78,7 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
     }
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
+        holder.setIsRecyclable(false)
         val message = messageList[position]
 
         //Setting message and time
@@ -188,6 +189,9 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
             }
 
             context.getString(R.string.AUDIO_RECORDING) -> {
+                if (message.isSong) {
+                    holder.binding.audioSenderImage.setImageResource(R.drawable.audio)
+                }
                 val filePath: String = VortexApplication.application.applicationContext.filesDir.path + "/" + message.messageId + ".3gp"
                 val file = File(filePath)
                 if (Utils.isRecordingFileExist(file)) {
