@@ -152,4 +152,9 @@ class StarMessageActivity : AppCompatActivity() {
         player.prepare()
         player.play()
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return super.onSupportNavigateUp()
+    }
 }

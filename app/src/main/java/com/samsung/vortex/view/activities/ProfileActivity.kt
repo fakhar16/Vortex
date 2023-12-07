@@ -136,4 +136,9 @@ class ProfileActivity : AppCompatActivity() {
         intent.putExtra(getString(R.string.RECEIVER_ID), receiverId)
         startActivity(intent)
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return super.onSupportNavigateUp()
+    }
 }

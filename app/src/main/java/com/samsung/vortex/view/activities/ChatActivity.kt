@@ -659,4 +659,9 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
         binding.chatbar.visibility = View.GONE
         Utils.startRecording(recordedAudioFileName!!)
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return super.onSupportNavigateUp()
+    }
 }
