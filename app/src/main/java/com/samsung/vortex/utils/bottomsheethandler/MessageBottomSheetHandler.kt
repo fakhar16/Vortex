@@ -35,12 +35,7 @@ class MessageBottomSheetHandler {
                         Utils.copyVideo(Uri.parse(message.message), message.messageId)
                     }
                     context.getString(R.string.PDF_FILES) -> {
-            //                    Utils.copyDoc(
-            //                        Uri.parse(message.getMessage()),
-            //                        message.getMessageId(),
-            //                        message.getFilename(),
-            //                        message.getFileSize()
-            //                    )
+                        Utils.copyDoc(Uri.parse(message.message), message.messageId, message.fileName, message.fileSize)
                     }
                     else -> {
                         copyMessage(message.message)

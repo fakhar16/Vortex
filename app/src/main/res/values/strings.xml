@@ -79,4 +79,5 @@
     <string name="VIDEO_URL_USED_BY_USERS">video_url_used_by_users</string>
     <string name="USER_MESSAGE_VIDEO">user_message_video</string>
     <string name="doc_url_used_by_users">doc_url_used_by_users</string>
+    <string name="USER_MESSAGE_FILE">user_message_file</string>
 </resources>

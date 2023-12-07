@@ -108,7 +108,7 @@ class Utils {
             return mimeTypeMap.getExtensionFromMimeType(r.getType(uri!!))
         }
 
-        @SuppressLint("Range")
+        @SuppressLint("Range", "Recycle")
         fun getFilename(context: Context, uri: Uri): String? {
             var res: String? = null
             if (uri.scheme == "content") {
@@ -133,7 +133,7 @@ class Utils {
         }
 
         @SuppressLint("Recycle")
-        fun getFileSize(fileUri: Uri): String? {
+        fun getFileSize(fileUri: Uri): String {
             val fileDescriptor: AssetFileDescriptor = VortexApplication.application.applicationContext.contentResolver.openAssetFileDescriptor(fileUri, "r")!!
             val fileSize = fileDescriptor.length
             return humanReadableByteCountSI(fileSize)
@@ -141,16 +141,16 @@ class Utils {
 
         @SuppressLint("DefaultLocale")
         private fun humanReadableByteCountSI(bytes: Long): String {
-            var bytes = bytes
-            if (-1000 < bytes && bytes < 1000) {
-                return "$bytes B"
+            var bytes1 = bytes
+            if (-1000 < bytes1 && bytes1 < 1000) {
+                return "$bytes1 B"
             }
             val ci: CharacterIterator = StringCharacterIterator("kMGTPE")
-            while (bytes <= -999950 || bytes >= 999950) {
-                bytes /= 1000
+            while (bytes1 <= -999950 || bytes1 >= 999950) {
+                bytes1 /= 1000
                 ci.next()
             }
-            return String.format("%.1f %cB", bytes / 1000.0, ci.current())
+            return String.format("%.1f %cB", bytes1 / 1000.0, ci.current())
         }
 
         fun copyMessage(message: String?) {
@@ -172,6 +172,16 @@ class Utils {
             val clipData = ClipData.newRawUri(VortexApplication.application.applicationContext.getString(R.string.USER_MESSAGE_VIDEO), uri)
             clipData.addItem(ClipData.Item(message_id))
             clipData.addItem(ClipData.Item(VortexApplication.application.applicationContext.getString(R.string.VIDEO)))
+            clipboardManager.setPrimaryClip(clipData)
+        }
+
+        fun copyDoc(uri: Uri?, message_id: String?, fileName: String?, fileSize: String?) {
+            val clipboardManager = VortexApplication.application.applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipData = ClipData.newRawUri(VortexApplication.application.applicationContext.getString(R.string.USER_MESSAGE_FILE), uri)
+            clipData.addItem(ClipData.Item(message_id))
+            clipData.addItem(ClipData.Item(VortexApplication.application.applicationContext.getString(R.string.PDF_FILES)))
+            clipData.addItem(ClipData.Item(fileName))
+            clipData.addItem(ClipData.Item(fileSize))
             clipboardManager.setPrimaryClip(clipData)
         }
     }

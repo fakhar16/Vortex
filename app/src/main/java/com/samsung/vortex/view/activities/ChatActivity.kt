@@ -499,11 +499,6 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
                 val messageIdItem = primaryClipData.getItemAt(1)
                 val messageTypeItem = primaryClipData.getItemAt(2)
 
-                if (primaryClipData.itemCount > 3) {
-                    val fileNameItem = primaryClipData.getItemAt(3)
-                    val fileSizeItem = primaryClipData.getItemAt(4)
-                }
-
                 val uri = item.uri
 
                 binding.messageInputText.setText("")
@@ -527,7 +522,9 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
                     }
 
                     VortexApplication.application.applicationContext.getString(R.string.PDF_FILES) -> {
-
+                        val fileNameItem = primaryClipData.getItemAt(3)
+                        val fileSizeItem = primaryClipData.getItemAt(4)
+                        prepareDocMessageForSending(uri, messageIdItem.text.toString(), true, fileNameItem.text.toString(), fileSizeItem.text.toString())
                     }
                 }
             }
@@ -584,7 +581,8 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
             if (result.resultCode == RESULT_OK && result.data != null) {
                 val data: Intent = result.data!!
                 val fileUri = data.data
-                prepareDocMessageForSending(fileUri!!, "", false, getFilename(this, fileUri)!!, getFileSize(fileUri)!!)
+                prepareDocMessageForSending(fileUri!!, "", false, getFilename(this, fileUri)!!, getFileSize(fileUri)
+                )
             }
         }
 

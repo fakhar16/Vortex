@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.rajat.pdfviewer.PdfViewerActivity
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
 import com.samsung.vortex.VortexApplication.Companion.userDatabaseReference
@@ -125,23 +126,19 @@ class StarredMessagesAdapter(var context: Context, private var messageList: Arra
                 holder.binding.message.movementMethod = LinkMovementMethod.getInstance()
                 holder.binding.message.setLinkTextColor(Color.BLUE)
             }
+
+            context.getString(R.string.PDF_FILES) -> {
+                holder.binding.message.visibility = View.GONE
+                holder.binding.image.visibility = View.VISIBLE
+                holder.binding.fileName.visibility = View.VISIBLE
+                holder.binding.fileName.text = message.fileName
+                holder.binding.image.setImageResource(R.drawable.baseline_picture_as_pdf_24)
+                holder.binding.image.setOnClickListener {
+                    context.startActivity(PdfViewerActivity.Companion.launchPdfFromUrl(context, message.message, message.fileName, "", true))
+                }
+            }
         }
-//        else if (message.type.equals(context.getString(R.string.PDF_FILES))) {
-//            holder.binding.message.visibility = View.GONE
-//            holder.binding.image.visibility = View.VISIBLE
-//            holder.binding.image.setImageResource(R.drawable.baseline_file_present_24)
-//            holder.binding.image.setOnClickListener { view ->
-//                context.startActivity(
-//                    PdfViewerActivity.Companion.launchPdfFromUrl(
-//                        context,
-//                        message.message,
-//                        message.getFilename(),
-//                        "",
-//                        true
-//                    )
-//                )
-//            }
-//        } else if (message.type.equals(context.getString(R.string.AUDIO_RECORDING))) {
+//else if (message.type.equals(context.getString(R.string.AUDIO_RECORDING))) {
 //            val file_path: String =
 //                (ApplicationClass.application.getApplicationContext().getFilesDir()
 //                    .getPath() + "/" + message.getMessageId()).toString() + ".3gp"
