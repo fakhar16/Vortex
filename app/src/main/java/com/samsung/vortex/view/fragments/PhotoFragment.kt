@@ -3,7 +3,6 @@ package com.samsung.vortex.view.fragments
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Size
@@ -27,7 +26,6 @@ import com.samsung.vortex.R
 import com.samsung.vortex.databinding.FragmentPhotoBinding
 import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.Objects
 
 class PhotoFragment : Fragment() {
     private lateinit var binding: FragmentPhotoBinding
@@ -137,7 +135,7 @@ class PhotoFragment : Fragment() {
                     val data = Intent()
                     data.putExtra(
                         requireContext().getString(R.string.IMAGE_URI),
-                        Objects.requireNonNull<Uri?>(outputFileResults.savedUri).toString()
+                        outputFileResults.savedUri.toString()
                     )
                     data.putExtra(
                         requireContext().getString(R.string.FILE_TYPE),

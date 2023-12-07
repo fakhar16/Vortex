@@ -18,7 +18,6 @@ import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication.Companion.userDatabaseReference
 import com.samsung.vortex.databinding.ActivityOtpBinding
 import com.samsung.vortex.utils.Utils
-import java.util.Objects
 import java.util.concurrent.TimeUnit
 
 class OTPActivity : AppCompatActivity() {
@@ -63,7 +62,7 @@ class OTPActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         binding.btnVerify.setOnClickListener {
             val verificationCode: String =
-                Objects.requireNonNull(binding.tvCode.text).toString()
+                binding.tvCode.text.toString()
             if (TextUtils.isEmpty(verificationCode)) {
                 Toast.makeText(
                     this@OTPActivity,

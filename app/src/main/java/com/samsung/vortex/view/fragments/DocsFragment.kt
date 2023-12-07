@@ -17,7 +17,7 @@ import com.samsung.vortex.adapters.DocMessagesAdapter
 import com.samsung.vortex.databinding.FragmentDocsBinding
 import com.samsung.vortex.model.User
 import com.samsung.vortex.viewmodel.DocMessageViewModel
-import com.samsung.vortex.viewmodel.DocViewModelFactory
+import com.samsung.vortex.viewmodel.viewmodelfactory.DocViewModelFactory
 
 class DocsFragment : Fragment {
     private lateinit var binding: FragmentDocsBinding

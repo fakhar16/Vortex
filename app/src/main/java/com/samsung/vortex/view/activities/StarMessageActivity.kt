@@ -16,7 +16,7 @@ import com.samsung.vortex.adapters.StarredMessagesAdapter
 import com.samsung.vortex.databinding.ActivityStarMessageBinding
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.utils.WhatsappLikeProfilePicPreview
-import com.samsung.vortex.viewmodel.StarMessageViewModelFactory
+import com.samsung.vortex.viewmodel.viewmodelfactory.StarMessageViewModelFactory
 import com.samsung.vortex.viewmodel.StarredMessageViewModel
 import java.io.File
 import java.util.Locale

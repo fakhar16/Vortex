@@ -7,14 +7,14 @@ import com.samsung.vortex.model.Message
 import com.samsung.vortex.repository.ChatsRepositoryImpl
 import com.samsung.vortex.repository.MessageRepositoryImpl
 
-class MessageViewModel : ViewModel() {
+class MessageViewModel(var sender: String, var receiver: String) : ViewModel() {
     var messages: MutableLiveData<ArrayList<Message>>? = null
     fun getMessage(): LiveData<ArrayList<Message>>? {
         return messages
     }
 
-    fun init(sender: String, receiver: String) {
-        if (messages != null) return
-        messages = MessageRepositoryImpl.getInstance().getMessages(sender, receiver)
+    init {
+        if (messages == null)
+            messages = MessageRepositoryImpl.getInstance().getMessages(sender, receiver)
     }
 }

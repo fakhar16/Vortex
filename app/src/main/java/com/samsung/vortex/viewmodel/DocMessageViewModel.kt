@@ -9,7 +9,7 @@ import com.samsung.vortex.repository.MessageRepositoryImpl
 class DocMessageViewModel(private var receiver: String): ViewModel() {
     var messagesWithReceiver: MutableLiveData<ArrayList<Message>>? = null
 
-    fun getDocMessageWithReceiver(): LiveData<java.util.ArrayList<Message>>? {
+    fun getDocMessageWithReceiver(): LiveData<ArrayList<Message>>? {
         return messagesWithReceiver
     }
 

@@ -24,7 +24,6 @@ import com.samsung.vortex.utils.WhatsappLikeProfilePicPreview
 import com.soundcloud.android.crop.Crop
 import com.squareup.picasso.Picasso
 import java.io.File
-import java.util.Objects
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
@@ -126,7 +125,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun updateProfileStatus() {
-        if (Objects.requireNonNull(binding.setProfileStatus.text).toString().isEmpty()) {
+        if (binding.setProfileStatus.text.toString().isEmpty()) {
             Toast.makeText(this@SettingsActivity, "Please write your user name...", Toast.LENGTH_SHORT).show()
         } else {
             val profileMap = HashMap<String, Any>()
@@ -134,7 +133,7 @@ class SettingsActivity : AppCompatActivity() {
             userDatabaseReference.child(currentUser!!.uid).updateChildren(profileMap)
                 .addOnCompleteListener { task ->
                     if (!task.isSuccessful) {
-                        Toast.makeText(this@SettingsActivity, "Error: " + Objects.requireNonNull(task.exception), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@SettingsActivity, "Error: " + task.exception, Toast.LENGTH_SHORT).show()
                     }
                 }
         }

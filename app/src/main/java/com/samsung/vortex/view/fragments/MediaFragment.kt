@@ -16,7 +16,7 @@ import com.samsung.vortex.adapters.MediaMessagesAdapter
 import com.samsung.vortex.databinding.FragmentMediaBinding
 import com.samsung.vortex.model.User
 import com.samsung.vortex.viewmodel.MediaMessageViewModel
-import com.samsung.vortex.viewmodel.MediaViewModelFactory
+import com.samsung.vortex.viewmodel.viewmodelfactory.MediaViewModelFactory
 
 
 class MediaFragment : Fragment {

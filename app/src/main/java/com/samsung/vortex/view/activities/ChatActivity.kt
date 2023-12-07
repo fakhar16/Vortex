@@ -61,6 +61,7 @@ import com.samsung.vortex.utils.Utils.Companion.hideKeyboard
 import com.samsung.vortex.utils.Utils.Companion.showLoadingBar
 import com.samsung.vortex.utils.WhatsappLikeProfilePicPreview
 import com.samsung.vortex.viewmodel.MessageViewModel
+import com.samsung.vortex.viewmodel.viewmodelfactory.MessageViewModelFactory
 import com.squareup.picasso.Picasso
 import com.tougee.recorderview.AudioRecordView
 import java.io.File
@@ -109,8 +110,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(this)[MessageViewModel::class.java]
-        viewModel.init(currentUser!!.uid, messageReceiverId)
+        viewModel = ViewModelProvider(this, MessageViewModelFactory(currentUser!!.uid, messageReceiverId))[MessageViewModel::class.java]
         viewModel.getMessage()?.observe(this) {
             adapter.notifyDataSetChanged()
             scrollToMessage()

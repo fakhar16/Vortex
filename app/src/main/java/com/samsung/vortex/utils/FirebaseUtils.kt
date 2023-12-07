@@ -138,7 +138,7 @@ class FirebaseUtils {
                     .push()
                 val messagePushId = userMessageKeyRef.key
                 val objMessage = Message(messagePushId!!, message!!, VortexApplication.application.applicationContext.getString(R.string.URL), messageSenderId, messageReceiverId, Date().time, -1, "", true)
-                val messageBodyDetails: MutableMap<String, Any> = java.util.HashMap()
+                val messageBodyDetails: MutableMap<String, Any> = HashMap()
                 messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
                 messageBodyDetails["$messageReceiverRef/$messagePushId"] = objMessage
                 FirebaseDatabase.getInstance().reference
@@ -203,7 +203,7 @@ class FirebaseUtils {
             val messageSenderRef = context.getString(R.string.MESSAGES) + "/" + objMessage.from + "/" + objMessage.to
             val messageReceiverRef = context.getString(R.string.MESSAGES) + "/" + objMessage.to + "/" + objMessage.from
 
-            val messageBodyDetails: MutableMap<String, Any> = java.util.HashMap()
+            val messageBodyDetails: MutableMap<String, Any> = HashMap()
             messageBodyDetails[messageSenderRef + "/" + message.messageId] = objMessage
             messageBodyDetails[messageReceiverRef + "/" + message.messageId] = objMessage
 
@@ -214,7 +214,7 @@ class FirebaseUtils {
                         callback.onMessageSent()
                     }
                 }
-            val imageUrlUserDetails: MutableMap<String, Any> = java.util.HashMap()
+            val imageUrlUserDetails: MutableMap<String, Any> = HashMap()
             imageUrlUserDetails[currentUser!!.uid] = true
             imageUrlUserDetails[receiver] = true
 
@@ -269,7 +269,7 @@ class FirebaseUtils {
             
             val messageSenderRef = context.getString(R.string.MESSAGES) + "/" + objMessage.from + "/" + objMessage.to
             val messageReceiverRef = context.getString(R.string.MESSAGES) + "/" + objMessage.to + "/" + objMessage.from
-            val messageBodyDetails: MutableMap<String, Any> = java.util.HashMap()
+            val messageBodyDetails: MutableMap<String, Any> = HashMap()
             messageBodyDetails[messageSenderRef + "/" + message.messageId] = objMessage
             messageBodyDetails[messageReceiverRef + "/" + message.messageId] = objMessage
             FirebaseDatabase.getInstance().reference
@@ -394,7 +394,7 @@ class FirebaseUtils {
         }
 
         fun updateLastMessage(message: Message) {
-            val lastMsgObj: MutableMap<String, Any> = java.util.HashMap()
+            val lastMsgObj: MutableMap<String, Any> = HashMap()
             lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_TIME)] = message.time
             when (message.type) {
                 VortexApplication.application.applicationContext.getString(R.string.IMAGE) -> lastMsgObj[VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_DETAILS)] = "Photo"
@@ -424,7 +424,7 @@ class FirebaseUtils {
                         if (snapshot.exists()) {
                             for (child in snapshot.children) {
                                 val msg = child.getValue(Message::class.java)
-                                val map: MutableMap<String, Any> = java.util.HashMap()
+                                val map: MutableMap<String, Any> = HashMap()
                                 map["unread"] = false
                                 messageDatabaseReference
                                     .child(currentUser!!.uid)

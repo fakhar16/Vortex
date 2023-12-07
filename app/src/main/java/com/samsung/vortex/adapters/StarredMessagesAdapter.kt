@@ -148,7 +148,7 @@ class StarredMessagesAdapter(var context: Context, private var messageList: Arra
                 VortexApplication.contactsDatabaseReference.child(message.message)
                     .addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
-                            val list: MutableList<String?> = java.util.ArrayList()
+                            val list: MutableList<String?> = ArrayList()
                             if (snapshot.exists()) {
                                 for (child in snapshot.children) {
                                     list.add(child.getValue(String::class.java))
@@ -196,7 +196,7 @@ class StarredMessagesAdapter(var context: Context, private var messageList: Arra
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun filterList(filterList: java.util.ArrayList<Message>) {
+    fun filterList(filterList: ArrayList<Message>) {
         messageList = filterList
         notifyDataSetChanged()
     }

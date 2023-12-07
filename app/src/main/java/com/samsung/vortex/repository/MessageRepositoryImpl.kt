@@ -63,7 +63,7 @@ class MessageRepositoryImpl : IMessageRepository{
     }
 
     override fun getMediaMessagesMatchingReceiver(receiver: String): MutableLiveData<ArrayList<Message>> {
-        mMediaMessagesWithReceiver = java.util.ArrayList<Message>()
+        mMediaMessagesWithReceiver = ArrayList<Message>()
         loadMediaMessagesWithReceiver(receiver)
         mediaMessagesWithReceiver.value = mMediaMessagesWithReceiver
         return mediaMessagesWithReceiver
@@ -77,7 +77,7 @@ class MessageRepositoryImpl : IMessageRepository{
     }
 
     override fun getLinksMessagesMatchingReceiver(receiver: String): MutableLiveData<ArrayList<Message>> {
-        mLinksMessagesWithReceiver = java.util.ArrayList<Message>()
+        mLinksMessagesWithReceiver = ArrayList<Message>()
         loadLinksMessagesWithReceiver(receiver)
         linksMessagesWithReceiver.value = mLinksMessagesWithReceiver
         return linksMessagesWithReceiver

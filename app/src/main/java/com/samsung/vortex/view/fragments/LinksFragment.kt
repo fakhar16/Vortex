@@ -16,7 +16,7 @@ import com.samsung.vortex.VortexApplication.Companion.userDatabaseReference
 import com.samsung.vortex.adapters.LinksMessagesAdapter
 import com.samsung.vortex.databinding.FragmentLinksBinding
 import com.samsung.vortex.model.User
-import com.samsung.vortex.viewmodel.LinkViewModelFactory
+import com.samsung.vortex.viewmodel.viewmodelfactory.LinkViewModelFactory
 import com.samsung.vortex.viewmodel.LinksMessageViewModel
 
 class LinksFragment : Fragment {

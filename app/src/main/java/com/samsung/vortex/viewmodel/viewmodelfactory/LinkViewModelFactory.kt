@@ -1,7 +1,8 @@
-package com.samsung.vortex.viewmodel
+package com.samsung.vortex.viewmodel.viewmodelfactory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.samsung.vortex.viewmodel.LinksMessageViewModel
 
 class LinkViewModelFactory (private val receiver: String = ""): ViewModelProvider.NewInstanceFactory() {
 

@@ -25,7 +25,6 @@ import com.samsung.vortex.utils.Utils
 import com.soundcloud.android.crop.Crop
 import com.squareup.picasso.Picasso
 import java.io.File
-import java.util.Objects
 
 class SetupProfileActivity : AppCompatActivity() {
     private lateinit var currentUserId: String
@@ -142,7 +141,7 @@ class SetupProfileActivity : AppCompatActivity() {
     }
 
     private fun updateProfileName() {
-        val setUserName: String = Objects.requireNonNull(binding.setUserName.text).toString()
+        val setUserName: String = binding.setUserName.text.toString()
         val profileMap = HashMap<String, Any>()
         profileMap[getString(R.string.NAME)] = setUserName
         userDatabaseReference.child(currentUserId).updateChildren(profileMap)

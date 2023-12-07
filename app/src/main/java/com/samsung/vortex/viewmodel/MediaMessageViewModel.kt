@@ -9,7 +9,7 @@ import com.samsung.vortex.repository.MessageRepositoryImpl
 class MediaMessageViewModel(private var receiver: String) : ViewModel() {
     private var messagesWithReceiver: MutableLiveData<ArrayList<Message>>? = null
 
-    fun getMediaMessageWithReceiver(): LiveData<java.util.ArrayList<Message>>? {
+    fun getMediaMessageWithReceiver(): LiveData<ArrayList<Message>>? {
         return messagesWithReceiver
     }
 

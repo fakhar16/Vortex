@@ -78,7 +78,7 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
     }
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
-        holder.setIsRecyclable(false)
+//        holder.setIsRecyclable(false)
         val message = messageList[position]
 
         //Setting message and time
