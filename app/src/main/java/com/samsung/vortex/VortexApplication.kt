@@ -16,11 +16,13 @@ class VortexApplication : Application() {
         lateinit var videoUrlDatabaseReference: DatabaseReference
         lateinit var docsUrlDatabaseReference: DatabaseReference
         lateinit var contactsDatabaseReference: DatabaseReference
+        lateinit var audioRecordingUrlDatabaseReference: DatabaseReference
 
         lateinit var userProfilesImagesReference: StorageReference
         lateinit var imageStorageReference: StorageReference
         lateinit var videoStorageReference: StorageReference
         lateinit var docsStorageReference: StorageReference
+        lateinit var audioRecordingStorageReference: StorageReference
 
         lateinit var application: Application
     }
@@ -42,6 +44,7 @@ class VortexApplication : Application() {
         videoUrlDatabaseReference = firebaseDatabase.getReference(getString(R.string.VIDEO_URL_USED_BY_USERS))
         docsUrlDatabaseReference = firebaseDatabase.getReference(getString(R.string.doc_url_used_by_users))
         contactsDatabaseReference = firebaseDatabase.getReference(getString(R.string.CONTACTS))
+        audioRecordingUrlDatabaseReference = firebaseDatabase.getReference(getString(R.string.AUDIO_RECORDING_URL_BY_USERS))
     }
 
 
@@ -50,5 +53,6 @@ class VortexApplication : Application() {
         imageStorageReference = FirebaseStorage.getInstance().reference.child(application.applicationContext.getString(R.string.IMAGE_FILES))
         videoStorageReference = FirebaseStorage.getInstance().reference.child(application.applicationContext.getString(R.string.VIDEO_FILES))
         docsStorageReference = FirebaseStorage.getInstance().reference.child(getString(R.string.PDF_FILES))
+        audioRecordingStorageReference = FirebaseStorage.getInstance().reference.child(getString(R.string.AUDIO_RECORDING_FILES))
     }
 }

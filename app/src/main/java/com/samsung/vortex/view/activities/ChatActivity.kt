@@ -11,6 +11,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.VibrationEffect
+import android.os.VibratorManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -34,6 +36,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
@@ -48,6 +51,7 @@ import com.samsung.vortex.interfaces.MessageListenerCallback
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.FirebaseUtils
+import com.samsung.vortex.utils.FirebaseUtils.Companion.sendAudioRecording
 import com.samsung.vortex.utils.Utils
 import com.samsung.vortex.utils.Utils.Companion.currentUser
 import com.samsung.vortex.utils.Utils.Companion.getFileSize
@@ -58,11 +62,12 @@ import com.samsung.vortex.utils.Utils.Companion.showLoadingBar
 import com.samsung.vortex.utils.WhatsappLikeProfilePicPreview
 import com.samsung.vortex.viewmodel.MessageViewModel
 import com.squareup.picasso.Picasso
+import com.tougee.recorderview.AudioRecordView
 import java.io.File
 import java.util.Date
 import java.util.Locale
 
-class ChatActivity : AppCompatActivity(), MessageListenerCallback {
+class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordView.Callback {
     private lateinit var binding: ActivityChatBinding
     private lateinit var customChatBarBinding: CustomChatBarBinding
     private lateinit var messageReceiverId: String
@@ -88,8 +93,9 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
     }
 
     private fun initializeFields() {
-//        binding.recordView.activity = this
-//        binding.recordView.callback = this
+        binding.recordView.activity = this
+        binding.recordView.callback = this
+
         messageReceiverId = intent.extras!!.getString(getString(R.string.VISIT_USER_ID))!!
         initToolBar()
         setupViewModel()
@@ -618,5 +624,31 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback {
 
     override fun onMessageSentFailed() {
         Utils.dismissLoadingBar(this, binding.progressbar.root)
+    }
+
+    private var recordedAudioFileName: String? = null
+    override fun isReady(): Boolean {
+        return true
+    }
+
+    override fun onRecordCancel() {
+        binding.chatbar.visibility = View.VISIBLE
+    }
+
+    override fun onRecordEnd() {
+        binding.chatbar.visibility = View.VISIBLE
+        Utils.stopRecording()
+        val filePath: String = VortexApplication.application.applicationContext.filesDir.path
+        val file = File(filePath)
+        val fullFileName = "$file/$recordedAudioFileName.3gp"
+        sendAudioRecording(this, currentUser!!.uid, messageReceiverId, Uri.fromFile(File(fullFileName)), recordedAudioFileName!!)
+    }
+
+    override fun onRecordStart() {
+        recordedAudioFileName = FirebaseDatabase.getInstance().reference.push().key
+        val vibrator = (getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator
+        vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+        binding.chatbar.visibility = View.GONE
+        Utils.startRecording(recordedAudioFileName!!)
     }
 }

@@ -84,4 +84,6 @@
     <string name="play_icon">play_icon\n</string>
     <string name="PHONE">phone</string>
     <string name="CONTACTS">contacts</string>
+    <string name="AUDIO_RECORDING_FILES">AUDIO RECORDING FILES</string>
+    <string name="AUDIO_RECORDING_URL_BY_USERS">audio_recording_url_used_by_users</string>
 </resources>

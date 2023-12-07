@@ -50,7 +50,6 @@ class MessageBottomSheetHandler {
                 dialog.dismiss()
             }
 
-
             //Star click handler
             if (STAR_VISIBILITY == View.VISIBLE) {
                 (dialog.findViewById<View>(R.id.star_text) as TextView).text = context.getString(R.string.UNSTAR)

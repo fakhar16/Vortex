@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
 import com.rajat.pdfviewer.PdfViewerActivity
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
@@ -28,9 +29,11 @@ import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.Utils
 import com.samsung.vortex.utils.Utils.Companion.currentUser
 import com.samsung.vortex.utils.Utils.Companion.getDateTimeString
+import com.samsung.vortex.utils.Utils.Companion.isRecordingPlaying
 import com.samsung.vortex.view.activities.ChatActivity
 import com.samsung.vortex.view.activities.SendContactActivity
 import com.squareup.picasso.Picasso
+import java.io.File
 
 class MessagesAdapter(var context: Context, private var messageList: ArrayList<Message>, var senderId: String, private var receiverId: String)
     : RecyclerView.Adapter<MessagesAdapter.MessageViewHolder>(){
@@ -181,6 +184,37 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
                     intent.putExtra("contactId", message.message)
                     intent.putExtra("IsViewContact", true)
                     context.startActivity(intent)
+                }
+            }
+
+            context.getString(R.string.AUDIO_RECORDING) -> {
+                val filePath: String = VortexApplication.application.applicationContext.filesDir.path + "/" + message.messageId + ".3gp"
+                val file = File(filePath)
+                if (Utils.isRecordingFileExist(file)) {
+                    holder.binding.audioFileDuration.text = Utils.getDuration(file)
+                } else {
+                    FirebaseStorage.getInstance().getReferenceFromUrl(message.message).getFile(file)
+                }
+                holder.binding.message.visibility = View.GONE
+                holder.binding.audioRecordingLayout.visibility = View.VISIBLE
+                holder.binding.playRecording.setOnClickListener {
+                    isRecordingPlaying = !isRecordingPlaying
+                    if (isRecordingPlaying) {
+                        holder.binding.playRecording.setImageResource(R.drawable.baseline_pause_24)
+                        Utils.playAudioRecording(file.path)
+                        Utils.updateAudioDurationUI(
+                            Utils.getDurationLong(file)!!,
+                            holder.binding.audioFileDuration,
+                            holder.binding.playRecording,
+                            holder.binding.audioSeekBar
+                        )
+                    } else {
+                        Utils.countDownTimer!!.cancel()
+                        holder.binding.playRecording.setImageResource(R.drawable.baseline_play_arrow_24)
+                        Utils.stopPlayingRecording()
+                        holder.binding.audioFileDuration.text = Utils.getDuration(file)
+                        holder.binding.audioSeekBar.progress = 0
+                    }
                 }
             }
         }

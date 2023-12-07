@@ -7,13 +7,21 @@ import android.content.ClipboardManager
 import android.content.ContentResolver
 import android.content.Context
 import android.content.res.AssetFileDescriptor
+import android.media.MediaMetadataRetriever
+import android.media.MediaPlayer
+import android.media.MediaRecorder
 import android.net.Uri
+import android.os.CountDownTimer
 import android.provider.OpenableColumns
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.webkit.MimeTypeMap
+import android.widget.ImageView
+import android.widget.SeekBar
+import android.widget.TextView
 import com.google.firebase.storage.FirebaseStorage
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
@@ -21,6 +29,7 @@ import com.samsung.vortex.model.User
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import java.io.File
+import java.io.IOException
 import java.sql.Timestamp
 import java.text.CharacterIterator
 import java.text.SimpleDateFormat
@@ -36,6 +45,12 @@ class Utils {
         const val TYPE_MESSAGE = "type_message"
         var MESSAGE_CHANNEL_ID = "MESSAGE"
         var INCOMING_MESSAGE_NOTIFICATION_ID = 17
+
+        //For audio recording
+        private var recorder: MediaRecorder? = null
+        private var mPlayer: MediaPlayer? =null
+        var countDownTimer: CountDownTimer? = null
+        var isRecordingPlaying = false
 
         fun showLoadingBar(activity: Activity, view: View) {
             view.visibility = View.VISIBLE
@@ -183,6 +198,107 @@ class Utils {
             clipData.addItem(ClipData.Item(fileName))
             clipData.addItem(ClipData.Item(fileSize))
             clipboardManager.setPrimaryClip(clipData)
+        }
+
+        fun startRecording(file_name: String) {
+            val filePath: String = VortexApplication.application.applicationContext.filesDir.path
+            val file = File(filePath)
+            if (!file.exists()) {
+                file.mkdirs()
+            }
+            val fullFileName = "$file/$file_name.3gp"
+            recorder = MediaRecorder()
+            recorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
+            recorder!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+            recorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            recorder!!.setOutputFile(fullFileName)
+            recorder!!.prepare()
+            recorder!!.start()
+        }
+
+        fun stopRecording() {
+            recorder!!.stop()
+            recorder!!.release()
+            recorder = null
+        }
+
+        fun playAudioRecording(filename: String?) {
+            mPlayer = MediaPlayer()
+            mPlayer!!.setDataSource(filename)
+            mPlayer!!.prepare()
+            mPlayer!!.start()
+        }
+
+        fun stopPlayingRecording() {
+            mPlayer!!.release()
+            mPlayer = null
+        }
+
+        fun isRecordingFileExist(file: File): Boolean {
+            return file.exists()
+        }
+
+        fun getDuration(file: File): String? {
+            var durationStr: String
+            try {
+                MediaMetadataRetriever().use { mediaMetadataRetriever ->
+                    mediaMetadataRetriever.setDataSource(file.absolutePath)
+                    durationStr = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toString()
+                }
+            } catch (e: IOException) {
+                throw RuntimeException(e)
+            }
+            return formatMilliSecond(durationStr.toLong())
+        }
+
+        fun getDurationLong(file: File): Long? {
+            var durationStr: String
+            try {
+                MediaMetadataRetriever().use { mediaMetadataRetriever ->
+                    mediaMetadataRetriever.setDataSource(file.absolutePath)
+                    durationStr = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toString()
+                }
+            } catch (e: IOException) {
+                throw RuntimeException(e)
+            }
+            return durationStr.toLong()
+        }
+
+        fun formatMilliSecond(milliseconds: Long): String? {
+            var finalTimerString = ""
+            val secondsString: String
+            val hours = (milliseconds / (1000 * 60 * 60)).toInt()
+            val minutes = (milliseconds % (1000 * 60 * 60)).toInt() / (1000 * 60)
+            val seconds = (milliseconds % (1000 * 60 * 60) % (1000 * 60) / 1000).toInt()
+            if (hours > 0) finalTimerString = "$hours:"
+            secondsString = if (seconds < 10) "0$seconds" else "" + seconds
+            finalTimerString = "$finalTimerString$minutes:$secondsString"
+            return finalTimerString
+        }
+
+        fun updateAudioDurationUI(
+            duration: Long,
+            durationText: TextView,
+            playPause: ImageView,
+            seekBar: SeekBar
+        ) {
+            countDownTimer =
+                object : CountDownTimer(duration, 1000) {
+                    override fun onTick(l: Long) {
+                        durationText.text = formatMilliSecond(l)
+                        val seekBarValue = 100 - (l / (duration * 1.0) * 100.0).toInt()
+                        seekBar.progress = seekBarValue
+                    }
+
+                    @SuppressLint("DefaultLocale")
+                    override fun onFinish() {
+                        durationText.text = formatMilliSecond(duration)
+                        playPause.setImageResource(R.drawable.baseline_play_arrow_24)
+                        stopPlayingRecording()
+                        isRecordingPlaying = false
+                        seekBar.progress = 0
+                    }
+                }.start()
         }
     }
 }

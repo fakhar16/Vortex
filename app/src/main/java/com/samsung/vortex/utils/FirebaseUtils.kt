@@ -14,6 +14,8 @@ import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
+import com.samsung.vortex.VortexApplication.Companion.audioRecordingStorageReference
+import com.samsung.vortex.VortexApplication.Companion.audioRecordingUrlDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.contactsDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.docsStorageReference
 import com.samsung.vortex.VortexApplication.Companion.docsUrlDatabaseReference
@@ -64,6 +66,40 @@ class FirebaseUtils {
                 updateLastMessage(objMessage)
                 sendNotification(message, messageReceiverId, messageSenderId, TYPE_MESSAGE)
             }
+        }
+
+        fun sendAudioRecording(context: Context, messageSenderId: String, messageReceiverId: String, fileUri: Uri, messagePushId: String) {
+            val callback = context as MessageListenerCallback
+            val messageSenderRef = context.getString(R.string.MESSAGES) + "/" + messageSenderId + "/" + messageReceiverId
+            val messageReceiverRef = context.getString(R.string.MESSAGES) + "/" + messageReceiverId + "/" + messageSenderId
+            val filePath: StorageReference = audioRecordingStorageReference.child("$messagePushId.3gp")
+            val uploadTask: StorageTask<UploadTask.TaskSnapshot?> = filePath.putFile(fileUri)
+            uploadTask.continueWithTask { task: Task<UploadTask.TaskSnapshot?> ->
+                if (!task.isSuccessful) {
+                    throw task.exception!!
+                }
+                filePath.downloadUrl
+            }.addOnCompleteListener { task: Task<Uri> ->
+                if (task.isSuccessful) {
+                    callback.onMessageSent()
+                    val downloadUrl = task.result
+                    val myUrl = downloadUrl.toString()
+                    val objMessage = Message(messagePushId, myUrl, context.getString(R.string.AUDIO_RECORDING), messageSenderId, messageReceiverId, Date().time, -1, "", true)
+                    val messageBodyDetails: MutableMap<String, Any> = HashMap()
+                    messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
+                    messageBodyDetails["$messageReceiverRef/$messagePushId"] = objMessage
+                    FirebaseDatabase.getInstance().reference
+                        .updateChildren(messageBodyDetails)
+                    val audioRecordingUrlUserDetails: MutableMap<String, Any> = HashMap()
+                    audioRecordingUrlUserDetails[messageSenderId] = true
+                    audioRecordingUrlUserDetails[messageReceiverId] = true
+                    audioRecordingUrlDatabaseReference
+                        .child(messagePushId)
+                        .updateChildren(audioRecordingUrlUserDetails)
+                    updateLastMessage(objMessage)
+                    sendNotification("Sent an audio message", messageReceiverId, messageSenderId, TYPE_MESSAGE)
+                }
+            }.addOnFailureListener { e: Exception? -> callback.onMessageSentFailed() }
         }
 
         fun sendContact(contact: PhoneContact, messageSenderId: String, messageReceiverId: String) {
