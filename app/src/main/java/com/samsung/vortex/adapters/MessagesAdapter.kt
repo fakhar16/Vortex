@@ -193,13 +193,16 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
                 }
                 val filePath: String = VortexApplication.application.applicationContext.filesDir.path + "/" + message.messageId + ".3gp"
                 val file = File(filePath)
+
+                holder.binding.audioRecordingLayout.visibility = View.VISIBLE
                 if (Utils.isRecordingFileExist(file)) {
                     holder.binding.audioFileDuration.text = Utils.getDuration(file)
                 } else {
                     FirebaseStorage.getInstance().getReferenceFromUrl(message.message).getFile(file)
                 }
+
                 holder.binding.message.visibility = View.GONE
-                holder.binding.audioRecordingLayout.visibility = View.VISIBLE
+                holder.binding.audioFileDuration.visibility = View.VISIBLE
                 holder.binding.playRecording.setOnClickListener {
                     isRecordingPlaying = !isRecordingPlaying
                     if (isRecordingPlaying) {

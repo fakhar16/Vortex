@@ -113,7 +113,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
         viewModel = ViewModelProvider(this, MessageViewModelFactory(currentUser!!.uid, messageReceiverId))[MessageViewModel::class.java]
         viewModel.getMessage()?.observe(this) {
             adapter.notifyDataSetChanged()
-            scrollToMessage()
+//            scrollToMessage()
         }
     }
 

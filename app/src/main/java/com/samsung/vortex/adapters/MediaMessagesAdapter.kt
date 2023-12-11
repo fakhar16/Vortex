@@ -33,10 +33,7 @@ class MediaMessagesAdapter(private val context: Context, private var messageList
                     .placeholder(R.drawable.baseline_play_circle_outline_24)
                     .into(holder.binding.image)
                 holder.binding.image.setOnClickListener {
-                    (context as MediaLinksDocsActivity).showVideoPreview(
-                        holder.binding.image,
-                        message.message
-                    )
+                    (context as MediaLinksDocsActivity).showVideoPreview(holder.binding.image, message.message)
                 }
             }
             context.getString(R.string.IMAGE) -> {
@@ -47,6 +44,9 @@ class MediaMessagesAdapter(private val context: Context, private var messageList
             }
             context.getString(R.string.AUDIO_RECORDING) -> {
                 holder.binding.image.setImageResource(R.drawable.audio)
+                holder.binding.image.setOnClickListener {
+                    (context as MediaLinksDocsActivity).showAudioPreview(holder.binding.image, Utils.getImageOffline(message.message, message.messageId))
+                }
             }
         }
     }

@@ -44,4 +44,9 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp" />
 
+    <!--    expanded audio view-->
+    <include
+        android:id="@+id/expanded_audio"
+        layout="@layout/layout_expanded_audio_view"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

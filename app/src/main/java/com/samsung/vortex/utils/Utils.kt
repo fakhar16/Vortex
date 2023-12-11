@@ -276,12 +276,7 @@ class Utils {
             return finalTimerString
         }
 
-        fun updateAudioDurationUI(
-            duration: Long,
-            durationText: TextView,
-            playPause: ImageView,
-            seekBar: SeekBar
-        ) {
+        fun updateAudioDurationUI(duration: Long, durationText: TextView, playPause: ImageView, seekBar: SeekBar) {
             countDownTimer =
                 object : CountDownTimer(duration, 1000) {
                     override fun onTick(l: Long) {
