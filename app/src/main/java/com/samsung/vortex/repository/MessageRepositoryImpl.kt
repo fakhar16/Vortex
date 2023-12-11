@@ -63,7 +63,7 @@ class MessageRepositoryImpl : IMessageRepository{
     }
 
     override fun getMediaMessagesMatchingReceiver(receiver: String): MutableLiveData<ArrayList<Message>> {
-        mMediaMessagesWithReceiver = ArrayList<Message>()
+        mMediaMessagesWithReceiver = ArrayList()
         loadMediaMessagesWithReceiver(receiver)
         mediaMessagesWithReceiver.value = mMediaMessagesWithReceiver
         return mediaMessagesWithReceiver
@@ -77,7 +77,7 @@ class MessageRepositoryImpl : IMessageRepository{
     }
 
     override fun getLinksMessagesMatchingReceiver(receiver: String): MutableLiveData<ArrayList<Message>> {
-        mLinksMessagesWithReceiver = ArrayList<Message>()
+        mLinksMessagesWithReceiver = ArrayList()
         loadLinksMessagesWithReceiver(receiver)
         linksMessagesWithReceiver.value = mLinksMessagesWithReceiver
         return linksMessagesWithReceiver
@@ -161,10 +161,8 @@ class MessageRepositoryImpl : IMessageRepository{
                             val message = child.getValue(Message::class.java)!!
                             if (message.type == VortexApplication.application.applicationContext
                                 .getString(R.string.IMAGE) || message.type == VortexApplication.application.applicationContext
-                                    .getString(R.string.VIDEO)
-                            ) mMediaMessagesWithReceiver.add(
-                                message
-                            )
+                                    .getString(R.string.VIDEO) || message.type == VortexApplication.application.getString(R.string.AUDIO_RECORDING))
+                                mMediaMessagesWithReceiver.add(message)
                         }
                     }
                     mediaMessagesWithReceiver.postValue(mMediaMessagesWithReceiver)

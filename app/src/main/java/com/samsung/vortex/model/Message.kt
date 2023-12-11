@@ -14,8 +14,7 @@ data class Message(
     var fileName: String = "",
     var fileSize: String = "",
     var isSong: Boolean = false) {
-
     override fun toString(): String {
-        return "Message(messageId='$messageId', message='$message', type='$type', from='$from', to='$to', time=$time, feeling=$feeling, starred='$starred', isUnread=$isUnread)"
+        return "Message(message='$message', type='$type')"
     }
 }

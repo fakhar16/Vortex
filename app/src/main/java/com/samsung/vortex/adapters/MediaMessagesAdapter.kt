@@ -26,21 +26,27 @@ class MediaMessagesAdapter(private val context: Context, private var messageList
 
     override fun onBindViewHolder(holder: MediaMessagesViewHolder, position: Int) {
         val message: Message = messageList[position]
-        if (message.type == context.getString(R.string.VIDEO)) {
-            holder.binding.play.visibility = View.VISIBLE
-            Glide.with(context).load(message.message).centerCrop()
-                .placeholder(R.drawable.baseline_play_circle_outline_24)
-                .into(holder.binding.image)
-            holder.binding.image.setOnClickListener {
-                (context as MediaLinksDocsActivity).showVideoPreview(
-                    holder.binding.image,
-                    message.message
-                )
+        when (message.type) {
+            context.getString(R.string.VIDEO) -> {
+                holder.binding.play.visibility = View.VISIBLE
+                Glide.with(context).load(message.message).centerCrop()
+                    .placeholder(R.drawable.baseline_play_circle_outline_24)
+                    .into(holder.binding.image)
+                holder.binding.image.setOnClickListener {
+                    (context as MediaLinksDocsActivity).showVideoPreview(
+                        holder.binding.image,
+                        message.message
+                    )
+                }
             }
-        } else {
-            Picasso.get().load(Utils.getImageOffline(message.message, message.messageId)).placeholder(R.drawable.profile_image).into(holder.binding.image)
-            holder.binding.image.setOnClickListener {
-                (context as MediaLinksDocsActivity).showImagePreview(holder.binding.image, Utils.getImageOffline(message.message, message.messageId))
+            context.getString(R.string.IMAGE) -> {
+                Picasso.get().load(Utils.getImageOffline(message.message, message.messageId)).placeholder(R.drawable.profile_image).into(holder.binding.image)
+                holder.binding.image.setOnClickListener {
+                    (context as MediaLinksDocsActivity).showImagePreview(holder.binding.image, Utils.getImageOffline(message.message, message.messageId))
+                }
+            }
+            context.getString(R.string.AUDIO_RECORDING) -> {
+                holder.binding.image.setImageResource(R.drawable.audio)
             }
         }
     }
