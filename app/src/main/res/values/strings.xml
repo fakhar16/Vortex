@@ -86,4 +86,8 @@
     <string name="CONTACTS">contacts</string>
     <string name="AUDIO_RECORDING_FILES">AUDIO RECORDING FILES</string>
     <string name="AUDIO_RECORDING_URL_BY_USERS">audio_recording_url_used_by_users</string>
+    <string name="PROFILE_IMAGE">profileImage</string>
+    <string name="LAST_UPDATED">lastUpdated</string>
+    <string name="STATUSES">statuses</string>
+    <string name="STORIES">stories</string>
 </resources>
