@@ -19,9 +19,11 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
+import com.samsung.vortex.VortexApplication.Companion.callLogsDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.userDatabaseReference
 import com.samsung.vortex.VortexApplication.Companion.videoUserDatabaseReference
 import com.samsung.vortex.databinding.ActivityCallBinding
+import com.samsung.vortex.model.CallLog
 import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.Utils
@@ -31,7 +33,7 @@ import com.samsung.vortex.utils.Utils.Companion.TAG
 import com.samsung.vortex.utils.Utils.Companion.TYPE_DISCONNECT_CALL_BY_USER
 import com.samsung.vortex.webrtc.models.JavaScriptInterface
 import com.squareup.picasso.Picasso
-import java.util.Objects
+import java.util.Date
 import java.util.UUID
 
 class CallActivity : AppCompatActivity() {
@@ -50,7 +52,9 @@ class CallActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCallBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         NotificationManagerCompat.from(applicationContext).cancel(INCOMING_CALL_NOTIFICATION_ID)
+
         rejectFilter = IntentFilter()
         rejectFilter.addAction(ACTION_REJECT_CALL)
         endCallReceiver = object : BroadcastReceiver() {
@@ -60,10 +64,18 @@ class CallActivity : AppCompatActivity() {
                 }
             }
         }
+
         registerReceiver(endCallReceiver, rejectFilter, RECEIVER_NOT_EXPORTED)
+
         sender = intent.getStringExtra(VortexApplication.application.getString(R.string.CALLER))!!
-        binding.endCall.setOnClickListener { disconnectCall() }
-        binding.endOngoingCall.setOnClickListener { disconnectCall() }
+        binding.endCall.setOnClickListener {
+            disconnectCall()
+            sendMissedCallLog()
+        }
+        binding.endOngoingCall.setOnClickListener {
+            disconnectCall()
+            sendIncomingCallLog()
+        }
         binding.toggleAudioBtn.setOnClickListener {
             isAudio = !isAudio
             callJavaScriptFunction("javascript:toggleAudio('$isAudio')")
@@ -82,11 +94,9 @@ class CallActivity : AppCompatActivity() {
                 binding.toggleVideoBtn.setImageResource(R.drawable.btn_video_muted)
             }
         }
+
         setupWebView()
-        val isCallMade = intent.getBooleanExtra(
-            VortexApplication.application.getString(R.string.IS_CALL_MADE),
-            false
-        )
+        val isCallMade = intent.getBooleanExtra(VortexApplication.application.getString(R.string.IS_CALL_MADE), false)
         if (isCallMade) {
             receiver = intent.getStringExtra(VortexApplication.application.getString(R.string.RECEIVER))!!
             sendCallRequest()
@@ -106,13 +116,24 @@ class CallActivity : AppCompatActivity() {
         }
     }
 
+    private fun sendMissedCallLog() {
+        val missedCallLog = CallLog(sender, receiver, "", getString(R.string.MISSED_CALL), Date().time)
+        callLogsDatabaseReference.child(receiver).push().setValue(missedCallLog)
+    }
+
+    private fun sendIncomingCallLog() {
+        val missedCallLog = CallLog(sender, receiver, "", getString(R.string.INCOMING), Date().time)
+        callLogsDatabaseReference.child(receiver).push().setValue(missedCallLog)
+    }
+
     private fun sendCallRequest() {
         videoUserDatabaseReference.child(receiver).child(VortexApplication.application.getString(R.string.INCOMING)).setValue(sender)
+        sendOutGoingCallLog()
         videoUserDatabaseReference.child(receiver).child(getString(R.string.IS_AVAILABLE))
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
-                        if (Objects.requireNonNull(snapshot.value).toString() == "true") {
+                        if (snapshot.value.toString() == "true") {
                             listenForConnId()
                         }
                     }
@@ -120,6 +141,11 @@ class CallActivity : AppCompatActivity() {
 
                 override fun onCancelled(error: DatabaseError) {}
             })
+    }
+
+    private fun sendOutGoingCallLog() {
+        val outGoingCallLog = CallLog(sender, receiver, "", getString(R.string.OUTGOING), Date().time)
+        callLogsDatabaseReference.child(sender).push().setValue(outGoingCallLog)
     }
 
     private fun listenForConnId() {

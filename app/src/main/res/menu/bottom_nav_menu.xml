@@ -9,6 +9,12 @@
         tools:ignore="HardcodedText" />
 
     <item
+        android:id="@+id/navigation_calls"
+        android:icon="@drawable/baseline_call_24"
+        android:title="Calls"
+        tools:ignore="HardcodedText" />
+
+    <item
         android:id="@+id/navigation_chats"
         android:icon="@drawable/chats"
         android:title="@string/CHATS" />

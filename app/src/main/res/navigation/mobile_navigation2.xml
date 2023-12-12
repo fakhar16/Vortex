@@ -12,6 +12,12 @@
         tools:layout="@layout/fragment_chat" />
 
     <fragment
+        android:id="@+id/navigation_calls"
+        android:name="com.samsung.vortex.view.fragments.CallFragment"
+        android:label="@string/Calls"
+        tools:layout="@layout/fragment_call" />
+
+    <fragment
         android:id="@+id/navigation_stories"
         android:name="com.samsung.vortex.view.fragments.StoriesFragment"
         android:label="Status"

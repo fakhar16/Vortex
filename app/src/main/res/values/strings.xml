@@ -101,4 +101,6 @@
     <string name="CONN_ID">connId</string>
     <string name="CALL_ACCEPTED">call_accepted</string>
     <string name="FRIEND_USER_NAME">friend_username</string>
+    <string name="Calls">Calls</string>
+    <string name="CALL_LOGS">CallLogs</string>
 </resources>

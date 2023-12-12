@@ -19,6 +19,7 @@ class VortexApplication : Application() {
         lateinit var audioRecordingUrlDatabaseReference: DatabaseReference
         lateinit var storiesDatabaseReference: DatabaseReference
         lateinit var videoUserDatabaseReference: DatabaseReference
+        lateinit var callLogsDatabaseReference: DatabaseReference
 
         lateinit var userProfilesImagesReference: StorageReference
         lateinit var imageStorageReference: StorageReference
@@ -49,6 +50,7 @@ class VortexApplication : Application() {
         audioRecordingUrlDatabaseReference = firebaseDatabase.getReference(getString(R.string.AUDIO_RECORDING_URL_BY_USERS))
         storiesDatabaseReference = firebaseDatabase.getReference(getString(R.string.STORIES))
         videoUserDatabaseReference = firebaseDatabase.getReference(getString(R.string.VIDEO_USERS))
+        callLogsDatabaseReference = firebaseDatabase.getReference(getString(R.string.CALL_LOGS))
     }
 
 
