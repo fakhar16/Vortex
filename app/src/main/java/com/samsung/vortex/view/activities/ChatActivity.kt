@@ -46,13 +46,16 @@ import com.samsung.vortex.adapters.MessagesAdapter
 import com.samsung.vortex.bottomsheethandler.ShareContactBottomSheetHandler
 import com.samsung.vortex.databinding.ActivityChatBinding
 import com.samsung.vortex.databinding.CustomChatBarBinding
+import com.samsung.vortex.fcm.FCMNotificationSender
 import com.samsung.vortex.interfaces.GoEditTextListener
 import com.samsung.vortex.interfaces.MessageListenerCallback
 import com.samsung.vortex.model.Message
+import com.samsung.vortex.model.Notification
 import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.FirebaseUtils.Companion.sendAudioRecording
 import com.samsung.vortex.utils.Utils
+import com.samsung.vortex.utils.Utils.Companion.TYPE_VIDEO_CALL
 import com.samsung.vortex.utils.Utils.Companion.currentUser
 import com.samsung.vortex.utils.Utils.Companion.getFileSize
 import com.samsung.vortex.utils.Utils.Companion.getFileType
@@ -62,6 +65,7 @@ import com.samsung.vortex.utils.Utils.Companion.showLoadingBar
 import com.samsung.vortex.utils.WhatsappLikeProfilePicPreview
 import com.samsung.vortex.viewmodel.MessageViewModel
 import com.samsung.vortex.viewmodel.viewmodelfactory.MessageViewModelFactory
+import com.samsung.vortex.webrtc.CallActivity
 import com.squareup.picasso.Picasso
 import com.tougee.recorderview.AudioRecordView
 import java.io.File
@@ -239,7 +243,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
 //                Toast.LENGTH_SHORT
 //            ).show()
 //        }
-//        customChatBarBinding.videoCall.setOnClickListener { view -> createVideoCall() }
+        customChatBarBinding.videoCall.setOnClickListener { createVideoCall() }
         customChatBarBinding.userImage.setOnClickListener {
             val file = Utils.getImageOffline(receiver.image, receiver.uid)
             WhatsappLikeProfilePicPreview.zoomImageFromThumb(customChatBarBinding.userImage, binding.expandedImage.cardView, binding.expandedImage.image, binding.chatToolBar.root.rootView, file)
@@ -249,6 +253,16 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
         binding.emojiPickerView.setOnEmojiPickedListener { emojiViewItem ->
             binding.messageInputText.append(emojiViewItem.emoji)
         }
+    }
+
+    private fun createVideoCall() {
+        val notification = Notification(currentUser!!.name, "Incoming Video Call", TYPE_VIDEO_CALL, currentUser!!.image, receiver.token, currentUser!!.uid, receiver.uid)
+        FCMNotificationSender.sendNotification(VortexApplication.application, notification)
+        val intent = Intent(this, CallActivity::class.java)
+        intent.putExtra(getString(R.string.CALLER), currentUser!!.uid)
+        intent.putExtra(getString(R.string.RECEIVER), receiver.uid)
+        intent.putExtra(getString(R.string.IS_CALL_MADE), true)
+        startActivity(intent)
     }
 
     private fun setupAttachmentBottomSheetMenu() {

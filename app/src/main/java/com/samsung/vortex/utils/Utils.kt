@@ -13,7 +13,6 @@ import android.media.MediaRecorder
 import android.net.Uri
 import android.os.CountDownTimer
 import android.provider.OpenableColumns
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
@@ -44,6 +43,7 @@ class Utils {
         const val TAG = "Console"
         const val TYPE_MESSAGE = "type_message"
         var MESSAGE_CHANNEL_ID = "MESSAGE"
+        var INCOMING_CALL_NOTIFICATION_ID = 16
         var INCOMING_MESSAGE_NOTIFICATION_ID = 17
 
         //For audio recording
@@ -51,6 +51,13 @@ class Utils {
         private var mPlayer: MediaPlayer? =null
         var countDownTimer: CountDownTimer? = null
         var isRecordingPlaying = false
+
+        //video calling
+        const val TYPE_VIDEO_CALL: String = "type_video_call"
+        const val ACTION_REJECT_CALL = "reject_call"
+        const val TYPE_DISCONNECT_CALL_BY_USER = "type_disconnect_call_user"
+        const val TYPE_DISCONNECT_CALL_BY_OTHER_USER = "type_disconnect_call_other_user"
+        var INCOMING_CALL_CHANNEL_ID = "incoming_call"
 
         fun showLoadingBar(activity: Activity, view: View) {
             view.visibility = View.VISIBLE
@@ -238,7 +245,7 @@ class Utils {
             return file.exists()
         }
 
-        fun getDuration(file: File): String? {
+        fun getDuration(file: File): String {
             var durationStr: String
             try {
                 MediaMetadataRetriever().use { mediaMetadataRetriever ->
@@ -251,7 +258,7 @@ class Utils {
             return formatMilliSecond(durationStr.toLong())
         }
 
-        fun getDurationLong(file: File): Long? {
+        fun getDurationLong(file: File): Long {
             var durationStr: String
             try {
                 MediaMetadataRetriever().use { mediaMetadataRetriever ->
@@ -264,7 +271,7 @@ class Utils {
             return durationStr.toLong()
         }
 
-        fun formatMilliSecond(milliseconds: Long): String? {
+        fun formatMilliSecond(milliseconds: Long): String {
             var finalTimerString = ""
             val secondsString: String
             val hours = (milliseconds / (1000 * 60 * 60)).toInt()

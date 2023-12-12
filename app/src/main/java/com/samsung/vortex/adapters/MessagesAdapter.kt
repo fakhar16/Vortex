@@ -98,7 +98,6 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
         }
         
         when (message.type) {
-            //Setting image if message type is image
             VortexApplication.application.applicationContext.getString(R.string.IMAGE) -> {
                 if (message.caption.isEmpty())
                     holder.binding.message.visibility = View.GONE

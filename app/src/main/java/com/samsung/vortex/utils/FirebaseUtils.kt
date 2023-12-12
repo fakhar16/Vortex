@@ -365,7 +365,7 @@ class FirebaseUtils {
             )
         }
 
-        private fun sendNotification(message: String, receiverId: String, senderId: String, type: String) {
+        fun sendNotification(message: String, receiverId: String, senderId: String, type: String) {
             userDatabaseReference
                 .child(receiverId)
                 .addValueEventListener(object : ValueEventListener {

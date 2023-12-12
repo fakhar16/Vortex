@@ -1,12 +1,19 @@
 package com.samsung.vortex.fcm
 
 import android.Manifest
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.Person
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.Icon
+import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.RingtoneManager
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
@@ -14,11 +21,20 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
+import com.samsung.vortex.utils.Utils.Companion.ACTION_REJECT_CALL
+import com.samsung.vortex.utils.Utils.Companion.INCOMING_CALL_CHANNEL_ID
+import com.samsung.vortex.utils.Utils.Companion.INCOMING_CALL_NOTIFICATION_ID
 import com.samsung.vortex.utils.Utils.Companion.INCOMING_MESSAGE_NOTIFICATION_ID
 import com.samsung.vortex.utils.Utils.Companion.MESSAGE_CHANNEL_ID
+import com.samsung.vortex.utils.Utils.Companion.TYPE_DISCONNECT_CALL_BY_OTHER_USER
+import com.samsung.vortex.utils.Utils.Companion.TYPE_DISCONNECT_CALL_BY_USER
 import com.samsung.vortex.utils.Utils.Companion.TYPE_MESSAGE
+import com.samsung.vortex.utils.Utils.Companion.TYPE_VIDEO_CALL
+import com.samsung.vortex.view.activities.CallingActivity
 import com.samsung.vortex.view.activities.ChatActivity
+import com.samsung.vortex.view.broadcast.HungUpBroadcast
 import com.samsung.vortex.view.broadcast.ReplyBroadcast
+import com.samsung.vortex.webrtc.CallActivity
 import com.squareup.picasso.Picasso
 import java.io.IOException
 
@@ -37,21 +53,21 @@ class FCMNotificationService: FirebaseMessagingService() {
             TYPE_MESSAGE -> {
                 showMessageNotification(data)
             }
-//            TYPE_VIDEO_CALL -> {
-//                try {
-//                    showVideoCallNotification(data)
-//                } catch (e: IOException) {
-//                    throw RuntimeException(e)
-//                }
-//            }
-//            TYPE_DISCONNECT_CALL_BY_USER -> {
-//                NotificationManagerCompat.from(ApplicationClass.application.getApplicationContext())
-//                    .cancel(INCOMING_CALL_NOTIFICATION_ID)
-//                // Todo: Show missed call log here
-//            }
-//            TYPE_DISCONNECT_CALL_BY_OTHER_USER -> {
-//                applicationContext.sendBroadcast(Intent(ACTION_REJECT_CALL))
-//            }
+            TYPE_VIDEO_CALL -> {
+                try {
+                    showVideoCallNotification(data)
+                } catch (e: IOException) {
+                    throw RuntimeException(e)
+                }
+            }
+            TYPE_DISCONNECT_CALL_BY_USER -> {
+                NotificationManagerCompat.from(VortexApplication.application.getApplicationContext())
+                    .cancel(INCOMING_CALL_NOTIFICATION_ID)
+                // Todo: Show missed call log here
+            }
+            TYPE_DISCONNECT_CALL_BY_OTHER_USER -> {
+                applicationContext.sendBroadcast(Intent(ACTION_REJECT_CALL))
+            }
         }
     }
 
@@ -107,5 +123,81 @@ class FCMNotificationService: FirebaseMessagingService() {
         }
         NotificationManagerCompat.from(this)
             .notify(INCOMING_MESSAGE_NOTIFICATION_ID, notification.build())
+    }
+
+    @Throws(IOException::class)
+    private fun showVideoCallNotification(data: Map<String, String>) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
+        val audioAttr = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .setLegacyStreamType(AudioManager.STREAM_RING)
+            .build()
+        val notificationChannel = NotificationChannelCompat.Builder(INCOMING_CALL_CHANNEL_ID, NotificationManager.IMPORTANCE_HIGH)
+            .setName("Incoming calls")
+            .setDescription("Incoming audio and video call alerts")
+            .setSound(soundUri, audioAttr)
+            .build()
+        val title =
+            data[VortexApplication.application.getString(R.string.TITLE)]
+        val icon =
+            data[VortexApplication.application.getString(R.string.ICON)]
+        val receiverId = data[VortexApplication.application.getString(R.string.RECEIVER_ID)]
+        val senderId = data[VortexApplication.application.getString(R.string.SENDER_ID)]
+        val bitmap = Picasso.get().load(icon).get()
+        val largeIcon = Icon.createWithBitmap(bitmap)
+
+        //Accept call intents
+        val answerIntent = Intent(applicationContext, CallActivity::class.java)
+        answerIntent.putExtra(VortexApplication.application.getString(R.string.CALL_ACCEPTED), true)
+        answerIntent.putExtra(VortexApplication.application.getString(R.string.CALLER), receiverId)
+        val answerPendingIntent = PendingIntent.getActivity(applicationContext, 0, answerIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+        //Reject call intents
+        val rejectIntent = Intent(applicationContext, HungUpBroadcast::class.java)
+        rejectIntent.putExtra(VortexApplication.application.getString(R.string.RECEIVER_ID), receiverId)
+        rejectIntent.putExtra(VortexApplication.application.getString(R.string.SENDER_ID), senderId)
+        val rejectPendingIntent = PendingIntent.getBroadcast(applicationContext, 0, rejectIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+        //Show incoming call full screen intents
+        val showIncomingCallIntent = Intent(applicationContext, CallingActivity::class.java)
+        showIncomingCallIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        showIncomingCallIntent.putExtra(VortexApplication.application.getString(R.string.IMAGE), icon)
+        showIncomingCallIntent.putExtra(VortexApplication.application.getString(R.string.NAME), title)
+        showIncomingCallIntent.putExtra(VortexApplication.application.getString(R.string.FRIEND_USER_NAME), receiverId)
+        val showIncomingCallPendingIntent = PendingIntent.getActivity(applicationContext, 0, showIncomingCallIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+        // Create a new call with the user as caller.
+        val incomingCaller = Person.Builder()
+            .setName(title)
+            .setIcon(largeIcon)
+            .setImportant(true)
+            .build()
+
+        // Create a call style notification for an incoming call.
+        val builder: Notification.Builder = Notification.Builder(VortexApplication.application.applicationContext, INCOMING_CALL_CHANNEL_ID)
+            .setSmallIcon(Icon.createWithResource(VortexApplication.application.applicationContext, R.drawable.icon))
+            .setContentTitle("Incoming call")
+            .setContentText("Whatsapp video call")
+            .setStyle(Notification.CallStyle.forIncomingCall(incomingCaller, rejectPendingIntent, answerPendingIntent))
+            .setContentIntent(showIncomingCallPendingIntent)
+            .setFullScreenIntent(showIncomingCallPendingIntent, true)
+            .addPerson(incomingCaller)
+            .setOngoing(true)
+            .setCategory(Notification.CATEGORY_CALL)
+        NotificationManagerCompat.from(applicationContext)
+            .createNotificationChannel(notificationChannel)
+        NotificationManagerCompat.from(applicationContext)
+            .notify(INCOMING_CALL_NOTIFICATION_ID, builder.build())
     }
 }

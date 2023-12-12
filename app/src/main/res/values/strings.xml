@@ -90,4 +90,15 @@
     <string name="LAST_UPDATED">lastUpdated</string>
     <string name="STATUSES">statuses</string>
     <string name="STORIES">stories</string>
+    <string name="CALLER">caller</string>
+    <string name="RECEIVER">receiver</string>
+    <string name="IS_CALL_MADE">isCallMade</string>
+    <string name="VIDEO_USERS">VideoUsers</string>
+    <string name="MISSED_CALL">Missed</string>
+    <string name="INCOMING">Incoming</string>
+    <string name="OUTGOING">Outgoing</string>
+    <string name="IS_AVAILABLE">isAvailable</string>
+    <string name="CONN_ID">connId</string>
+    <string name="CALL_ACCEPTED">call_accepted</string>
+    <string name="FRIEND_USER_NAME">friend_username</string>
 </resources>

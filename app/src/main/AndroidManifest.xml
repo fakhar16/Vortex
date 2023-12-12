@@ -35,6 +35,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Vortex">
         <activity
+            android:name=".view.activities.CallingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".webrtc.CallActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.activities.SendContactActivity"
             android:exported="false" />
         <activity
