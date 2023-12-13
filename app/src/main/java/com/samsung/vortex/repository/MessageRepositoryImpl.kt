@@ -135,10 +135,12 @@ class MessageRepositoryImpl : IMessageRepository{
                         }
                         val temp: ArrayList<Message> = ArrayList(mStarredMessagesWithReceiver)
                         mStarredMessagesWithReceiver.clear()
-                        for (message in messages.value!!) {
-                            for (tempMessage in temp) {
-                                if (tempMessage.messageId == message.messageId)
-                                    mStarredMessagesWithReceiver.add(message)
+                        if (messages.value != null) {
+                            for (message in messages.value!!) {
+                                for (tempMessage in temp) {
+                                    if (tempMessage.messageId == message.messageId)
+                                        mStarredMessagesWithReceiver.add(message)
+                                }
                             }
                         }
                     }

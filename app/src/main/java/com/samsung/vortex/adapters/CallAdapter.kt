@@ -37,7 +37,7 @@ class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog
         val callLog = callLogs[position]
         if (currentUser!!.uid == callLog.from) {
             holder.binding.callInfo.setOnClickListener {
-                openUserAndCallInfo(callLog.to)
+                openUserAndCallInfo(callLog.to, callLog)
             }
             userDatabaseReference.child(callLog.to)
                 .addValueEventListener(object: ValueEventListener {
@@ -55,7 +55,7 @@ class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog
                 })
         } else {
             holder.binding.callInfo.setOnClickListener {
-                openUserAndCallInfo(callLog.from)
+                openUserAndCallInfo(callLog.from, callLog)
             }
             userDatabaseReference.child(callLog.from)
                 .addValueEventListener(object: ValueEventListener {
@@ -75,9 +75,11 @@ class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog
         }
     }
 
-    private fun openUserAndCallInfo(receiverId: String) {
+    private fun openUserAndCallInfo(receiverId: String, callLog: CallLog) {
         val intent = Intent(context, ProfileActivity::class.java)
         intent.putExtra(context.getString(R.string.RECEIVER_ID), receiverId)
+        intent.putExtra(context.getString(R.string.CALL_LOG), callLog)
+        intent.putExtra(context.getString(R.string.IS_FROM_CALL_LOG), true)
         context.startActivity(intent)
 
     }
@@ -110,31 +112,4 @@ class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog
         callLogs = filterList
         notifyDataSetChanged()
     }
-
-//    private fun updateUnreadMessageListForUser(user: User, holder: ChatAdapter.ChatViewHolder) {
-//        var unreadMessageCount = 0
-//        VortexApplication.messageDatabaseReference
-//            .child(Utils.currentUser!!.uid)
-//            .child(user.uid)
-//            .addValueEventListener(object : ValueEventListener {
-//                override fun onDataChange(snapshot: DataSnapshot) {
-//                    if (snapshot.exists()) {
-//                        for (child in snapshot.children) {
-//                            val message: Message = child.getValue(Message::class.java)!!
-//                            if (message.isUnread) {
-//                                unreadMessageCount++
-//                            }
-//                        }
-//                        if (unreadMessageCount != 0) {
-//                            holder.binding.unreadMessageCount.visibility = View.VISIBLE
-//                            holder.binding.unreadMessageCount.text = unreadMessageCount.toString()
-//                        } else {
-//                            holder.binding.unreadMessageCount.visibility = View.GONE
-//                        }
-//                    }
-//                }
-//
-//                override fun onCancelled(error: DatabaseError) {}
-//            })
-//    }
 }

@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.repository.MessageRepositoryImpl
 
-class StarredMessageViewModel(private val isReceiver: Boolean = false): ViewModel() {
+class StarredMessageViewModel(isReceiver: Boolean = false): ViewModel() {
     var messages: MutableLiveData<ArrayList<Message>>? = null
-    var messagesWithReceiver: MutableLiveData<ArrayList<Message>>? = null
+    private var messagesWithReceiver: MutableLiveData<ArrayList<Message>>? = null
 
     fun getStarredMessage(): LiveData<ArrayList<Message>>? {
         return messages

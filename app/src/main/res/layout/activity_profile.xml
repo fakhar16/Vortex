@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/container"
     android:background="#D8F3F6"
+    android:orientation="vertical"
     tools:context=".view.activities.ProfileActivity">
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -13,9 +14,7 @@
         android:layout_height="wrap_content">
         <include
             android:id="@+id/mainPageToolbar"
-            layout="@layout/app_bar_layout"
-            >
-        </include>
+            layout="@layout/app_bar_layout" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <!--    User info layout-->
@@ -24,7 +23,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:layout_below="@id/appBarLayout"
         android:orientation="vertical"
         android:layout_marginTop="10dp">
         <de.hdodenhof.circleimageview.CircleImageView
@@ -56,7 +54,6 @@
         android:id="@+id/interaction_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/user_info"
         android:layout_marginTop="30dp"
         android:gravity="center"
         android:orientation="horizontal">
@@ -106,7 +103,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="50dp"
-        android:layout_below="@id/interaction_buttons"
         android:background="@drawable/buttons"
         android:layout_marginHorizontal="15dp"
         android:gravity="center_vertical"
@@ -121,6 +117,73 @@
             />
 
     </RelativeLayout>
+
+    <!--    CallLog view-->
+    <LinearLayout
+        android:id="@+id/call_log_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="50dp"
+        android:orientation="vertical"
+        android:background="@drawable/buttons"
+        android:layout_marginHorizontal="15dp"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:id="@+id/call_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:text="Date"
+            android:textColor="@color/black"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/call_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/sinch_grey"
+                android:layout_marginEnd="50dp"
+                />
+
+            <ImageView
+                android:id="@+id/call_type_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/baseline_videocam_24"
+                android:layout_marginEnd="5dp"
+                app:tint="@color/sinch_grey" />
+
+            <TextView
+                android:id="@+id/call_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="description"
+                android:textColor="@color/sinch_grey"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/call_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/sinch_grey"
+            android:layout_marginStart="115dp"
+            android:layout_marginBottom="10dp"
+            />
+
+    </LinearLayout>
 
     <!--    Media and starred view-->
     <LinearLayout
@@ -216,4 +279,4 @@
     <include
         android:id="@+id/expanded_image"
         layout="@layout/layout_expanded_image_view"/>
-</RelativeLayout>
+</LinearLayout>

@@ -11,6 +11,7 @@ import com.google.firebase.database.ValueEventListener
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication.Companion.userDatabaseReference
 import com.samsung.vortex.databinding.ActivityProfileBinding
+import com.samsung.vortex.model.CallLog
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.model.User
 import com.samsung.vortex.repository.MessageRepositoryImpl
@@ -34,10 +35,20 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         receiverId = intent.getStringExtra(getString(R.string.RECEIVER_ID))!!
+        val isFromCallLog = intent.getBooleanExtra(getString(R.string.IS_FROM_CALL_LOG), false)
+
         starMessages = MessageRepositoryImpl.getInstance().getStarredMessagesMatchingReceiver().value!!
         mediaMessages = MessageRepositoryImpl.getInstance().getMediaMessagesMatchingReceiver(receiverId).value!!
         docMessages = MessageRepositoryImpl.getInstance().getDocMessagesMatchingReceiver(receiverId).value!!
         linksMessages = MessageRepositoryImpl.getInstance().getLinksMessagesMatchingReceiver(receiverId).value!!
+
+        if (isFromCallLog) {
+            val callLog: CallLog = intent.getSerializableExtra(getString(R.string.CALL_LOG), CallLog::class.java)!!
+            binding.callDate.text = Utils.getDateString(callLog.time)
+            binding.callTime.text = Utils.getTimeString(callLog.time)
+            binding.callDescription.text = String.format("${callLog.type} Video call")
+            binding.callLogParent.visibility = View.VISIBLE
+        }
 
         loadUserInfo()
         initToolBar()
