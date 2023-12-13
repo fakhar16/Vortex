@@ -80,7 +80,8 @@
                     android:layout_above="@id/sendMessage"
                     android:layout_marginBottom="10dp"
                     android:padding="8dp"
-                    />
+                    android:autofillHints=""
+                    android:inputType="text" />
             </RelativeLayout>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

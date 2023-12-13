@@ -36,7 +36,7 @@
             android:layout_centerHorizontal="true"
             android:textColor="@android:color/white"
             android:layout_below="@id/caller_name"
-            />
+            tools:ignore="HardcodedText" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/caller_image"

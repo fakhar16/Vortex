@@ -14,12 +14,12 @@
     <string name="IMAGE">image</string>
     <string name="PROFILE_IMAGES">profile_images</string>
     <string name="UPDATE_PROFILE_IMAGE_TITLE">Updating Profile Image</string>
-    <string name="UPDATE_PROFILE_IMAGE_DESCRIPTION">Please wait, your image is updating...</string>
+    <string name="UPDATE_PROFILE_IMAGE_DESCRIPTION">Please wait, your image is updating…</string>
     <string name="CONTINUE">Continue</string>
     <string name="VERIFICATION_CODE_TITLE">Verification code</string>
     <string name="VERIFICATION_CODE_DESCRIPTION">Please wait, while we are verifying your code</string>
     <string name="PHONE_VERIFICATION_TITLE">Phone Verification</string>
-    <string name="PHONE_VERIFICATION_DESCRIPTION">Please wait, while we are authenticating your phone...</string>
+    <string name="PHONE_VERIFICATION_DESCRIPTION">Please wait, while we are authenticating your phone…</string>
     <string name="UID">uid</string>
     <string name="CHATS">Chats</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -40,7 +40,7 @@
     <string name="custom_cancel_text">Cancel</string>
     <string name="custom_hint_text">Hold to record, release to send</string>
     <string name="SENDING_FILE_TITLE">Sending File</string>
-    <string name="SENDING_FILE_DESCRIPTION">Please wait, while we are sending your file...</string>
+    <string name="SENDING_FILE_DESCRIPTION">Please wait, while we are sending your file…</string>
     <string name="SEARCH_MESSAGE">search_message</string>
     <string name="TEXT">text</string>
     <string name="VIDEO">video</string>

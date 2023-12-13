@@ -35,7 +35,7 @@
         android:layout_centerHorizontal="true"
         android:textColor="@android:color/white"
         android:layout_below="@id/profile_name"
-        />
+        tools:ignore="HardcodedText" />
 
 
     <ImageButton
@@ -61,7 +61,7 @@
         android:layout_marginEnd="80dp"
         android:layout_marginBottom="90dp"
         android:textStyle="bold"
-        />
+        tools:ignore="HardcodedText" />
 
     <ImageButton
         android:id="@+id/btn_reject"
@@ -86,6 +86,6 @@
         android:layout_marginStart="80dp"
         android:layout_marginBottom="90dp"
         android:textStyle="bold"
-        />
+        tools:ignore="HardcodedText" />
 
 </RelativeLayout>

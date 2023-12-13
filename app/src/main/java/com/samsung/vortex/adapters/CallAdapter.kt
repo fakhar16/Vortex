@@ -2,6 +2,7 @@ package com.samsung.vortex.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ import com.samsung.vortex.model.CallLog
 import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.Utils
 import com.samsung.vortex.utils.Utils.Companion.currentUser
+import com.samsung.vortex.view.activities.ProfileActivity
 import com.squareup.picasso.Picasso
 
 class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog>)
@@ -34,6 +36,9 @@ class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog
     override fun onBindViewHolder(holder: CallViewHolder, position: Int) {
         val callLog = callLogs[position]
         if (currentUser!!.uid == callLog.from) {
+            holder.binding.callInfo.setOnClickListener {
+                openUserAndCallInfo(callLog.to)
+            }
             userDatabaseReference.child(callLog.to)
                 .addValueEventListener(object: ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
@@ -49,6 +54,9 @@ class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog
 
                 })
         } else {
+            holder.binding.callInfo.setOnClickListener {
+                openUserAndCallInfo(callLog.from)
+            }
             userDatabaseReference.child(callLog.from)
                 .addValueEventListener(object: ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
@@ -65,34 +73,13 @@ class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog
                 })
 
         }
-//        holder.binding.callerName.text = user.name
-//        Picasso.get().load(Utils.getImageOffline(user.image, user.uid)).placeholder(R.drawable.profile_image).into(holder.binding.usersProfileImage)
+    }
 
-//        VortexApplication.messageDatabaseReference
-//            .child(Utils.currentUser!!.uid)
-//            .child(context.getString(R.string.LAST_MESSAGE_WITH_) + user.uid)
-//            .addValueEventListener(object : ValueEventListener {
-//                override fun onDataChange(snapshot: DataSnapshot) {
-//                    if (snapshot.exists()) {
-//                        val lastMsg = snapshot.child(context.getString(R.string.LAST_MESSAGE_DETAILS)).getValue(String::class.java)
-//                        val lastMsgTime = snapshot.child(context.getString(R.string.LAST_MESSAGE_TIME)).getValue(Long::class.java)
-//                        holder.binding.userProfileStatus.text = lastMsg
-//                        holder.binding.userLastSeenTime.text = Utils.getDateTimeString(lastMsgTime!!)
-//                    } else {
-//                        holder.binding.userProfileStatus.text = context.getString(R.string.TAP_TO_CHAT)
-//                    }
-//                }
-//
-//                override fun onCancelled(error: DatabaseError) {}
-//            })
+    private fun openUserAndCallInfo(receiverId: String) {
+        val intent = Intent(context, ProfileActivity::class.java)
+        intent.putExtra(context.getString(R.string.RECEIVER_ID), receiverId)
+        context.startActivity(intent)
 
-//        holder.itemView.setOnClickListener {
-//            val chatIntent = Intent(context, ChatActivity::class.java)
-//            chatIntent.putExtra(context.getString(R.string.VISIT_USER_ID), user.uid)
-//            context.startActivity(chatIntent)
-//        }
-//
-//        updateUnreadMessageListForUser(user, holder)
     }
 
     private fun updateCallLogDetails(holder: CallViewHolder, user: User, callLog: CallLog) {

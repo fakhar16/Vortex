@@ -1,5 +1,6 @@
 package com.samsung.vortex.utils.custom_xml
 
+//noinspection SuspiciousImport
 import android.R
 import android.content.Context
 import android.util.AttributeSet
@@ -7,7 +8,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import com.samsung.vortex.interfaces.GoEditTextListener
 
 class GoEditText : AppCompatEditText {
-    var listeners: ArrayList<GoEditTextListener>
+    private var listeners: ArrayList<GoEditTextListener>
 
     constructor(context: Context?) : super(context!!) {
         listeners = ArrayList()
@@ -46,13 +47,13 @@ class GoEditText : AppCompatEditText {
         return consumed
     }
 
-    fun onTextCut() {}
-    fun onTextCopy() {}
+    private fun onTextCut() {}
+    private fun onTextCopy() {}
 
     /**
      * adding listener for Paste for example
      */
-    fun onTextPaste() {
+    private fun onTextPaste() {
         for (listener in listeners) {
             listener.onUpdate()
         }
