@@ -1,5 +1,6 @@
 package com.samsung.vortex.view.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,14 +10,21 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.samsung.vortex.R
+import com.samsung.vortex.VortexApplication
 import com.samsung.vortex.VortexApplication.Companion.userDatabaseReference
+import com.samsung.vortex.bottomsheethandler.ClearChatBottomSheetHandler
 import com.samsung.vortex.databinding.ActivityProfileBinding
+import com.samsung.vortex.fcm.FCMNotificationSender
 import com.samsung.vortex.model.CallLog
 import com.samsung.vortex.model.Message
+import com.samsung.vortex.model.Notification
 import com.samsung.vortex.model.User
 import com.samsung.vortex.repository.MessageRepositoryImpl
 import com.samsung.vortex.utils.Utils
+import com.samsung.vortex.utils.Utils.Companion.TYPE_VIDEO_CALL
+import com.samsung.vortex.utils.Utils.Companion.currentUser
 import com.samsung.vortex.utils.WhatsappLikeProfilePicPreview
+import com.samsung.vortex.webrtc.CallActivity
 import com.squareup.picasso.Picasso
 
 class ProfileActivity : AppCompatActivity() {
@@ -82,11 +90,15 @@ class ProfileActivity : AppCompatActivity() {
             })
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateUserUI() {
         binding.userName.text = receiver.name
         binding.userPhone.text = receiver.phone_number
         binding.userStatus.text = receiver.status
         Picasso.get().load(Utils.getImageOffline(receiver.image, receiver.uid)).placeholder(R.drawable.profile_image).into(binding.userImage)
+
+        binding.blockUser.text = "Block ${receiver.name}"
+        binding.reportUser.text = "Report ${receiver.name}"
 
         updateStarredMessageCount()
         updateMediaMessageCount()
@@ -138,8 +150,23 @@ class ProfileActivity : AppCompatActivity() {
         binding.userImage.setOnClickListener { showImagePreview(binding.userImage) }
         binding.starLayout.setOnClickListener { sendUserToStarActivity() }
         binding.search.setOnClickListener { sendUserToChatActivity() }
-//        binding.videoCall.setOnClickListener { createVideoCall() }
+        binding.videoCall.setOnClickListener { createVideoCall() }
         binding.mediaLayout.setOnClickListener { sendUserToMediaLinksDocsActivity() }
+        binding.clearChat.setOnClickListener { showClearChatDialog() }
+    }
+
+    private fun showClearChatDialog() {
+        ClearChatBottomSheetHandler.start(this, receiverId)
+    }
+
+    private fun createVideoCall() {
+        val notification = Notification(currentUser!!.name, "Incoming Video Call", TYPE_VIDEO_CALL, currentUser!!.image, receiver.token, currentUser!!.uid, receiver.uid)
+        FCMNotificationSender.sendNotification(VortexApplication.application.applicationContext, notification)
+        val intent = Intent(this, CallActivity::class.java)
+        intent.putExtra(VortexApplication.application.getString(R.string.CALLER), currentUser!!.uid)
+        intent.putExtra(getString(R.string.RECEIVER), receiver.uid)
+        intent.putExtra(getString(R.string.IS_CALL_MADE), true)
+        startActivity(intent)
     }
 
     private fun sendUserToMediaLinksDocsActivity() {

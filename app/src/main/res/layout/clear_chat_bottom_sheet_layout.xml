@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/forward_message_main_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/clear_chat_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="Clear all messages from user?"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        tools:ignore="HardcodedText" />
+
+    <ImageView
+        android:id="@+id/close_clear_chat_dialog"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_close"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/circle_primary_color"
+        android:backgroundTint="@color/colorPrimaryDark"
+        app:tint="@color/white" />
+
+    <LinearLayout
+        android:id="@+id/clear_chat_alert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/buttons"
+        android:backgroundTint="#049887"
+        android:layout_marginHorizontal="10dp"
+        android:padding="10dp"
+        android:layout_below="@id/clear_chat_title"
+        >
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This chat will be empty but will remain in your chat list."
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/clear_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/buttons"
+        android:backgroundTint="#049887"
+        android:layout_marginHorizontal="10dp"
+        android:padding="10dp"
+        android:layout_below="@id/clear_chat_alert"
+        >
+        <TextView
+            android:gravity="center"
+            android:id="@+id/block_user"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Clear All Messages"
+            android:textSize="14sp"
+            android:textColor="#FF3D00"
+            tools:ignore="HardcodedText" />
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/baseline_close_24"
+            android:background="@drawable/circle_primary_color"
+            android:backgroundTint="#FF3D00"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>

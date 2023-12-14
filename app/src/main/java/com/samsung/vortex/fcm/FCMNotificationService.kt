@@ -1,6 +1,7 @@
 package com.samsung.vortex.fcm
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -38,6 +39,7 @@ import com.samsung.vortex.webrtc.CallActivity
 import com.squareup.picasso.Picasso
 import java.io.IOException
 
+@SuppressLint("MissingFirebaseInstanceTokenRefresh")
 class FCMNotificationService: FirebaseMessagingService() {
     companion object {
         const val KEY_TEXT_REPLY = "text_reply"
@@ -47,9 +49,7 @@ class FCMNotificationService: FirebaseMessagingService() {
         super.onMessageReceived(remoteMessage)
         val data: Map<String, String> = remoteMessage.data
 
-        val type = data[VortexApplication.application.applicationContext.getString(R.string.TYPE)]
-
-        when (type) {
+        when (data[VortexApplication.application.applicationContext.getString(R.string.TYPE)]) {
             TYPE_MESSAGE -> {
                 showMessageNotification(data)
             }
@@ -61,9 +61,8 @@ class FCMNotificationService: FirebaseMessagingService() {
                 }
             }
             TYPE_DISCONNECT_CALL_BY_USER -> {
-                NotificationManagerCompat.from(VortexApplication.application.getApplicationContext())
+                NotificationManagerCompat.from(VortexApplication.application.applicationContext)
                     .cancel(INCOMING_CALL_NOTIFICATION_ID)
-                // Todo: Show missed call log here
             }
             TYPE_DISCONNECT_CALL_BY_OTHER_USER -> {
                 applicationContext.sendBroadcast(Intent(ACTION_REJECT_CALL))

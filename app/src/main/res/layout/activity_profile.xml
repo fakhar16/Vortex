@@ -17,264 +17,554 @@
             layout="@layout/app_bar_layout" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!--    User info layout-->
-    <LinearLayout
-        android:id="@+id/user_info"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp">
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/user_image"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:src="@drawable/profile_image"
-            />
-        <TextView
-            android:id="@+id/user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:textSize="28sp"
-            android:layout_marginTop="10dp"
-            />
-
-        <TextView
-            android:id="@+id/user_phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            />
-    </LinearLayout>
-
-    <!--    audio, video and search buttons-->
-    <LinearLayout
-        android:id="@+id/interaction_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/audio_call"
-            android:layout_width="100dp"
-            android:layout_height="60dp"
-            android:text="audio"
-            android:textAllCaps="false"
-            android:background="@drawable/buttons"
-            android:drawableTop="@drawable/baseline_call_24"
-            android:drawableTint="@color/color_blue"
-            android:textColor="@color/color_blue"
-            android:layout_marginEnd="20dp"
-            tools:ignore="HardcodedText" />
-
-        <Button
-            android:id="@+id/video_call"
-            android:layout_width="100dp"
-            android:layout_height="60dp"
-            android:text="video"
-            android:textAllCaps="false"
-            android:background="@drawable/buttons"
-            android:drawableTop="@drawable/baseline_videocam_24"
-            android:drawableTint="@color/color_blue"
-            android:textColor="@color/color_blue"
-            android:layout_marginEnd="20dp"
-            tools:ignore="HardcodedText" />
-
-        <Button
-            android:id="@+id/search"
-            android:layout_width="100dp"
-            android:layout_height="60dp"
-            android:text="search"
-            android:textAllCaps="false"
-            android:background="@drawable/buttons"
-            android:drawableTop="@drawable/search"
-            android:drawableTint="@color/color_blue"
-            android:textColor="@color/color_blue"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
-
-    <!--    Status view-->
-    <RelativeLayout
-        android:id="@+id/status_parent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="50dp"
-        android:background="@drawable/buttons"
-        android:layout_marginHorizontal="15dp"
-        android:gravity="center_vertical"
-        android:layout_marginTop="20dp">
-        <TextView
-            android:id="@+id/user_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:padding="10dp"
-            android:textColor="@color/black"
-            />
-
-    </RelativeLayout>
-
-    <!--    CallLog view-->
-    <LinearLayout
-        android:id="@+id/call_log_parent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="50dp"
-        android:orientation="vertical"
-        android:background="@drawable/buttons"
-        android:layout_marginHorizontal="15dp"
-        android:gravity="center_vertical"
-        android:visibility="gone"
-        android:layout_marginTop="20dp">
-        <TextView
-            android:id="@+id/call_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            android:text="Date"
-            android:textColor="@color/black"
-            />
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginStart="10dp"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/call_time"
-                android:layout_width="wrap_content"
+            android:orientation="vertical">
+    
+            <!--    User info layout-->
+            <LinearLayout
+                android:id="@+id/user_info"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textColor="@color/sinch_grey"
-                android:layout_marginEnd="50dp"
-                />
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/user_image"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/profile_image"
+                    />
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:textSize="28sp"
+                    android:layout_marginTop="10dp"
+                    />
 
-            <ImageView
-                android:id="@+id/call_type_icon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/baseline_videocam_24"
-                android:layout_marginEnd="5dp"
-                app:tint="@color/sinch_grey" />
+                <TextView
+                    android:id="@+id/user_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/call_description"
-                android:layout_width="wrap_content"
+            <!--    audio, video and search buttons-->
+            <LinearLayout
+                android:id="@+id/interaction_buttons"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="description"
-                android:textColor="@color/sinch_grey"
-                tools:ignore="HardcodedText" />
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/audio_call"
+                    android:layout_width="100dp"
+                    android:layout_height="60dp"
+                    android:text="audio"
+                    android:textAllCaps="false"
+                    android:background="@drawable/buttons"
+                    android:drawableTop="@drawable/baseline_call_24"
+                    android:drawableTint="@color/color_blue"
+                    android:textColor="@color/color_blue"
+                    android:layout_marginEnd="20dp"
+                    tools:ignore="HardcodedText" />
+
+                <Button
+                    android:id="@+id/video_call"
+                    android:layout_width="100dp"
+                    android:layout_height="60dp"
+                    android:text="video"
+                    android:textAllCaps="false"
+                    android:background="@drawable/buttons"
+                    android:drawableTop="@drawable/baseline_videocam_24"
+                    android:drawableTint="@color/color_blue"
+                    android:textColor="@color/color_blue"
+                    android:layout_marginEnd="20dp"
+                    tools:ignore="HardcodedText" />
+
+                <Button
+                    android:id="@+id/search"
+                    android:layout_width="100dp"
+                    android:layout_height="60dp"
+                    android:text="search"
+                    android:textAllCaps="false"
+                    android:background="@drawable/buttons"
+                    android:drawableTop="@drawable/search"
+                    android:drawableTint="@color/color_blue"
+                    android:textColor="@color/color_blue"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+
+            <!--    Status view-->
+            <RelativeLayout
+                android:id="@+id/status_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="50dp"
+                android:background="@drawable/buttons"
+                android:layout_marginHorizontal="15dp"
+                android:gravity="center_vertical"
+                android:layout_marginTop="20dp">
+                <TextView
+                    android:id="@+id/user_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:padding="10dp"
+                    android:textColor="@color/black"
+                    />
+
+            </RelativeLayout>
+
+            <!--    CallLog view-->
+            <LinearLayout
+                android:id="@+id/call_log_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="50dp"
+                android:orientation="vertical"
+                android:background="@drawable/buttons"
+                android:layout_marginHorizontal="15dp"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                android:layout_marginTop="20dp">
+                <TextView
+                    android:id="@+id/call_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:text="Date"
+                    android:textColor="@color/black"
+                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/call_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/sinch_grey"
+                        android:layout_marginEnd="50dp"
+                        />
+
+                    <ImageView
+                        android:id="@+id/call_type_icon"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/baseline_videocam_24"
+                        android:layout_marginEnd="5dp"
+                        app:tint="@color/sinch_grey" />
+
+                    <TextView
+                        android:id="@+id/call_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:text="description"
+                        android:textColor="@color/sinch_grey"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/call_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="@color/sinch_grey"
+                    android:layout_marginStart="115dp"
+                    android:layout_marginBottom="10dp"
+                    />
+
+            </LinearLayout>
+
+            <!--    Media and starred view-->
+            <LinearLayout
+                android:id="@+id/media_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/buttons"
+                android:layout_marginHorizontal="15dp"
+                >
+                <LinearLayout
+                    android:id="@+id/media_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginHorizontal="10dp">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/media"
+                        />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Media, Links, and Docs"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="5dp"
+                        tools:ignore="HardcodedText" />
+                    <TextView
+                        android:id="@+id/media_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:text="None"
+                        tools:ignore="HardcodedText" />
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/baseline_arrow_forward_ios_24"
+                        android:layout_marginStart="5dp"
+                        app:tint="@android:color/darker_gray" />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@android:color/darker_gray"
+                    android:layout_marginStart="55dp"/>
+                <LinearLayout
+                    android:id="@+id/star_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="5dp">
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/star"
+                        android:layout_marginStart="9dp"
+                        />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Starred Messages"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="10dp"
+                        tools:ignore="HardcodedText" />
+                    <TextView
+                        android:id="@+id/starredMessages_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        />
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/baseline_arrow_forward_ios_24"
+                        android:layout_marginStart="5dp"
+                        app:tint="@android:color/darker_gray" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!--    Mute, wallpaper and save to Gallery view-->
+            <LinearLayout
+                android:id="@+id/mute_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/buttons"
+                android:layout_marginHorizontal="15dp"
+                >
+                <LinearLayout
+                    android:id="@+id/mute_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="5dp">
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/mute"
+                        android:layout_marginStart="9dp"
+                        />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Mute"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="10dp"
+                        tools:ignore="HardcodedText" />
+                    <TextView
+                        android:id="@+id/mute_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:text="No"
+                        tools:ignore="HardcodedText" />
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/baseline_arrow_forward_ios_24"
+                        android:layout_marginStart="5dp"
+                        app:tint="@android:color/darker_gray" />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@android:color/darker_gray"
+                    android:layout_marginStart="55dp"/>
+                <LinearLayout
+                    android:id="@+id/wallpaper_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="5dp">
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/wallpaper"
+                        android:layout_marginStart="9dp"
+                        />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Wallpaper &amp; Sound"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="10dp"
+                        tools:ignore="HardcodedText" />
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/baseline_arrow_forward_ios_24"
+                        android:layout_marginStart="5dp"
+                        app:tint="@android:color/darker_gray" />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@android:color/darker_gray"
+                    android:layout_marginStart="55dp"/>
+                <LinearLayout
+                    android:id="@+id/save_to_gallery_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="5dp">
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/save_photo"
+                        android:layout_marginStart="9dp"
+                        />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Save to Gallery"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="10dp"
+                        tools:ignore="HardcodedText" />
+                    <TextView
+                        android:id="@+id/save_to_gallery_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:text="Default"
+                        tools:ignore="HardcodedText" />
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/baseline_arrow_forward_ios_24"
+                        android:layout_marginStart="5dp"
+                        app:tint="@android:color/darker_gray" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!--    Contact details view-->
+            <LinearLayout
+                android:id="@+id/contact_details_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/buttons"
+                android:layout_marginHorizontal="15dp"
+                >
+                <LinearLayout
+                    android:id="@+id/contact_details_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="5dp">
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/contact_details"
+                        android:layout_marginStart="9dp"
+                        />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Contact Details"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="10dp"
+                        tools:ignore="HardcodedText" />
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/baseline_arrow_forward_ios_24"
+                        android:layout_marginStart="5dp"
+                        app:tint="@android:color/darker_gray" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!--    Share Contact, export chat and clear chat-->
+            <LinearLayout
+                android:id="@+id/share_contact_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/buttons"
+                android:layout_marginHorizontal="15dp"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Share Contact"
+                    android:textSize="16sp"
+                    android:textColor="@color/color_blue"
+                    android:layout_marginStart="55dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="5dp"
+                    tools:ignore="HardcodedText" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@android:color/darker_gray"
+                    android:layout_marginStart="55dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Export Chat"
+                    android:textSize="16sp"
+                    android:textColor="@color/color_blue"
+                    android:layout_marginStart="55dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="5dp"
+                    tools:ignore="HardcodedText" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@android:color/darker_gray"
+                    android:layout_marginStart="55dp"/>
+
+                <TextView
+                    android:id="@+id/clear_chat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Clear Chat"
+                    android:textSize="16sp"
+                    android:textColor="@color/sinch_decline_red"
+                    android:layout_marginStart="55dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="5dp"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+
+            <!--    Block and report Contact-->
+            <LinearLayout
+                android:id="@+id/block_and_report_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/buttons"
+                android:layout_marginHorizontal="15dp"
+                >
+                <TextView
+                    android:id="@+id/block_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Block user"
+                    android:textSize="16sp"
+                    android:textColor="@color/sinch_decline_red"
+                    android:layout_marginStart="55dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="5dp"
+                    tools:ignore="HardcodedText" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@android:color/darker_gray"
+                    android:layout_marginStart="55dp"/>
+
+                <TextView
+                    android:id="@+id/report_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Report user"
+                    android:textSize="16sp"
+                    android:textColor="@color/sinch_decline_red"
+                    android:layout_marginStart="55dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="5dp"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
         </LinearLayout>
-        <TextView
-            android:id="@+id/call_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/sinch_grey"
-            android:layout_marginStart="115dp"
-            android:layout_marginBottom="10dp"
-            />
+    </ScrollView>
 
-    </LinearLayout>
-
-    <!--    Media and starred view-->
-    <LinearLayout
-        android:id="@+id/media_parent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/status_parent"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/buttons"
-        android:layout_marginHorizontal="15dp"
-        >
-        <LinearLayout
-            android:id="@+id/media_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginHorizontal="10dp">
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/media"
-                />
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Media, Links, and Docs"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:layout_marginStart="5dp"
-                tools:ignore="HardcodedText" />
-            <TextView
-                android:id="@+id/media_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="None"
-                tools:ignore="HardcodedText" />
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@drawable/baseline_arrow_forward_ios_24"
-                android:layout_marginStart="5dp"
-                app:tint="@android:color/darker_gray" />
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@android:color/darker_gray"
-            android:layout_marginStart="55dp"/>
-        <LinearLayout
-            android:id="@+id/star_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="5dp">
-            <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:src="@drawable/star"
-                android:layout_marginStart="9dp"
-                />
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Starred Messages"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:layout_marginStart="10dp"
-                tools:ignore="HardcodedText" />
-            <TextView
-                android:id="@+id/starredMessages_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                />
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@drawable/baseline_arrow_forward_ios_24"
-                android:layout_marginStart="5dp"
-                app:tint="@android:color/darker_gray" />
-        </LinearLayout>
-
-    </LinearLayout>
     <!--    expanded image view-->
     <include
         android:id="@+id/expanded_image"
