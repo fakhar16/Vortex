@@ -1,3 +1,5 @@
+@file:Suppress("ControlFlowWithEmptyBody")
+
 package com.samsung.vortex.utils
 
 import android.content.Context
@@ -36,6 +38,7 @@ import com.samsung.vortex.utils.Utils.Companion.TYPE_MESSAGE
 import com.samsung.vortex.utils.Utils.Companion.currentUser
 import java.util.Date
 
+@Suppress("ControlFlowWithEmptyBody")
 class FirebaseUtils {
     companion object {
         fun sendMessage(message: String, messageSenderId: String, messageReceiverId: String) {

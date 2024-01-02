@@ -8,7 +8,7 @@ import com.samsung.vortex.repository.StatusRepositoryImpl
 
 class StatusViewModel: ViewModel() {
 
-    var userStatuses: MutableLiveData<ArrayList<UserStatus>>? = null
+    private var userStatuses: MutableLiveData<ArrayList<UserStatus>>? = null
 
     fun getUserStatues(): LiveData<ArrayList<UserStatus>>? {
         return userStatuses

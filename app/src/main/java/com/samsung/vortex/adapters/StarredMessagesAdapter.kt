@@ -182,7 +182,7 @@ class StarredMessagesAdapter(var context: Context, private var messageList: Arra
                     if (isRecordingPlaying) {
                         holder.binding.playRecording.setImageResource(R.drawable.baseline_pause_24)
                         Utils.playAudioRecording(file.path)
-                        Utils.updateAudioDurationUI(Utils.getDurationLong(file)!!, holder.binding.audioFileDuration, holder.binding.playRecording, holder.binding.audioSeekBar)
+                        Utils.updateAudioDurationUI(Utils.getDurationLong(file), holder.binding.audioFileDuration, holder.binding.playRecording, holder.binding.audioSeekBar)
                     } else {
                         Utils.countDownTimer!!.cancel()
                         holder.binding.playRecording.setImageResource(R.drawable.baseline_play_arrow_24)

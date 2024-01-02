@@ -78,7 +78,8 @@
                     android:drawableTint="@color/color_blue"
                     android:textColor="@color/color_blue"
                     android:layout_marginEnd="20dp"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="HardcodedText"
+                    style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/video_call"
@@ -91,7 +92,8 @@
                     android:drawableTint="@color/color_blue"
                     android:textColor="@color/color_blue"
                     android:layout_marginEnd="20dp"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="HardcodedText"
+                    style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/search"
@@ -103,7 +105,8 @@
                     android:drawableTop="@drawable/search"
                     android:drawableTint="@color/color_blue"
                     android:textColor="@color/color_blue"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="HardcodedText"
+                    style="?android:attr/buttonBarButtonStyle" />
             </LinearLayout>
 
             <!--    Status view-->

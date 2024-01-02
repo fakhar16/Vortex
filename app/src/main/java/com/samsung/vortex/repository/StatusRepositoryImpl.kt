@@ -37,7 +37,7 @@ class StatusRepositoryImpl : IStatusRepository {
     
     override fun getStatuses(): MutableLiveData<ArrayList<UserStatus>> {
         if (mUserStatuses.size == 0) loadStatuses()
-        userStatuses.setValue(mUserStatuses)
+        userStatuses.value = mUserStatuses
         return userStatuses
     }
 

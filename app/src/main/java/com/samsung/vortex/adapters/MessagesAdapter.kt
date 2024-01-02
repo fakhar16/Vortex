@@ -208,7 +208,7 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
                         holder.binding.playRecording.setImageResource(R.drawable.baseline_pause_24)
                         Utils.playAudioRecording(file.path)
                         Utils.updateAudioDurationUI(
-                            Utils.getDurationLong(file)!!,
+                            Utils.getDurationLong(file),
                             holder.binding.audioFileDuration,
                             holder.binding.playRecording,
                             holder.binding.audioSeekBar

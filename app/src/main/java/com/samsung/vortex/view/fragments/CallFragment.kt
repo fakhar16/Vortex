@@ -12,9 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.samsung.vortex.adapters.CallAdapter
 import com.samsung.vortex.databinding.FragmentCallBinding
-import com.samsung.vortex.model.CallLog
 import com.samsung.vortex.viewmodel.CallViewModel
-import java.util.Locale
 
 class CallFragment : Fragment() {
     private lateinit var viewModel: CallViewModel
@@ -36,7 +34,7 @@ class CallFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this)[CallViewModel::class.java]
-        viewModel.getCallLogs()!!.observe(viewLifecycleOwner) { adapter.notifyDataSetChanged() }
+        viewModel.getCallLogs().observe(viewLifecycleOwner) { adapter.notifyDataSetChanged() }
 //        viewModel.getMissedCallLogs()!!.observe(viewLifecycleOwner) { adapter.notifyDataSetChanged() }
 
     }

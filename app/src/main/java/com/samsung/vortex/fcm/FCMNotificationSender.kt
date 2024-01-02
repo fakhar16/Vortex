@@ -6,7 +6,6 @@ import android.os.StrictMode.ThreadPolicy
 import android.util.Log
 import com.android.volley.RequestQueue
 import com.android.volley.Response
-import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.samsung.vortex.R
@@ -40,7 +39,7 @@ class FCMNotificationSender {
             val jsonObjectRequest: JsonObjectRequest = object : JsonObjectRequest(
                 Method.POST, BASE_URL,
                 receiverJsonObject,
-                Response.Listener<JSONObject> { response: JSONObject ->
+                Response.Listener { response: JSONObject ->
                     Log.i(TAG, "onResponse: FCM: $response") },
                 Response.ErrorListener { }) {
                 override fun getHeaders(): Map<String, String> {

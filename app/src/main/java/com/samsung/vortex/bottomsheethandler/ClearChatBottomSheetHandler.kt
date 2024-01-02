@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication.Companion.messageDatabaseReference
-import com.samsung.vortex.VortexApplication.Companion.userDatabaseReference
 import com.samsung.vortex.utils.Utils.Companion.TAG
 import com.samsung.vortex.utils.Utils.Companion.currentUser
 

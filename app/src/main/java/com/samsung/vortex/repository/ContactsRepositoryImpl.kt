@@ -30,7 +30,7 @@ class ContactsRepositoryImpl : IContactsRepository {
 
     private val mUsers: ArrayList<User> = ArrayList()
     var users: MutableLiveData<ArrayList<User>> = MutableLiveData<ArrayList<User>>()
-    var usersWithUnreadChats: MutableLiveData<ArrayList<User>> = MutableLiveData<ArrayList<User>>()
+    private var usersWithUnreadChats: MutableLiveData<ArrayList<User>> = MutableLiveData<ArrayList<User>>()
     private val contactList = ArrayList<String>()
 
     override fun getContacts(): MutableLiveData<ArrayList<User>> {

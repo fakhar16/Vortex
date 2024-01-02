@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.repository.MessageRepositoryImpl
 
-class LinksMessageViewModel(private var receiver: String) : ViewModel() {
-    var messagesWithReceiver: MutableLiveData<ArrayList<Message>>? = null
+class LinksMessageViewModel(receiver: String) : ViewModel() {
+    private var messagesWithReceiver: MutableLiveData<ArrayList<Message>>? = null
 
     fun getLinksMessageWithReceiver(): LiveData<ArrayList<Message>>? {
         return messagesWithReceiver

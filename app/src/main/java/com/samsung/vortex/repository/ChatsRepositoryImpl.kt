@@ -20,7 +20,7 @@ import com.samsung.vortex.utils.Utils
 class ChatsRepositoryImpl : IChatsRepository{
     private val mUsers = ArrayList<User>()
     var users = MutableLiveData<ArrayList<User>>()
-    var usersWithUnreadChats = MutableLiveData<ArrayList<User>>()
+    private var usersWithUnreadChats = MutableLiveData<ArrayList<User>>()
     private val contactList = ArrayList<String>()
 
     companion object {
