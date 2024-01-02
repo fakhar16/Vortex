@@ -111,7 +111,6 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
                     (context as ChatActivity).showImagePreview(holder.binding.image, Utils.getImageOffline(message.message, message.messageId))
                 }
             }
-            
             VortexApplication.application.getString(R.string.VIDEO) -> {
                 if (message.caption.isEmpty())
                     holder.binding.message.visibility = View.GONE
@@ -127,7 +126,6 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
                     (context as ChatActivity).showVideoPreview(holder.binding.image, message.message)
                 }
             }
-            
             context.getString(R.string.PDF_FILES) -> {
                 //Setting file if message type is
                 if (message.caption.isEmpty())
@@ -150,14 +148,12 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
                     )
                 }
             }
-
             VortexApplication.application.getString(R.string.URL) -> {
                 val linkedText = String.format("<a href=\"%s\">%s</a> ", message.message, message.message)
                 holder.binding.message.text = Html.fromHtml(linkedText, HtmlCompat.FROM_HTML_MODE_LEGACY)
                 holder.binding.message.movementMethod = LinkMovementMethod.getInstance()
                 holder.binding.message.setLinkTextColor(Color.BLUE)
             }
-
             context.getString(R.string.CONTACT) -> {
                 holder.binding.message.visibility = View.GONE
                 holder.binding.contactLayout.visibility = View.VISIBLE
@@ -185,7 +181,6 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
                     context.startActivity(intent)
                 }
             }
-
             context.getString(R.string.AUDIO_RECORDING) -> {
                 if (message.isSong) {
                     holder.binding.audioSenderImage.setImageResource(R.drawable.audio)

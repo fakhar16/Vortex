@@ -35,10 +35,7 @@ class PhoneContactAdapter(context: Context, arrayList: ArrayList<PhoneContact>, 
             intent.putExtra("name", currentPhoneContact.name)
             intent.putExtra("phone", currentPhoneContact.phone)
             intent.putExtra("image", currentPhoneContact.image)
-            intent.putExtra(
-                finalCurrentItemView.context.getString(R.string.VISIT_USER_ID),
-                receiverId
-            )
+            intent.putExtra(finalCurrentItemView.context.getString(R.string.VISIT_USER_ID), receiverId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             finalCurrentItemView.context.startActivity(intent)
         }

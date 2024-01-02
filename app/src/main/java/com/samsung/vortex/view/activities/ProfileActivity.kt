@@ -153,6 +153,14 @@ class ProfileActivity : AppCompatActivity() {
         binding.videoCall.setOnClickListener { createVideoCall() }
         binding.mediaLayout.setOnClickListener { sendUserToMediaLinksDocsActivity() }
         binding.clearChat.setOnClickListener { showClearChatDialog() }
+        binding.contactDetailsLayout.setOnClickListener { showContactDetail() }
+    }
+
+    private fun showContactDetail() {
+        val intent = Intent(this@ProfileActivity, SendContactActivity::class.java)
+        intent.putExtra("contactId", receiverId)
+        intent.putExtra(getString(R.string.isviewcontactfromprofile), true)
+        startActivity(intent)
     }
 
     private fun showClearChatDialog() {

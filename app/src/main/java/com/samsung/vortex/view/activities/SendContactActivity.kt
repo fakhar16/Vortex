@@ -13,6 +13,7 @@ import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
 import com.samsung.vortex.databinding.ActivitySendContactBinding
 import com.samsung.vortex.model.PhoneContact
+import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.Utils
 import com.squareup.picasso.Picasso
@@ -29,6 +30,7 @@ class SendContactActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val isViewContact: Boolean = intent.getBooleanExtra("IsViewContact", false)
+        val isViewContactFromProfile: Boolean = intent.getBooleanExtra(getString(R.string.isviewcontactfromprofile), false)
 
         val name: String? = intent.getStringExtra(getString(R.string.NAME))
         val phone: String? = intent.getStringExtra(getString(R.string.PHONE))
@@ -37,7 +39,26 @@ class SendContactActivity : AppCompatActivity() {
 
         setupUI(name, phone, image, isViewContact)
 
-        if (!isViewContact) {
+        if (isViewContactFromProfile) {
+            binding.sendContact.visibility = View.GONE
+            binding.checkBox.visibility = View.GONE
+            val contactId = intent.getStringExtra("contactId")
+            VortexApplication.userDatabaseReference.child(contactId!!)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            val user = snapshot.getValue(User::class.java)!!
+
+                            binding.name.text = user.name
+                            binding.phoneNumber.text = user.phone_number
+                            Picasso.get().load(user.image).into(binding.image)
+                        }
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+            })
+        } else if (!isViewContact) {
             binding.sendContact.setOnClickListener {
                 if (image == null)
                     FirebaseUtils.sendContact(PhoneContact(phone!!, name!!), Utils.currentUser!!.uid, receiver!!)
