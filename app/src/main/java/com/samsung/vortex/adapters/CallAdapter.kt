@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
@@ -24,6 +25,7 @@ class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog
     : RecyclerView.Adapter<CallAdapter.CallViewHolder>() {
     inner class CallViewHolder(var binding: ItemCallLogBinding) : RecyclerView.ViewHolder(binding.root)
 
+    private var callViewHolder = ArrayList<CallViewHolder>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CallViewHolder {
         val binding = ItemCallLogBinding.inflate(LayoutInflater.from(context), parent, false)
         return CallViewHolder(binding)
@@ -34,6 +36,7 @@ class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog
     }
 
     override fun onBindViewHolder(holder: CallViewHolder, position: Int) {
+        callViewHolder.add(holder)
         val callLog = callLogs[position]
         if (currentUser!!.uid == callLog.from) {
             holder.binding.callInfo.setOnClickListener {
@@ -108,8 +111,20 @@ class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun filterList(filterList: ArrayList<CallLog>) {
+    fun filterCalls(filterList: ArrayList<CallLog>) {
         callLogs = filterList
         notifyDataSetChanged()
+    }
+
+    fun showDeleteButton() {
+        for (holder in  callViewHolder) {
+            holder.binding.delete.visibility = View.VISIBLE
+        }
+    }
+
+    fun hideDeleteButton() {
+        for (holder in  callViewHolder) {
+            holder.binding.delete.visibility = View.GONE
+        }
     }
 }
