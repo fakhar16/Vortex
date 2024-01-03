@@ -11,10 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.samsung.vortex.R
+import com.samsung.vortex.VortexApplication
 import com.samsung.vortex.adapters.CallAdapter
 import com.samsung.vortex.databinding.FragmentCallBinding
 import com.samsung.vortex.model.CallLog
 import com.samsung.vortex.viewmodel.CallViewModel
+import omari.hamza.storyview.utils.Utils
 
 class CallFragment : Fragment() {
     private lateinit var viewModel: CallViewModel
@@ -77,6 +79,15 @@ class CallFragment : Fragment() {
         }
 
         binding.editCallLogs.setOnClickListener { editCallLogs() }
+
+        binding.clearCallLogs.setOnClickListener { clearCallLogs() }
+    }
+
+    private fun clearCallLogs() {
+        VortexApplication.callLogsDatabaseReference.child(com.samsung.vortex.utils.Utils.currentUser!!.uid).removeValue()
+        adapter.filterCalls(ArrayList())
+        adapter.notifyDataSetChanged()
+        editCallLogs()
     }
 
     @SuppressLint("SetTextI18n")

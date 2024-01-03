@@ -3,6 +3,7 @@ package com.samsung.vortex.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.samsung.vortex.databinding.ItemCallLogBinding
 import com.samsung.vortex.model.CallLog
 import com.samsung.vortex.model.User
 import com.samsung.vortex.utils.Utils
+import com.samsung.vortex.utils.Utils.Companion.TAG
 import com.samsung.vortex.utils.Utils.Companion.currentUser
 import com.samsung.vortex.view.activities.ProfileActivity
 import com.squareup.picasso.Picasso
@@ -37,7 +39,17 @@ class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog
 
     override fun onBindViewHolder(holder: CallViewHolder, position: Int) {
         callViewHolder.add(holder)
+
+
+
         val callLog = callLogs[position]
+        holder.binding.delete.setOnClickListener {
+            VortexApplication.callLogsDatabaseReference.child(currentUser!!.uid).child(callLog.id).removeValue()
+            callLogs.removeAt(position)
+            notifyItemRemoved(position)
+
+        }
+
         if (currentUser!!.uid == callLog.from) {
             holder.binding.callInfo.setOnClickListener {
                 openUserAndCallInfo(callLog.to, callLog)
@@ -74,7 +86,6 @@ class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog
                     }
 
                 })
-
         }
     }
 

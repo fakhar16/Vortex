@@ -117,13 +117,15 @@ class CallActivity : AppCompatActivity() {
     }
 
     private fun sendMissedCallLog() {
-        val missedCallLog = CallLog(sender, receiver, "", getString(R.string.MISSED_CALL), Date().time)
-        callLogsDatabaseReference.child(receiver).push().setValue(missedCallLog)
+        val pushKey = callLogsDatabaseReference.child(receiver).push().key!!
+        val missedCallLog = CallLog(pushKey, sender, receiver, "", getString(R.string.MISSED_CALL), Date().time)
+        callLogsDatabaseReference.child(receiver).child(pushKey).setValue(missedCallLog)
     }
 
     private fun sendIncomingCallLog() {
-        val missedCallLog = CallLog(sender, receiver, "", getString(R.string.INCOMING), Date().time)
-        callLogsDatabaseReference.child(receiver).push().setValue(missedCallLog)
+        val pushKey = callLogsDatabaseReference.child(sender).push().key!!
+        val missedCallLog = CallLog(pushKey, sender, receiver, "", getString(R.string.INCOMING), Date().time)
+        callLogsDatabaseReference.child(receiver).child(pushKey).setValue(missedCallLog)
     }
 
     private fun sendCallRequest() {
@@ -144,8 +146,9 @@ class CallActivity : AppCompatActivity() {
     }
 
     private fun sendOutGoingCallLog() {
-        val outGoingCallLog = CallLog(sender, receiver, "", getString(R.string.OUTGOING), Date().time)
-        callLogsDatabaseReference.child(sender).push().setValue(outGoingCallLog)
+        val pushKey = callLogsDatabaseReference.child(sender).push().key!!
+        val outGoingCallLog = CallLog(pushKey, sender, receiver, "", getString(R.string.OUTGOING), Date().time)
+        callLogsDatabaseReference.child(sender).child(pushKey).setValue(outGoingCallLog)
     }
 
     private fun listenForConnId() {
