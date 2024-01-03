@@ -8,6 +8,7 @@
     android:background="#D8F3F6"
     android:orientation="vertical"
     tools:context=".view.activities.ProfileActivity">
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
@@ -16,6 +17,25 @@
             android:id="@+id/mainPageToolbar"
             layout="@layout/app_bar_layout" />
     </com.google.android.material.appbar.AppBarLayout>
+
+    <!--    expanded image view-->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"
+            android:src="@drawable/profile_image" />
+    </androidx.cardview.widget.CardView>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -567,9 +587,4 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
-    <!--    expanded image view-->
-    <include
-        android:id="@+id/expanded_image"
-        layout="@layout/layout_expanded_image_view"/>
 </LinearLayout>

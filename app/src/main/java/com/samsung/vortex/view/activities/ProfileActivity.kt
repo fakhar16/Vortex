@@ -67,8 +67,9 @@ class ProfileActivity : AppCompatActivity() {
     private fun backButtonCallBack() {
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (binding.expandedImage.cardView.visibility == View.VISIBLE) {
+                if (binding.cardView.visibility == View.VISIBLE) {
                     WhatsappLikeProfilePicPreview.dismissPhotoPreview()
+//                    binding.expandedImage.root.visibility = View.GONE
                 } else {
                     finish()
                 }
@@ -125,8 +126,8 @@ class ProfileActivity : AppCompatActivity() {
         val file = Utils.getImageOffline(receiver.image, receiver.uid)
         WhatsappLikeProfilePicPreview.zoomImageFromThumb(
             thumbView,
-            binding.expandedImage.cardView,
-            binding.expandedImage.image,
+            binding.cardView,
+            binding.image,
             binding.container,
             file
         )
