@@ -18,10 +18,14 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
+import com.samsung.vortex.model.Message
 import com.samsung.vortex.utils.Utils.Companion.ACTION_REJECT_CALL
 import com.samsung.vortex.utils.Utils.Companion.INCOMING_CALL_CHANNEL_ID
 import com.samsung.vortex.utils.Utils.Companion.INCOMING_CALL_NOTIFICATION_ID
@@ -52,6 +56,7 @@ class FCMNotificationService: FirebaseMessagingService() {
         when (data[VortexApplication.application.applicationContext.getString(R.string.TYPE)]) {
             TYPE_MESSAGE -> {
                 showMessageNotification(data)
+                updateMessageStatus(data[VortexApplication.application.getString(R.string.SENDER_ID)]!!, data[VortexApplication.application.getString(R.string.RECEIVER_ID)]!!)
             }
             TYPE_VIDEO_CALL -> {
                 try {
@@ -68,6 +73,33 @@ class FCMNotificationService: FirebaseMessagingService() {
                 applicationContext.sendBroadcast(Intent(ACTION_REJECT_CALL))
             }
         }
+    }
+
+    private fun updateMessageStatus(sender: String, receiver: String) {
+        VortexApplication.messageDatabaseReference
+            .child(sender)
+            .child(receiver)
+            .orderByKey()
+            .limitToLast(1)
+            .addListenerForSingleValueEvent(object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        for (child in snapshot.children) {
+                            val message = child.getValue(Message::class.java)!!
+                            message.status = VortexApplication.application.getString(R.string.DELIVERED)
+                            VortexApplication.messageDatabaseReference
+                                .child(sender)
+                                .child(receiver)
+                                .child(message.messageId)
+                                .setValue(message)
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                }
+
+            })
     }
 
     @Throws(IOException::class)
@@ -111,13 +143,6 @@ class FCMNotificationService: FirebaseMessagingService() {
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return
         }
         NotificationManagerCompat.from(this)
@@ -127,13 +152,6 @@ class FCMNotificationService: FirebaseMessagingService() {
     @Throws(IOException::class)
     private fun showVideoCallNotification(data: Map<String, String>) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return
         }
         val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)

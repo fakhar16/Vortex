@@ -55,7 +55,6 @@ class SendContactActivity : AppCompatActivity() {
                         }
                     }
                     override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
                     }
             })
         } else if (!isViewContact) {
@@ -84,7 +83,6 @@ class SendContactActivity : AppCompatActivity() {
                         }
 
                         override fun onCancelled(error: DatabaseError) {
-                            TODO("Not yet implemented")
                         }
 
                     })

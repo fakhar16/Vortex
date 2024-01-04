@@ -81,7 +81,7 @@ class ChatAdapter(var context: Context, private var chats : ArrayList<User>)
                     if (snapshot.exists()) {
                         for (child in snapshot.children) {
                             val message: Message = child.getValue(Message::class.java)!!
-                            if (message.isUnread) {
+                            if (message.unread) {
                                 unreadMessageCount++
                             }
                         }

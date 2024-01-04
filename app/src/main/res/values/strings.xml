@@ -22,7 +22,6 @@
     <string name="PHONE_VERIFICATION_DESCRIPTION">Please wait, while we are authenticating your phone…</string>
     <string name="UID">uid</string>
     <string name="CHATS">Chats</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="MESSAGES">messages</string>
     <string name="STATUS">status</string>
@@ -106,4 +105,7 @@
     <string name="IS_FROM_CALL_LOG">is_from_call_log</string>
     <string name="CALL_LOG">call_log</string>
     <string name="isviewcontactfromprofile">IsViewContactFromProfile</string>
+    <string name="SENT">sent</string>
+    <string name="SEEN">seen</string>
+    <string name="DELIVERED">delivered</string>
 </resources>

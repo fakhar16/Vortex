@@ -78,11 +78,27 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
     }
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
+        FirebaseUtils.updateMessageSeenStatus(receiverId)
         val message = messageList[position]
 
         //Setting message and time
         holder.binding.message.text = message.message
         holder.binding.messageTime.text = getDateTimeString(message.time)
+
+        if (message.from == currentUser!!.uid) {
+            holder.binding.messageStatus.visibility = View.VISIBLE
+            when(message.status) {
+                context.getString(R.string.SENT) -> {
+                    holder.binding.messageStatus.setImageResource(R.drawable.baseline_done_24)
+                }
+                context.getString(R.string.SEEN) -> {
+                    holder.binding.messageStatus.setImageResource(R.drawable.baseline_done_all_24_seen)
+                }
+                context.getString(R.string.DELIVERED) -> {
+                    holder.binding.messageStatus.setImageResource(R.drawable.baseline_done_all_24)
+                }
+            }
+        }
 
         //Setting star visibility
         if (message.starred.contains(currentUser!!.uid)) {
@@ -182,7 +198,7 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
                 }
             }
             context.getString(R.string.AUDIO_RECORDING) -> {
-                if (message.isSong) {
+                if (message.song) {
                     holder.binding.audioSenderImage.setImageResource(R.drawable.audio)
                 }
                 val filePath: String = VortexApplication.application.applicationContext.filesDir.path + "/" + message.messageId + ".3gp"

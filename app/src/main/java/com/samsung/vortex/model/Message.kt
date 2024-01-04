@@ -9,12 +9,13 @@ data class Message(
     val time: Long = 0,
     var feeling: Int = 0,
     var starred: String = "",
-    var isUnread: Boolean = true,
+    var unread: Boolean = true,
     var caption: String = "",
     var fileName: String = "",
     var fileSize: String = "",
-    var isSong: Boolean = false) {
+    var song: Boolean = false,
+    var status: String = "") {
     override fun toString(): String {
-        return "Message(message='$message', type='$type')"
+        return "Message(messageId='$messageId', message='$message', type='$type', from='$from', to='$to', time=$time, feeling=$feeling, starred='$starred', isUnread=$unread, caption='$caption', fileName='$fileName', fileSize='$fileSize', isSong=$song)"
     }
 }

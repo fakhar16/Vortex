@@ -266,8 +266,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
     }
 
     private fun setupAttachmentBottomSheetMenu() {
-        val contentView =
-            View.inflate(this@ChatActivity, R.layout.attachment_bottom_sheet_layout, null)
+        val contentView = View.inflate(this@ChatActivity, R.layout.attachment_bottom_sheet_layout, null)
         bottomSheetDialog = BottomSheetDialog(this@ChatActivity)
         bottomSheetDialog.setContentView(contentView)
         (contentView.parent as View).setBackgroundColor(Color.TRANSPARENT)

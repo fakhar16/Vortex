@@ -64,7 +64,6 @@ class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
                     }
 
                 })
@@ -82,7 +81,6 @@ class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
                     }
 
                 })
@@ -95,7 +93,6 @@ class CallAdapter(var context: Context, private var callLogs : ArrayList<CallLog
         intent.putExtra(context.getString(R.string.CALL_LOG), callLog)
         intent.putExtra(context.getString(R.string.IS_FROM_CALL_LOG), true)
         context.startActivity(intent)
-
     }
 
     private fun updateCallLogDetails(holder: CallViewHolder, user: User, callLog: CallLog) {

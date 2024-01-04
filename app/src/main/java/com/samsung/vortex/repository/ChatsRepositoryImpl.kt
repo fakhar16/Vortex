@@ -78,7 +78,7 @@ class ChatsRepositoryImpl : IChatsRepository{
                         if (snapshot.exists()) {
                             for (child in snapshot.children) {
                                 val message: Message = child.getValue(Message::class.java)!!
-                                if (!message.isUnread) {
+                                if (!message.unread) {
                                     finalUsers.remove(user)
                                 }
                             }

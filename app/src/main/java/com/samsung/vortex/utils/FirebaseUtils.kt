@@ -59,7 +59,8 @@ class FirebaseUtils {
                     Date().time,
                     -1,
                     "",
-                    true
+                    true,
+                    status = VortexApplication.application.getString(R.string.SENT)
                 )
                 val messageBodyDetails: MutableMap<String, Any> = HashMap()
                 messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
@@ -87,7 +88,16 @@ class FirebaseUtils {
                     callback.onMessageSent()
                     val downloadUrl = task.result
                     val myUrl = downloadUrl.toString()
-                    val objMessage = Message(messagePushId, myUrl, context.getString(R.string.AUDIO_RECORDING), messageSenderId, messageReceiverId, Date().time, -1, "", true, isSong = isSong)
+                    val objMessage = Message(messagePushId,
+                        myUrl,
+                        context.getString(R.string.AUDIO_RECORDING),
+                        messageSenderId,
+                        messageReceiverId,
+                        Date().time,
+                        -1,
+                        "",
+                        true,
+                        song = isSong)
                     val messageBodyDetails: MutableMap<String, Any> = HashMap()
                     messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
                     messageBodyDetails["$messageReceiverRef/$messagePushId"] = objMessage
@@ -105,7 +115,7 @@ class FirebaseUtils {
                     else
                         sendNotification("Sent an audio message", messageReceiverId, messageSenderId, TYPE_MESSAGE)
                 }
-            }.addOnFailureListener { e: Exception? -> callback.onMessageSentFailed() }
+            }.addOnFailureListener { callback.onMessageSentFailed() }
         }
 
         fun sendContact(contact: PhoneContact, messageSenderId: String, messageReceiverId: String) {
@@ -617,6 +627,30 @@ class FirebaseUtils {
         //                    })
                 }
             }
+        }
+
+        fun updateMessageSeenStatus(receiver: String) {
+            messageDatabaseReference
+                .child(receiver)
+                .child(currentUser!!.uid)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            for (child in snapshot.children) {
+                                val msg = child.getValue(Message::class.java)!!
+                                val map: MutableMap<String, Any> = HashMap()
+                                map["status"] = VortexApplication.application.getString(R.string.SEEN)
+                                messageDatabaseReference
+                                    .child(receiver)
+                                    .child(currentUser!!.uid)
+                                    .child(msg.messageId)
+                                    .updateChildren(map)
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {}
+                })
         }
     }
 }

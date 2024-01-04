@@ -15,7 +15,7 @@
         android:background="@drawable/sender_messages_layout"
         android:gravity="center"
         android:padding="7dp"
-        android:minWidth="100dp"
+        android:minWidth="150dp"
         android:orientation="vertical">
 
 <!--        audio recording layout-->
@@ -80,9 +80,9 @@
                 android:id="@+id/video_play_preview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_play"
-                android:layout_centerInParent="true"
                 android:visibility="gone" />
 
         </RelativeLayout>
@@ -183,9 +183,9 @@
                     android:id="@+id/message_status"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:src="@drawable/baseline_access_time_24"
+                    android:src="@drawable/baseline_done_24"
                     android:visibility="gone"
-                    />
+                    android:layout_marginStart="5dp" />
             </LinearLayout>
         </RelativeLayout>
 <!--        view contact-->
