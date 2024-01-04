@@ -1,5 +1,8 @@
 package com.samsung.vortex.model
 
+import com.samsung.vortex.R
+import com.samsung.vortex.VortexApplication
+
 data class Message(
     val messageId: String = "",
     val message: String = "",
@@ -14,8 +17,4 @@ data class Message(
     var fileName: String = "",
     var fileSize: String = "",
     var song: Boolean = false,
-    var status: String = "") {
-    override fun toString(): String {
-        return "Message(messageId='$messageId', message='$message', type='$type', from='$from', to='$to', time=$time, feeling=$feeling, starred='$starred', isUnread=$unread, caption='$caption', fileName='$fileName', fileSize='$fileSize', isSong=$song)"
-    }
-}
+    var status: String = VortexApplication.application.getString(R.string.SENT))
