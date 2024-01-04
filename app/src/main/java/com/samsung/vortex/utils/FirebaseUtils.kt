@@ -452,11 +452,18 @@ class FirebaseUtils {
                 })
         }
 
-        fun removeLastMessages(sender: String, receiver: String) {
+        fun removeLastMessages(sender: String, receiver: String, isForEveryOne: Boolean = false) {
             messageDatabaseReference
                 .child(sender)
                 .child(VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_WITH_) + receiver)
                 .removeValue()
+
+            if (isForEveryOne) {
+                messageDatabaseReference
+                    .child(receiver)
+                    .child(VortexApplication.application.applicationContext.getString(R.string.LAST_MESSAGE_WITH_) + sender)
+                    .removeValue()
+            }
         }
 
         fun starMessage(message: Message) {

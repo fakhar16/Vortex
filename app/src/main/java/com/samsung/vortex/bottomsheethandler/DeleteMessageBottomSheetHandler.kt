@@ -29,7 +29,7 @@ class DeleteMessageBottomSheetHandler {
             //delete for everyone
             dialog.findViewById<TextView>(R.id.delete_for_everyone)!!.setOnClickListener {
                 FirebaseUtils.deleteMessageForEveryone(message)
-                updateLastMessage(messages, message)
+                updateLastMessage(messages, message, true)
                 dialog.dismiss()
             }
 
@@ -49,12 +49,12 @@ class DeleteMessageBottomSheetHandler {
             dialog.show()
         }
 
-        private fun updateLastMessage(userMessageList: ArrayList<Message>, message: Message) {
+        private fun updateLastMessage(userMessageList: ArrayList<Message>, message: Message, isForEveryOne: Boolean= false) {
             // if user removed last message in the list
             if (userMessageList.indexOf(message) == userMessageList.size - 1 && userMessageList.size >= 2)
                 FirebaseUtils.updateLastMessage(userMessageList[userMessageList.size - 2])
             //if user removed the only message
-            if (userMessageList.size == 1) FirebaseUtils.removeLastMessages(message.from, message.to)
+            if (userMessageList.size == 1) FirebaseUtils.removeLastMessages(message.from, message.to, isForEveryOne)
 
             //if deleted message is starred
             if (message.starred.contains(":" + currentUser!!.uid) || message.starred == "starred")
