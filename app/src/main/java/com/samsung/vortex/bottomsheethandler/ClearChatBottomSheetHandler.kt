@@ -7,8 +7,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication.Companion.messageDatabaseReference
+import com.samsung.vortex.model.Message
+import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.Utils.Companion.TAG
 import com.samsung.vortex.utils.Utils.Companion.currentUser
 
@@ -37,10 +42,22 @@ class ClearChatBottomSheetHandler {
         }
 
         private fun clearChat(context: Context, receiver: String) {
-            Log.i(TAG, "clearChat: ${currentUser!!.uid} : $receiver")
             messageDatabaseReference.child(currentUser!!.uid)
                 .child(receiver)
-                .removeValue()
+                .addValueEventListener(object: ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            for (child in snapshot.children) {
+                                val message = child.getValue(Message::class.java)
+                                FirebaseUtils.deleteMessage(message!!)
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+
+                })
 
             messageDatabaseReference.child(currentUser!!.uid)
                 .child(context.getString(R.string.LAST_MESSAGE_WITH_) + receiver)

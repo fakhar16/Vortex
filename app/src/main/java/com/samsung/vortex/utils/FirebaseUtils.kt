@@ -435,14 +435,16 @@ class FirebaseUtils {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
                             for (child in snapshot.children) {
-                                val msg = child.getValue(Message::class.java)
-                                val map: MutableMap<String, Any> = HashMap()
-                                map["unread"] = false
-                                messageDatabaseReference
-                                    .child(currentUser!!.uid)
-                                    .child(receiverId)
-                                    .child(msg!!.messageId)
-                                    .updateChildren(map)
+                                if (child.hasChild(VortexApplication.application.getString(R.string.MESSAGE_ID))) {
+                                    val msg = child.getValue(Message::class.java)
+                                    val map: MutableMap<String, Any> = HashMap()
+                                    map["unread"] = false
+                                    messageDatabaseReference
+                                        .child(currentUser!!.uid)
+                                        .child(receiverId)
+                                        .child(msg!!.messageId)
+                                        .updateChildren(map)
+                                }
                             }
                         }
                     }
@@ -679,14 +681,16 @@ class FirebaseUtils {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
                             for (child in snapshot.children) {
-                                val msg = child.getValue(Message::class.java)!!
-                                val map: MutableMap<String, Any> = HashMap()
-                                map["status"] = VortexApplication.application.getString(R.string.SEEN)
-                                messageDatabaseReference
-                                    .child(receiver)
-                                    .child(currentUser!!.uid)
-                                    .child(msg.messageId)
-                                    .updateChildren(map)
+                                if (child.hasChild(VortexApplication.application.getString(R.string.MESSAGE_ID))) {
+                                    val msg = child.getValue(Message::class.java)!!
+                                    val map: MutableMap<String, Any> = HashMap()
+                                    map["status"] = VortexApplication.application.getString(R.string.SEEN)
+                                    messageDatabaseReference
+                                        .child(receiver)
+                                        .child(currentUser!!.uid)
+                                        .child(msg.messageId)
+                                        .updateChildren(map)
+                                }
                             }
                         }
                     }
