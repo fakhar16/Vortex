@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/forward_message_main_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/bright1"
+        android:scaleType="fitXY" />
+
+    <TextView
+        android:id="@+id/preview"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Preview"
+        android:textStyle="bold"
+        android:background="#CE3B3A3A"
+        android:gravity="center"
+        android:textColor="@color/white"/>
+
+    <TextView
+        android:id="@+id/today"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="Today"
+        android:paddingVertical="2dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/preview"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/buttons"
+        android:gravity="center"
+        android:backgroundTint="#EE3B3A3A"
+        android:textColor="@color/white"/>
+
+    <LinearLayout
+        android:id="@+id/sample1"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/buttons"
+        android:layout_below="@id/today"
+        android:gravity="center"
+        android:backgroundTint="#EE3B3A3A"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:text="Set a custom wallpaper to this chat"
+            android:textColor="@color/white"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="end">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3:32PM"
+                android:textColor="@color/gray"
+                android:textSize="12sp"
+                android:layout_marginEnd="5dp"/>
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/baseline_done_all_24_seen"
+                android:layout_marginEnd="10dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sample2"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/buttons"
+        android:layout_below="@id/sample1"
+        android:gravity="center"
+        android:layout_alignParentEnd="true"
+        android:backgroundTint="#EE3B3A3A"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:text="Set a custom wallpaper to this chat"
+            android:textColor="@color/white"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="end">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3:32PM"
+                android:textColor="@color/gray"
+                android:textSize="12sp"
+                android:layout_marginEnd="5dp"/>
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/baseline_done_all_24_seen"
+                android:layout_marginEnd="10dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/cancel"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:paddingVertical="5dp"
+        android:background="@drawable/buttons"
+        android:gravity="center"
+        android:layout_below="@id/sample2"
+        android:backgroundTint="#EE3B3A3A"
+        android:textStyle="bold"
+        android:layout_marginTop="400dp"
+        android:layout_marginStart="50dp"
+        android:textColor="@color/white"/>
+
+    <TextView
+        android:id="@+id/set"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="Set"
+        android:paddingVertical="5dp"
+        android:layout_below="@id/sample2"
+        android:background="@drawable/buttons"
+        android:gravity="center"
+        android:layout_alignParentEnd="true"
+        android:backgroundTint="#EE3B3A3A"
+        android:textStyle="bold"
+        android:layout_marginTop="400dp"
+        android:layout_marginEnd="50dp"
+        android:textColor="@color/white"/>
+
+
+</RelativeLayout>

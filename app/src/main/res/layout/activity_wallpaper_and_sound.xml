@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.activities.WallpaperAndSoundActivity">
+
+    <include
+        android:id="@+id/toolBar"
+        layout="@layout/app_bar_layout"
+        />
+
+    <TextView
+        android:id="@+id/label_custom_wallpaper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Custom wallpaper"
+        android:layout_below="@id/toolBar"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:textAllCaps="true"
+        />
+    
+    <LinearLayout
+        android:id="@+id/layout_wallpaper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/buttons"
+        android:layout_margin="10dp"
+        android:layout_below="@id/label_custom_wallpaper"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Choose a New Wallpaper"
+                android:textColor="@color/black"
+                />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/baseline_arrow_forward_ios_24"
+                app:tint="@color/text_gray" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/text_gray"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"/>
+
+        <ImageView
+            android:id="@+id/selected_chat_bg"
+            android:layout_width="200dp"
+            android:layout_height="350dp"
+            android:src="@drawable/bg"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/text_gray"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/label_custom_tone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Custom Tone"
+        android:layout_below="@id/layout_wallpaper"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:textAllCaps="true"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/buttons"
+        android:layout_margin="10dp"
+        android:layout_below="@id/label_custom_tone"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Alert tone"
+                android:textColor="@color/black"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Default"
+                android:layout_marginEnd="10dp"
+                />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/baseline_arrow_forward_ios_24"
+                app:tint="@color/text_gray" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

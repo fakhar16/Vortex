@@ -69,7 +69,6 @@ class ProfileActivity : AppCompatActivity() {
             override fun handleOnBackPressed() {
                 if (binding.cardView.visibility == View.VISIBLE) {
                     WhatsappLikeProfilePicPreview.dismissPhotoPreview()
-//                    binding.expandedImage.root.visibility = View.GONE
                 } else {
                     finish()
                 }
@@ -155,11 +154,19 @@ class ProfileActivity : AppCompatActivity() {
         binding.mediaLayout.setOnClickListener { sendUserToMediaLinksDocsActivity() }
         binding.clearChat.setOnClickListener { showClearChatDialog() }
         binding.contactDetailsLayout.setOnClickListener { showContactDetail() }
+        binding.wallpaperLayout.setOnClickListener { sentUserToWallpaperAndSoundActivity() }
+    }
+
+    private fun sentUserToWallpaperAndSoundActivity() {
+        val intent = Intent(this@ProfileActivity, WallpaperAndSoundActivity::class.java)
+        intent.putExtra(getString(R.string.CONTACT_ID), receiverId)
+        startActivity(intent)
+        overridePendingTransition(R.anim.enter, R.anim.exit)
     }
 
     private fun showContactDetail() {
         val intent = Intent(this@ProfileActivity, SendContactActivity::class.java)
-        intent.putExtra("contactId", receiverId)
+        intent.putExtra(getString(R.string.CONTACT_ID), receiverId)
         intent.putExtra(getString(R.string.isviewcontactfromprofile), true)
         startActivity(intent)
     }

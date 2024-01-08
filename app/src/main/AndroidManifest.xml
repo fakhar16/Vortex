@@ -35,6 +35,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Vortex">
         <activity
+            android:name=".view.activities.SelectWallpaperActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.ChatWallpaperActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.WallpaperAndSoundActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.activities.CallingActivity"
             android:exported="false" />
         <activity

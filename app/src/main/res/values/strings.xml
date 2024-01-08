@@ -108,4 +108,11 @@
     <string name="SENT">sent</string>
     <string name="SEEN">seen</string>
     <string name="DELIVERED">delivered</string>
+    <string name="CONTACT_ID">contactId</string>
+    <string name="CHAT_BG_FOR_USERS">chatBgForUsers</string>
+    <string name="selected_type">selected_type</string>
+    <string name="bright">bright</string>
+    <string name="dark">dark</string>
+    <string name="solids">solids</string>
+    <string name="IMAGE_ID">imageId</string>
 </resources>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.activities.SelectWallpaperActivity">
+
+    <include
+        android:id="@+id/toolBar"
+        layout="@layout/app_bar_layout"
+        />
+
+    <GridView
+        android:id="@+id/wallpaper_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolBar"
+        android:layout_marginTop="20dp"
+        android:padding="20dp"
+        android:numColumns="3">
+
+    </GridView>
+
+</RelativeLayout>

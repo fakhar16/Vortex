@@ -20,6 +20,7 @@ class VortexApplication : Application() {
         lateinit var storiesDatabaseReference: DatabaseReference
         lateinit var videoUserDatabaseReference: DatabaseReference
         lateinit var callLogsDatabaseReference: DatabaseReference
+        lateinit var chatBgDatabaseReference: DatabaseReference
 
         lateinit var userProfilesImagesReference: StorageReference
         lateinit var imageStorageReference: StorageReference
@@ -51,6 +52,7 @@ class VortexApplication : Application() {
         storiesDatabaseReference = firebaseDatabase.getReference(getString(R.string.STORIES))
         videoUserDatabaseReference = firebaseDatabase.getReference(getString(R.string.VIDEO_USERS))
         callLogsDatabaseReference = firebaseDatabase.getReference(getString(R.string.CALL_LOGS))
+        chatBgDatabaseReference = firebaseDatabase.getReference(getString(R.string.CHAT_BG_FOR_USERS))
     }
 
 

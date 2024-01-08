@@ -97,6 +97,30 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
         updateStatusIndicator()
     }
 
+    override fun onStart() {
+        super.onStart()
+        updateBackgroundImage()
+    }
+
+    private fun updateBackgroundImage() {
+        VortexApplication.chatBgDatabaseReference
+            .child(currentUser!!.uid)
+            .child(messageReceiverId)
+            .child(getString(R.string.IMAGE_ID))
+            .addListenerForSingleValueEvent(object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val imageId = snapshot.getValue(String::class.java)
+                        binding.chatBg.setBackgroundResource(resources.getIdentifier(imageId, "drawable", packageName))
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                }
+
+            })
+    }
+
     private fun initializeFields() {
         binding.recordView.activity = this
         binding.recordView.callback = this
