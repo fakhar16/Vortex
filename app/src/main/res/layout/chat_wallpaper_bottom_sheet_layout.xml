@@ -43,7 +43,7 @@
         android:background="@drawable/buttons"
         android:layout_below="@id/today"
         android:gravity="center"
-        android:backgroundTint="#EE3B3A3A"
+        android:backgroundTint="@color/friend_message_color"
         android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
         android:orientation="vertical">
@@ -86,13 +86,12 @@
         android:layout_below="@id/sample1"
         android:gravity="center"
         android:layout_alignParentEnd="true"
-        android:backgroundTint="#EE3B3A3A"
+        android:backgroundTint="@color/user_message_color"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="20dp"
         android:orientation="vertical">
 
         <TextView
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
@@ -133,7 +132,7 @@
         android:layout_below="@id/sample2"
         android:backgroundTint="#EE3B3A3A"
         android:textStyle="bold"
-        android:layout_marginTop="400dp"
+        android:layout_marginTop="450dp"
         android:layout_marginStart="50dp"
         android:textColor="@color/white"/>
 
@@ -149,7 +148,7 @@
         android:layout_alignParentEnd="true"
         android:backgroundTint="#EE3B3A3A"
         android:textStyle="bold"
-        android:layout_marginTop="400dp"
+        android:layout_marginTop="450dp"
         android:layout_marginEnd="50dp"
         android:textColor="@color/white"/>
 

@@ -110,4 +110,17 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/remove_custom_wallpaper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/buttons"
+        android:layout_marginHorizontal="20dp"
+        android:text="Remove Custom Wallpaper"
+        android:textColor="@android:color/holo_red_light"
+        android:padding="10dp"
+        android:visibility="gone"
+        />
+
+
 </LinearLayout>

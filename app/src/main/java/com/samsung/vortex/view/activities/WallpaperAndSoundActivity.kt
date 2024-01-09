@@ -41,7 +41,8 @@ class WallpaperAndSoundActivity : AppCompatActivity() {
                     if (snapshot.exists()) {
                         val imageId = snapshot.getValue(String::class.java)
                         binding.selectedChatBg.setImageResource(resources.getIdentifier(imageId, "drawable", packageName))
-                        Log.i(Utils.TAG, "onDataChange: $imageId")
+                    } else {
+                        binding.selectedChatBg.setImageResource(R.drawable.bg)
                     }
                 }
 

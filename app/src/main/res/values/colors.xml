@@ -23,4 +23,6 @@
     <color name="sinch_decline_red">#c62828</color>
     <color name="sinch_answer_green">#79b700</color>
     <color name="gray">#D6D6D6</color>
+    <color name="friend_message_color">#EE858282</color>
+    <color name="user_message_color">#EE3B3A3A</color>
 </resources>

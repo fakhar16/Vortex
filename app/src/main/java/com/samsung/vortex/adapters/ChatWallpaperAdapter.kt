@@ -7,10 +7,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import com.samsung.vortex.R
-import com.samsung.vortex.VortexApplication
 import com.samsung.vortex.bottomsheethandler.ChatWallpaperBottomSheetHandler
-import com.samsung.vortex.view.activities.ChatActivity
-import omari.hamza.storyview.utils.Utils
 
 class ChatWallpaperAdapter(val context: Context, private val imageIds:ArrayList<Int>): BaseAdapter() {
     override fun getCount(): Int {
