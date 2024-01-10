@@ -140,6 +140,14 @@
         </RelativeLayout>
     </RelativeLayout>
 
+    <!--    reply layout-->
+    <include
+        android:id="@+id/reply_layout"
+        layout="@layout/reply_layout"
+        android:layout_above="@id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <!--    send message button-->
     <RelativeLayout
         android:layout_width="match_parent"
@@ -246,11 +254,5 @@
         android:visibility="gone"
         />
 
-<!--    reply layout-->
-    <include
-        android:id="@+id/reply_layout"
-        layout="@layout/reply_layout"
-        android:layout_above="@id/bottom_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+
 </RelativeLayout>

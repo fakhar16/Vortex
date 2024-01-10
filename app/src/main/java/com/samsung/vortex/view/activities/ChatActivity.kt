@@ -87,7 +87,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
     private lateinit var adapter: MessagesAdapter
     private lateinit var bottomSheetDialog: BottomSheetDialog
 
-    lateinit var quotedMessage: Message
+    var quotedMessageId: String = ""
 
     companion object {
         lateinit var receiver: User
@@ -169,7 +169,8 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
 
         val messageSwipeController = MessageSwipeController(this, object : SwipeControllerActions {
             override fun showReplyUI(position: Int) {
-                quotedMessage = adapter.getMessageAtPos(position)
+                val quotedMessage = adapter.getMessageAtPos(position)
+                quotedMessageId = quotedMessage.messageId
 
                 binding.messageInputText.requestFocus()
                 binding.replyLayout.mainLayout.visibility = View.VISIBLE
@@ -183,6 +184,8 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
                     binding.replyLayout.username.setTextColor(getColor(R.color.color_blue))
                     binding.replyLayout.bar.setBackgroundColor(getColor(R.color.color_blue))
                 }
+
+                Utils.setReplyLayoutByMessageType(this@ChatActivity, quotedMessage, binding.replyLayout)
             }
         })
 
@@ -383,22 +386,11 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
     private fun sendMessage() {
         val message = binding.messageInputText.text.toString()
         if (URLUtil.isValidUrl(message)) {
-            if (binding.replyLayout.mainLayout.visibility == View.GONE) {
-                FirebaseUtils.sendURLMessage(message, currentUser!!.uid, receiver.uid)
-            }
-            else if(binding.replyLayout.mainLayout.visibility == View.VISIBLE) {
-                FirebaseUtils.sendURLMessage(message, currentUser!!.uid, receiver.uid, quotedMessageId = quotedMessage.messageId)
-                binding.replyLayout.mainLayout.visibility = View.GONE
-            }
+            FirebaseUtils.sendURLMessage(message, currentUser!!.uid, receiver.uid, quotedMessageId = quotedMessageId)
         } else {
-            if (binding.replyLayout.mainLayout.visibility == View.GONE) {
-                FirebaseUtils.sendMessage(message, currentUser!!.uid, receiver.uid)
-            }
-            else if(binding.replyLayout.mainLayout.visibility == View.VISIBLE) {
-                FirebaseUtils.sendMessage(message, currentUser!!.uid, receiver.uid, quotedMessageId = quotedMessage.messageId)
-                binding.replyLayout.mainLayout.visibility = View.GONE
-            }
+            FirebaseUtils.sendMessage(message, currentUser!!.uid, receiver.uid, quotedMessageId = quotedMessageId)
         }
+        hideReplyLayout()
         binding.messageInputText.setText("")
     }
 
@@ -527,7 +519,8 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
                 val objMessage = Message(messageId, fileUri.toString(), getString(R.string.IMAGE), currentUser!!.uid, receiver.uid, Date().time, -1, "", true)
                 FirebaseUtils.forwardImage(this@ChatActivity, objMessage, receiver.uid, caption)
             } else {
-                FirebaseUtils.sendImage(this@ChatActivity, currentUser!!.uid, messageReceiverId, fileUri, caption)
+                FirebaseUtils.sendImage(this@ChatActivity, currentUser!!.uid, messageReceiverId, fileUri, caption, quotedMessageId)
+                hideReplyLayout()
             }
         }
     }
@@ -556,7 +549,8 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
                 val objMessage = Message(messageId, fileUri.toString(), getString(R.string.VIDEO), currentUser!!.uid, receiver.uid, Date().time, -1, "", true)
                 FirebaseUtils.forwardVideo(this@ChatActivity, objMessage, receiver.uid, caption)
             } else {
-                FirebaseUtils.sendVideo(this, currentUser!!.uid, messageReceiverId, fileUri, caption)
+                FirebaseUtils.sendVideo(this, currentUser!!.uid, messageReceiverId, fileUri, caption, quotedMessageId = quotedMessageId)
+                hideReplyLayout()
             }
         }
     }
@@ -575,8 +569,15 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
             if (isDocFromClipboard) {
                 FirebaseUtils.forwardDoc(this@ChatActivity, objMessage, receiver.uid, caption)
             } else {
-                FirebaseUtils.sendDoc(this@ChatActivity, currentUser!!.uid, messageReceiverId, fileUri, fileName, fileSize, caption)
+                FirebaseUtils.sendDoc(this@ChatActivity, currentUser!!.uid, messageReceiverId, fileUri, fileName, fileSize, caption, quotedMessageId = quotedMessageId)
+                hideReplyLayout()
             }
+        }
+    }
+
+    private fun hideReplyLayout() {
+        if (quotedMessageId != "") {
+            binding.replyLayout.mainLayout.visibility = View.GONE
         }
     }
 
@@ -665,6 +666,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
                     prepareVideoMessageForSending(fileUri!!, "", false)
                 } else if (getFileType(fileUri).equals("mp3")) {
                     sendAudioRecording(this, currentUser!!.uid, messageReceiverId, fileUri!!, FirebaseDatabase.getInstance().reference.push().key!!, isSong = true)
+                    hideReplyLayout()
                 }
             }
         }
@@ -724,6 +726,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
         val file = File(filePath)
         val fullFileName = "$file/$recordedAudioFileName.3gp"
         sendAudioRecording(this, currentUser!!.uid, messageReceiverId, Uri.fromFile(File(fullFileName)), recordedAudioFileName!!)
+        hideReplyLayout()
     }
 
     override fun onRecordStart() {

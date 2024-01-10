@@ -72,7 +72,7 @@ class FirebaseUtils {
             }
         }
 
-        fun sendAudioRecording(context: Context, messageSenderId: String, messageReceiverId: String, fileUri: Uri, messagePushId: String, isSong: Boolean = false) {
+        fun sendAudioRecording(context: Context, messageSenderId: String, messageReceiverId: String, fileUri: Uri, messagePushId: String, isSong: Boolean = false, quotedMessageId: String = "") {
             val callback = context as MessageListenerCallback
             val messageSenderRef = context.getString(R.string.MESSAGES) + "/" + messageSenderId + "/" + messageReceiverId
             val messageReceiverRef = context.getString(R.string.MESSAGES) + "/" + messageReceiverId + "/" + messageSenderId
@@ -97,7 +97,8 @@ class FirebaseUtils {
                         -1,
                         "",
                         true,
-                        song = isSong)
+                        song = isSong,
+                        quotedMessageId = quotedMessageId)
                     val messageBodyDetails: MutableMap<String, Any> = HashMap()
                     messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
                     messageBodyDetails["$messageReceiverRef/$messagePushId"] = objMessage
@@ -118,7 +119,7 @@ class FirebaseUtils {
             }.addOnFailureListener { callback.onMessageSentFailed() }
         }
 
-        fun sendContact(contact: PhoneContact, messageSenderId: String, messageReceiverId: String) {
+        fun sendContact(contact: PhoneContact, messageSenderId: String, messageReceiverId: String, quotedMessageId: String = "") {
             val messageSenderRef: String = VortexApplication.application.getString(R.string.MESSAGES) + "/" + messageSenderId + "/" + messageReceiverId
             val messageReceiverRef: String = VortexApplication.application.getString(R.string.MESSAGES) + "/" + messageReceiverId + "/" + messageSenderId
             val userMessageKeyRef = messageDatabaseReference
@@ -127,7 +128,7 @@ class FirebaseUtils {
                 .push()
             val contactPushId: String = contactsDatabaseReference.push().key!!
             val messagePushId = userMessageKeyRef.key
-            val objMessage = Message(messagePushId!!, contactPushId, VortexApplication.application.getString(R.string.CONTACT), messageSenderId, messageReceiverId, Date().time, -1, "", true)
+            val objMessage = Message(messagePushId!!, contactPushId, VortexApplication.application.getString(R.string.CONTACT), messageSenderId, messageReceiverId, Date().time, -1, "", true, quotedMessageId = quotedMessageId)
             val messageBodyDetails: MutableMap<String, Any> = HashMap()
             messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
             messageBodyDetails["$messageReceiverRef/$messagePushId"] = objMessage
@@ -161,7 +162,7 @@ class FirebaseUtils {
             }
         }
 
-        fun sendImage(context: Context, messageSenderId: String, messageReceiverId: String, fileUri: Uri, caption: String) {
+        fun sendImage(context: Context, messageSenderId: String, messageReceiverId: String, fileUri: Uri, caption: String, quotedMessageId: String = "") {
             val callback: MessageListenerCallback = context as MessageListenerCallback
             val messageSenderRef = context.getString(R.string.MESSAGES) + "/" + messageSenderId + "/" + messageReceiverId
             val messageReceiverRef = context.getString(R.string.MESSAGES) + "/" + messageReceiverId + "/" + messageSenderId
@@ -185,9 +186,9 @@ class FirebaseUtils {
                     val downloadUrl = task.result
                     val myUrl = downloadUrl.toString()
                     val objMessage: Message = if (caption.isEmpty()) {
-                        Message(messagePushId!!, myUrl, context.getString(R.string.IMAGE), messageSenderId, messageReceiverId, Date().time, -1, "", true)
+                        Message(messagePushId!!, myUrl, context.getString(R.string.IMAGE), messageSenderId, messageReceiverId, Date().time, -1, "", true, quotedMessageId = quotedMessageId)
                     } else {
-                        Message(messagePushId!!, myUrl, context.getString(R.string.IMAGE), messageSenderId, messageReceiverId, Date().time, -1, "", true, caption)
+                        Message(messagePushId!!, myUrl, context.getString(R.string.IMAGE), messageSenderId, messageReceiverId, Date().time, -1, "", true, caption,  quotedMessageId = quotedMessageId)
                     }
 
                     val messageBodyDetails: MutableMap<String, Any> = HashMap()
@@ -239,7 +240,7 @@ class FirebaseUtils {
             sendNotification("Sent an image", objMessage.to, objMessage.from, TYPE_MESSAGE)
         }
 
-        fun sendVideo(context: Context, messageSenderId: String, messageReceiverId: String, fileUri: Uri, caption: String) {
+        fun sendVideo(context: Context, messageSenderId: String, messageReceiverId: String, fileUri: Uri, caption: String, quotedMessageId: String = "") {
             val callback = context as MessageListenerCallback
             val messageSenderRef = context.getString(R.string.MESSAGES) + "/" + messageSenderId + "/" + messageReceiverId
             val messageReceiverRef = context.getString(R.string.MESSAGES) + "/" + messageReceiverId + "/" + messageSenderId
@@ -256,8 +257,8 @@ class FirebaseUtils {
                     while (!uriTask.isSuccessful);
                     callback.onMessageSent()
                     val downloadUri = uriTask.result.toString()
-                    val objMessage: Message = if (caption.isEmpty()) Message(messagePushId!!, downloadUri, context.getString(R.string.VIDEO), messageSenderId, messageReceiverId, Date().time, -1, "", true) 
-                    else Message(messagePushId!!, downloadUri, context.getString(R.string.VIDEO), messageSenderId, messageReceiverId, Date().time, -1, "", true, caption)
+                    val objMessage: Message = if (caption.isEmpty()) Message(messagePushId!!, downloadUri, context.getString(R.string.VIDEO), messageSenderId, messageReceiverId, Date().time, -1, "", true, quotedMessageId = quotedMessageId)
+                    else Message(messagePushId!!, downloadUri, context.getString(R.string.VIDEO), messageSenderId, messageReceiverId, Date().time, -1, "", true, caption, quotedMessageId = quotedMessageId)
                     val messageBodyDetails: MutableMap<String, Any> = HashMap()
                     messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
                     messageBodyDetails["$messageReceiverRef/$messagePushId"] = objMessage
@@ -302,7 +303,7 @@ class FirebaseUtils {
             sendNotification("Sent a video", objMessage.to, objMessage.from, TYPE_MESSAGE)
         }
 
-        fun sendDoc(context: Context, messageSenderId: String, messageReceiverId: String, fileUri: Uri, filename: String, fileSize: String, caption: String) {
+        fun sendDoc(context: Context, messageSenderId: String, messageReceiverId: String, fileUri: Uri, filename: String, fileSize: String, caption: String, quotedMessageId: String = "") {
             val callback = context as MessageListenerCallback
             val messageSenderRef =
                 context.getString(R.string.MESSAGES) + "/" + messageSenderId + "/" + messageReceiverId
@@ -325,8 +326,8 @@ class FirebaseUtils {
                     callback.onMessageSent()
                     val downloadUrl = task.result
                     val myUrl = downloadUrl.toString()
-                    val objMessage: Message = if (caption.isEmpty()) Message(messagePushId!!, myUrl, context.getString(R.string.PDF_FILES), messageSenderId, messageReceiverId, Date().time, -1, "", true, fileName = filename, fileSize = fileSize)
-                    else Message(messagePushId!!, myUrl, context.getString(R.string.PDF_FILES), messageSenderId, messageReceiverId, Date().time, -1, "", caption = caption, fileName = filename, fileSize = fileSize)
+                    val objMessage: Message = if (caption.isEmpty()) Message(messagePushId!!, myUrl, context.getString(R.string.PDF_FILES), messageSenderId, messageReceiverId, Date().time, -1, "", true, fileName = filename, fileSize = fileSize, quotedMessageId = quotedMessageId)
+                    else Message(messagePushId!!, myUrl, context.getString(R.string.PDF_FILES), messageSenderId, messageReceiverId, Date().time, -1, "", caption = caption, fileName = filename, fileSize = fileSize, quotedMessageId = quotedMessageId)
                     val messageBodyDetails: MutableMap<String, Any> = HashMap()
                     messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
                     messageBodyDetails["$messageReceiverRef/$messagePushId"] = objMessage

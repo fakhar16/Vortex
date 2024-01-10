@@ -21,10 +21,17 @@ import android.webkit.MimeTypeMap
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.samsung.vortex.R
 import com.samsung.vortex.VortexApplication
+import com.samsung.vortex.databinding.ReplyLayoutBinding
+import com.samsung.vortex.model.Message
 import com.samsung.vortex.model.User
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import java.io.File
@@ -320,6 +327,66 @@ class Utils {
                 density = context.resources.displayMetrics.density
             } catch (e: Exception) {
                 e.printStackTrace()
+            }
+        }
+
+        fun setReplyLayoutByMessageType(context: Context, quotedMessage: Message, binding: ReplyLayoutBinding) {
+            when (quotedMessage.type) {
+                VortexApplication.application.applicationContext.getString(R.string.IMAGE) -> {
+                    binding.replyMessage.visibility = View.GONE
+                    binding.replyImage.visibility = View.VISIBLE
+                    Picasso.get()
+                        .load(getImageOffline(quotedMessage.message, quotedMessage.messageId))
+                        .placeholder(R.drawable.profile_image)
+                        .into(binding.replyImage)
+
+                }
+
+                VortexApplication.application.getString(R.string.VIDEO) -> {
+                    binding.replyMessage.visibility = View.GONE
+                    binding.replyVideoImage.visibility = View.VISIBLE
+                    binding.replyVideoPlayPreview.visibility = View.VISIBLE
+                    Glide.with(context).load(quotedMessage.message).centerCrop()
+                        .placeholder(R.drawable.baseline_play_circle_outline_24)
+                        .into(binding.replyVideoImage)
+                }
+
+                context.getString(R.string.PDF_FILES) -> {
+                    binding.replyMessage.visibility = View.GONE
+                    binding.replyFileName.visibility = View.VISIBLE
+                    binding.replyFileName.text = quotedMessage.fileName
+                    binding.replyImage.visibility = View.VISIBLE
+                    binding.replyImage.setImageResource(R.drawable.baseline_picture_as_pdf_24)
+                }
+
+                context.getString(R.string.CONTACT) -> {
+                    binding.replyMessage.visibility = View.GONE
+                    binding.replContactLayout.visibility = View.VISIBLE
+                    VortexApplication.contactsDatabaseReference.child(quotedMessage.message)
+                        .addValueEventListener(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                val list: MutableList<String?> = ArrayList()
+                                if (snapshot.exists()) {
+                                    for (child in snapshot.children) {
+                                        list.add(child.getValue(String::class.java))
+                                    }
+                                    binding.replyContactName.text = list[1]
+                                    Picasso.get().load(list[0]).into(binding.replyContactImage)
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {}
+                        })
+                }
+
+                context.getString(R.string.AUDIO_RECORDING) -> {
+                    if (quotedMessage.song) {
+                        binding.replyAudioSenderImage.setImageResource(R.drawable.audio)
+                    }
+
+                    binding.replyAudioRecordingLayout.visibility = View.VISIBLE
+                    binding.replyMessage.visibility = View.GONE
+                }
             }
         }
     }

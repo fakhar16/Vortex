@@ -30,6 +30,7 @@ import com.samsung.vortex.utils.Utils
 import com.samsung.vortex.utils.Utils.Companion.currentUser
 import com.samsung.vortex.utils.Utils.Companion.getDateTimeString
 import com.samsung.vortex.utils.Utils.Companion.isRecordingPlaying
+import com.samsung.vortex.utils.Utils.Companion.setReplyLayoutByMessageType
 import com.samsung.vortex.view.activities.ChatActivity
 import com.samsung.vortex.view.activities.SendContactActivity
 import com.squareup.picasso.Picasso
@@ -98,19 +99,21 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
                             holder.binding.replyLayout.mainLayout.visibility = View.VISIBLE
                             if (quotedMessage.from == currentUser!!.uid) {
                                 holder.binding.replyLayout.username.text = context.getString(R.string.you)
-                                holder.binding.replyLayout.replyMessage.text = quotedMessage.message
                                 holder.binding.replyLayout.cancel.visibility = View.GONE
 
                                 holder.binding.replyLayout.username.setTextColor(context.getColor(R.color.sinch_yellow))
                                 holder.binding.replyLayout.bar.setBackgroundColor(context.getColor(R.color.sinch_yellow))
                             } else {
                                 holder.binding.replyLayout.username.text = ChatActivity.receiver.name
-                                holder.binding.replyLayout.replyMessage.text = quotedMessage.message
+
                                 holder.binding.replyLayout.cancel.visibility = View.GONE
 
                                 holder.binding.replyLayout.username.setTextColor(context.getColor(R.color.color_blue))
                                 holder.binding.replyLayout.bar.setBackgroundColor(context.getColor(R.color.color_blue))
                             }
+
+                            holder.binding.replyLayout.replyMessage.text = quotedMessage.message
+                            setReplyLayoutByMessageType(context, quotedMessage, holder.binding.replyLayout)
                         }
                     }
 
