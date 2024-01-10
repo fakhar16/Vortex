@@ -140,7 +140,7 @@ class FirebaseUtils {
             sendNotification("Sent a contact", messageReceiverId, messageSenderId, TYPE_MESSAGE)
         }
 
-        fun sendURLMessage(message: String?, messageSenderId: String, messageReceiverId: String) {
+        fun sendURLMessage(message: String?, messageSenderId: String, messageReceiverId: String, quotedMessageId: String = "") {
             if (!TextUtils.isEmpty(message)) {
                 val messageSenderRef: String = VortexApplication.application.applicationContext.getString(R.string.MESSAGES) + "/" + messageSenderId + "/" + messageReceiverId
                 val messageReceiverRef: String = VortexApplication.application.applicationContext
@@ -150,7 +150,7 @@ class FirebaseUtils {
                     .child(messageReceiverId)
                     .push()
                 val messagePushId = userMessageKeyRef.key
-                val objMessage = Message(messagePushId!!, message!!, VortexApplication.application.applicationContext.getString(R.string.URL), messageSenderId, messageReceiverId, Date().time, -1, "", true)
+                val objMessage = Message(messagePushId!!, message!!, VortexApplication.application.applicationContext.getString(R.string.URL), messageSenderId, messageReceiverId, Date().time, -1, "", true, quotedMessageId = quotedMessageId)
                 val messageBodyDetails: MutableMap<String, Any> = HashMap()
                 messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
                 messageBodyDetails["$messageReceiverRef/$messagePushId"] = objMessage

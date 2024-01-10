@@ -116,10 +116,10 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
 
                     override fun onCancelled(error: DatabaseError) {
                     }
-
                 })
         }
 
+        // sent, delivered and seen status
         if (message.from == currentUser!!.uid) {
             holder.binding.messageStatus.visibility = View.VISIBLE
             when(message.status) {

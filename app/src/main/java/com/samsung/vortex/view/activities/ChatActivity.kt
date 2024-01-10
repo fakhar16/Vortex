@@ -383,7 +383,13 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
     private fun sendMessage() {
         val message = binding.messageInputText.text.toString()
         if (URLUtil.isValidUrl(message)) {
-            FirebaseUtils.sendURLMessage(message, currentUser!!.uid, receiver.uid)
+            if (binding.replyLayout.mainLayout.visibility == View.GONE) {
+                FirebaseUtils.sendURLMessage(message, currentUser!!.uid, receiver.uid)
+            }
+            else if(binding.replyLayout.mainLayout.visibility == View.VISIBLE) {
+                FirebaseUtils.sendURLMessage(message, currentUser!!.uid, receiver.uid, quotedMessageId = quotedMessage.messageId)
+                binding.replyLayout.mainLayout.visibility = View.GONE
+            }
         } else {
             if (binding.replyLayout.mainLayout.visibility == View.GONE) {
                 FirebaseUtils.sendMessage(message, currentUser!!.uid, receiver.uid)
