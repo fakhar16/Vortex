@@ -25,4 +25,5 @@
     <color name="gray">#D6D6D6</color>
     <color name="friend_message_color">#EE858282</color>
     <color name="user_message_color">#EE3B3A3A</color>
+    <color name="colorE">#c4c4c4</color>
 </resources>

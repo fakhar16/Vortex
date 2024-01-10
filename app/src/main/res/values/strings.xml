@@ -47,7 +47,7 @@
     <string name="AUDIO_RECORDING">audio_recording</string>
     <string name="CONTACT">contact</string>
     <string name="URL">url</string>
-    <string name="MESSAGE_ID">message_id</string>
+    <string name="MESSAGE_ID">messageId</string>
     <string name="TITLE">title</string>
     <string name="MESSAGE">message</string>
     <string name="TYPE">type</string>
@@ -115,4 +115,5 @@
     <string name="dark">dark</string>
     <string name="solids">solids</string>
     <string name="IMAGE_ID">imageId</string>
+    <string name="you">You</string>
 </resources>

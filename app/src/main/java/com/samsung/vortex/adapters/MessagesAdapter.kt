@@ -35,7 +35,7 @@ import com.samsung.vortex.view.activities.SendContactActivity
 import com.squareup.picasso.Picasso
 import java.io.File
 
-class MessagesAdapter(var context: Context, private var messageList: ArrayList<Message>, var senderId: String, private var receiverId: String)
+class MessagesAdapter(var context: Context, private var messageList: ArrayList<Message>, private var receiverId: String)
     : RecyclerView.Adapter<MessagesAdapter.MessageViewHolder>(){
 
     inner class MessageViewHolder(var binding: ItemMessageBinding) : RecyclerView.ViewHolder(binding.root)
@@ -247,5 +247,9 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
     fun filterList(filterList: ArrayList<Message>) {
         messageList = filterList
         notifyDataSetChanged()
+    }
+
+    fun getMessageAtPos(position: Int) : Message {
+        return messageList[position]
     }
 }

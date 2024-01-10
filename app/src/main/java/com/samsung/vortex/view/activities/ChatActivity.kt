@@ -31,6 +31,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
@@ -52,6 +53,8 @@ import com.samsung.vortex.interfaces.MessageListenerCallback
 import com.samsung.vortex.model.Message
 import com.samsung.vortex.model.Notification
 import com.samsung.vortex.model.User
+import com.samsung.vortex.swipe.MessageSwipeController
+import com.samsung.vortex.swipe.SwipeControllerActions
 import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.FirebaseUtils.Companion.sendAudioRecording
 import com.samsung.vortex.utils.Utils
@@ -108,6 +111,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
             .child(messageReceiverId)
             .child(getString(R.string.IMAGE_ID))
             .addListenerForSingleValueEvent(object: ValueEventListener {
+                @SuppressLint("DiscouragedApi")
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         val imageId = snapshot.getValue(String::class.java)
@@ -147,7 +151,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
 
     private fun setupRecyclerView() {
         binding.userMessageList.layoutManager = LinearLayoutManager(this)
-        adapter = MessagesAdapter(this@ChatActivity, viewModel.messages!!.value!!, currentUser!!.uid, messageReceiverId)
+        adapter = MessagesAdapter(this@ChatActivity, viewModel.messages!!.value!!, messageReceiverId)
         binding.userMessageList.adapter = adapter
         binding.userMessageList.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
             if (bottom < oldBottom) {
@@ -158,6 +162,28 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
                 }, 100)
             }
         }
+
+        val messageSwipeController = MessageSwipeController(this, object : SwipeControllerActions {
+            override fun showReplyUI(position: Int) {
+                val message = adapter.getMessageAtPos(position)
+
+                binding.messageInputText.requestFocus()
+                binding.replyLayout.mainLayout.visibility = View.VISIBLE
+                binding.replyLayout.message.text = message.message
+                if (currentUser!!.uid == message.from) {
+                    binding.replyLayout.username.text = getString(R.string.you)
+                    binding.replyLayout.username.setTextColor(getColor(R.color.sinch_yellow))
+                    binding.replyLayout.bar.setBackgroundColor(getColor(R.color.sinch_yellow))
+                } else {
+                    binding.replyLayout.username.text = receiver.name
+                    binding.replyLayout.username.setTextColor(getColor(R.color.color_blue))
+                    binding.replyLayout.bar.setBackgroundColor(getColor(R.color.color_blue))
+                }
+            }
+        })
+
+        val itemTouchHelper = ItemTouchHelper(messageSwipeController)
+        itemTouchHelper.attachToRecyclerView(binding.userMessageList)
     }
 
     private fun scrollToMessage() {
@@ -260,13 +286,6 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
         binding.sendMessageBtn.setOnClickListener { sendMessage() }
         binding.camera.setOnClickListener { cameraButtonClicked() }
         binding.attachMenu.setOnClickListener { showAttachmentMenu() }
-//        customChatBarBinding.voiceCall.setOnClickListener { view ->
-//            Toast.makeText(
-//                this,
-//                receiver.getName(),
-//                Toast.LENGTH_SHORT
-//            ).show()
-//        }
         customChatBarBinding.videoCall.setOnClickListener { createVideoCall() }
         customChatBarBinding.userImage.setOnClickListener {
             val file = Utils.getImageOffline(receiver.image, receiver.uid)
@@ -277,6 +296,8 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
         binding.emojiPickerView.setOnEmojiPickedListener { emojiViewItem ->
             binding.messageInputText.append(emojiViewItem.emoji)
         }
+
+        binding.replyLayout.cancel.setOnClickListener { binding.replyLayout.mainLayout.visibility = View.GONE }
     }
 
     private fun createVideoCall() {
