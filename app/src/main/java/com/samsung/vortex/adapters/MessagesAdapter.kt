@@ -84,6 +84,41 @@ class MessagesAdapter(var context: Context, private var messageList: ArrayList<M
         //Setting message and time
         holder.binding.message.text = message.message
         holder.binding.messageTime.text = getDateTimeString(message.time)
+        
+        //quoted message
+        if (message.quotedMessageId != "") {
+            VortexApplication.messageDatabaseReference
+                .child(currentUser!!.uid)
+                .child(receiverId)
+                .child(message.quotedMessageId)
+                .addListenerForSingleValueEvent(object:ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            val quotedMessage = snapshot.getValue(Message::class.java)!!
+                            holder.binding.replyLayout.mainLayout.visibility = View.VISIBLE
+                            if (quotedMessage.from == currentUser!!.uid) {
+                                holder.binding.replyLayout.username.text = context.getString(R.string.you)
+                                holder.binding.replyLayout.replyMessage.text = quotedMessage.message
+                                holder.binding.replyLayout.cancel.visibility = View.GONE
+
+                                holder.binding.replyLayout.username.setTextColor(context.getColor(R.color.sinch_yellow))
+                                holder.binding.replyLayout.bar.setBackgroundColor(context.getColor(R.color.sinch_yellow))
+                            } else {
+                                holder.binding.replyLayout.username.text = ChatActivity.receiver.name
+                                holder.binding.replyLayout.replyMessage.text = quotedMessage.message
+                                holder.binding.replyLayout.cancel.visibility = View.GONE
+
+                                holder.binding.replyLayout.username.setTextColor(context.getColor(R.color.color_blue))
+                                holder.binding.replyLayout.bar.setBackgroundColor(context.getColor(R.color.color_blue))
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+
+                })
+        }
 
         if (message.from == currentUser!!.uid) {
             holder.binding.messageStatus.visibility = View.VISIBLE

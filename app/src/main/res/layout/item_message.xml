@@ -18,6 +18,10 @@
         android:minWidth="150dp"
         android:orientation="vertical">
 
+        <include
+            android:id="@+id/reply_layout"
+            layout="@layout/reply_layout"/>
+
 <!--        audio recording layout-->
         <LinearLayout
             android:id="@+id/audio_recording_layout"

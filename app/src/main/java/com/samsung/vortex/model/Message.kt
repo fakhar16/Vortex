@@ -17,4 +17,5 @@ data class Message(
     var fileName: String = "",
     var fileSize: String = "",
     var song: Boolean = false,
-    var status: String = VortexApplication.application.getString(R.string.SENT))
+    var status: String = VortexApplication.application.getString(R.string.SENT),
+    var quotedMessageId: String = "")

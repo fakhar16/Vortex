@@ -15,6 +15,7 @@ import android.os.VibrationEffect
 import android.os.VibratorManager
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.URLUtil
@@ -58,6 +59,7 @@ import com.samsung.vortex.swipe.SwipeControllerActions
 import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.FirebaseUtils.Companion.sendAudioRecording
 import com.samsung.vortex.utils.Utils
+import com.samsung.vortex.utils.Utils.Companion.TAG
 import com.samsung.vortex.utils.Utils.Companion.TYPE_VIDEO_CALL
 import com.samsung.vortex.utils.Utils.Companion.currentUser
 import com.samsung.vortex.utils.Utils.Companion.getFileSize
@@ -84,6 +86,8 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
 
     private lateinit var adapter: MessagesAdapter
     private lateinit var bottomSheetDialog: BottomSheetDialog
+
+    lateinit var quotedMessage: Message
 
     companion object {
         lateinit var receiver: User
@@ -165,12 +169,12 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
 
         val messageSwipeController = MessageSwipeController(this, object : SwipeControllerActions {
             override fun showReplyUI(position: Int) {
-                val message = adapter.getMessageAtPos(position)
+                quotedMessage = adapter.getMessageAtPos(position)
 
                 binding.messageInputText.requestFocus()
                 binding.replyLayout.mainLayout.visibility = View.VISIBLE
-                binding.replyLayout.message.text = message.message
-                if (currentUser!!.uid == message.from) {
+                binding.replyLayout.replyMessage.text = quotedMessage.message
+                if (currentUser!!.uid == quotedMessage.from) {
                     binding.replyLayout.username.text = getString(R.string.you)
                     binding.replyLayout.username.setTextColor(getColor(R.color.sinch_yellow))
                     binding.replyLayout.bar.setBackgroundColor(getColor(R.color.sinch_yellow))
@@ -381,7 +385,13 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
         if (URLUtil.isValidUrl(message)) {
             FirebaseUtils.sendURLMessage(message, currentUser!!.uid, receiver.uid)
         } else {
-            FirebaseUtils.sendMessage(message, currentUser!!.uid, receiver.uid)
+            if (binding.replyLayout.mainLayout.visibility == View.GONE) {
+                FirebaseUtils.sendMessage(message, currentUser!!.uid, receiver.uid)
+            }
+            else if(binding.replyLayout.mainLayout.visibility == View.VISIBLE) {
+                FirebaseUtils.sendMessage(message, currentUser!!.uid, receiver.uid, quotedMessageId = quotedMessage.messageId)
+                binding.replyLayout.mainLayout.visibility = View.GONE
+            }
         }
         binding.messageInputText.setText("")
     }

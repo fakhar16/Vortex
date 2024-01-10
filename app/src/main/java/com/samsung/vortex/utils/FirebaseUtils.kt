@@ -41,7 +41,7 @@ import java.util.Date
 @Suppress("ControlFlowWithEmptyBody")
 class FirebaseUtils {
     companion object {
-        fun sendMessage(message: String, messageSenderId: String, messageReceiverId: String) {
+        fun sendMessage(message: String, messageSenderId: String, messageReceiverId: String, quotedMessageId: String = "") {
             if (!TextUtils.isEmpty(message)) {
                 val messageSenderRef: String = VortexApplication.application.applicationContext.getString(R.string.MESSAGES) + "/" + messageSenderId + "/" + messageReceiverId
                 val messageReceiverRef: String = VortexApplication.application.applicationContext.getString(R.string.MESSAGES) + "/" + messageReceiverId + "/" + messageSenderId
@@ -59,7 +59,8 @@ class FirebaseUtils {
                     Date().time,
                     -1,
                     "",
-                    true
+                    true,
+                    quotedMessageId = quotedMessageId
                 )
                 val messageBodyDetails: MutableMap<String, Any> = HashMap()
                 messageBodyDetails["$messageSenderRef/$messagePushId"] = objMessage
