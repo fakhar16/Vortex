@@ -15,7 +15,6 @@ import android.os.VibrationEffect
 import android.os.VibratorManager
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.URLUtil
@@ -59,13 +58,13 @@ import com.samsung.vortex.swipe.SwipeControllerActions
 import com.samsung.vortex.utils.FirebaseUtils
 import com.samsung.vortex.utils.FirebaseUtils.Companion.sendAudioRecording
 import com.samsung.vortex.utils.Utils
-import com.samsung.vortex.utils.Utils.Companion.TAG
 import com.samsung.vortex.utils.Utils.Companion.TYPE_VIDEO_CALL
 import com.samsung.vortex.utils.Utils.Companion.currentUser
 import com.samsung.vortex.utils.Utils.Companion.getFileSize
 import com.samsung.vortex.utils.Utils.Companion.getFileType
 import com.samsung.vortex.utils.Utils.Companion.getFilename
 import com.samsung.vortex.utils.Utils.Companion.hideKeyboard
+import com.samsung.vortex.utils.Utils.Companion.hideReplyLayout
 import com.samsung.vortex.utils.Utils.Companion.showLoadingBar
 import com.samsung.vortex.utils.WhatsappLikeProfilePicPreview
 import com.samsung.vortex.viewmodel.MessageViewModel
@@ -169,6 +168,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
 
         val messageSwipeController = MessageSwipeController(this, object : SwipeControllerActions {
             override fun showReplyUI(position: Int) {
+                hideReplyLayout(binding.replyLayout)
                 val quotedMessage = adapter.getMessageAtPos(position)
                 quotedMessageId = quotedMessage.messageId
 
@@ -304,7 +304,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
             binding.messageInputText.append(emojiViewItem.emoji)
         }
 
-        binding.replyLayout.cancel.setOnClickListener { binding.replyLayout.mainLayout.visibility = View.GONE }
+        binding.replyLayout.cancel.setOnClickListener { hideReplyLayout(binding.replyLayout) }
     }
 
     private fun createVideoCall() {
@@ -390,7 +390,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
         } else {
             FirebaseUtils.sendMessage(message, currentUser!!.uid, receiver.uid, quotedMessageId = quotedMessageId)
         }
-        hideReplyLayout()
+        hideReplyLayout(binding.replyLayout)
         binding.messageInputText.setText("")
     }
 
@@ -520,7 +520,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
                 FirebaseUtils.forwardImage(this@ChatActivity, objMessage, receiver.uid, caption)
             } else {
                 FirebaseUtils.sendImage(this@ChatActivity, currentUser!!.uid, messageReceiverId, fileUri, caption, quotedMessageId)
-                hideReplyLayout()
+                hideReplyLayout(binding.replyLayout)
             }
         }
     }
@@ -550,7 +550,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
                 FirebaseUtils.forwardVideo(this@ChatActivity, objMessage, receiver.uid, caption)
             } else {
                 FirebaseUtils.sendVideo(this, currentUser!!.uid, messageReceiverId, fileUri, caption, quotedMessageId = quotedMessageId)
-                hideReplyLayout()
+                hideReplyLayout(binding.replyLayout)
             }
         }
     }
@@ -570,14 +570,8 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
                 FirebaseUtils.forwardDoc(this@ChatActivity, objMessage, receiver.uid, caption)
             } else {
                 FirebaseUtils.sendDoc(this@ChatActivity, currentUser!!.uid, messageReceiverId, fileUri, fileName, fileSize, caption, quotedMessageId = quotedMessageId)
-                hideReplyLayout()
+                hideReplyLayout(binding.replyLayout)
             }
-        }
-    }
-
-    private fun hideReplyLayout() {
-        if (quotedMessageId != "") {
-            binding.replyLayout.mainLayout.visibility = View.GONE
         }
     }
 
@@ -666,7 +660,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
                     prepareVideoMessageForSending(fileUri!!, "", false)
                 } else if (getFileType(fileUri).equals("mp3")) {
                     sendAudioRecording(this, currentUser!!.uid, messageReceiverId, fileUri!!, FirebaseDatabase.getInstance().reference.push().key!!, isSong = true)
-                    hideReplyLayout()
+                    hideReplyLayout(binding.replyLayout)
                 }
             }
         }
@@ -726,7 +720,7 @@ class ChatActivity : AppCompatActivity(), MessageListenerCallback, AudioRecordVi
         val file = File(filePath)
         val fullFileName = "$file/$recordedAudioFileName.3gp"
         sendAudioRecording(this, currentUser!!.uid, messageReceiverId, Uri.fromFile(File(fullFileName)), recordedAudioFileName!!)
-        hideReplyLayout()
+        hideReplyLayout(binding.replyLayout)
     }
 
     override fun onRecordStart() {

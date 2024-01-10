@@ -361,7 +361,7 @@ class Utils {
 
                 context.getString(R.string.CONTACT) -> {
                     binding.replyMessage.visibility = View.GONE
-                    binding.replContactLayout.visibility = View.VISIBLE
+                    binding.replyContactLayout.visibility = View.VISIBLE
                     VortexApplication.contactsDatabaseReference.child(quotedMessage.message)
                         .addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
@@ -388,6 +388,17 @@ class Utils {
                     binding.replyMessage.visibility = View.GONE
                 }
             }
+        }
+
+        fun hideReplyLayout(binding: ReplyLayoutBinding) {
+            binding.replyMessage.visibility = View.VISIBLE
+            binding.replyImage.visibility = View.GONE
+            binding.replyVideoImage.visibility = View.GONE
+            binding.replyVideoPlayPreview.visibility = View.GONE
+            binding.replyFileName.visibility = View.GONE
+            binding.replyContactLayout.visibility = View.GONE
+            binding.replyAudioRecordingLayout.visibility = View.GONE
+            binding.mainLayout.visibility = View.GONE
         }
     }
 }

@@ -80,7 +80,7 @@
             />
 <!--        contact-->
         <LinearLayout
-            android:id="@+id/repl_contact_layout"
+            android:id="@+id/reply_contact_layout"
             android:layout_width="200dp"
             android:layout_height="match_parent"
             android:visibility="gone"
